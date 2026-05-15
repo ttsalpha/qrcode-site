@@ -1,0 +1,347 @@
+.wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Nav ── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.navInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.navBrand {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.navBrandAt {
+  color: var(--fg-2);
+}
+.navLinks {
+  display: flex;
+  gap: 2px;
+}
+.navLink {
+  font-size: 13px;
+  color: var(--fg-2);
+  padding: 5px 10px;
+  border-radius: var(--r);
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.navLink:hover {
+  color: var(--fg);
+  background: var(--surface);
+}
+
+.navIconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 7px;
+  border-radius: var(--r);
+  color: var(--fg-2);
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.navIconLink:hover {
+  color: var(--fg);
+  background: var(--surface);
+}
+.navIconLink svg {
+  display: block;
+}
+
+/* ── Hero ── */
+.hero {
+  padding: 72px 0 60px;
+  border-bottom: 1px solid var(--border);
+}
+.heroBadges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.heroTitle {
+  font-size: clamp(38px, 6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-bottom: 18px;
+}
+.heroTitleAt {
+  color: var(--fg-3);
+}
+.heroSub {
+  font-size: clamp(15px, 2vw, 17px);
+  color: var(--fg-2);
+  line-height: 1.7;
+  max-width: 440px;
+  margin-bottom: 28px;
+}
+.heroInstall {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 8px 8px 8px 18px;
+  border-radius: var(--r-lg);
+  font-size: 14px;
+  font-family: var(--font-geist-mono), monospace;
+  border: 1px solid #1e1e1e;
+  margin-bottom: 52px;
+}
+.heroPreviews {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.heroPreviewItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.heroPreviewLabel {
+  font-size: 11px;
+  color: var(--fg-3);
+  letter-spacing: 0.06em;
+  font-family: var(--font-geist-mono), monospace;
+  text-transform: uppercase;
+}
+
+/* ── Section ── */
+.section {
+  padding: 72px 0;
+}
+.sectionAlt {
+  background: var(--surface);
+}
+.sectionHead {
+  margin-bottom: 40px;
+}
+.sectionTag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), monospace;
+  margin-bottom: 10px;
+}
+.sectionTitle {
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+.sectionDesc {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--fg-2);
+  max-width: 500px;
+}
+
+/* ── Features ── */
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.featureCard {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+}
+.featureIcon {
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.featureName {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.featureDesc {
+  font-size: 13px;
+  color: var(--fg-2);
+  line-height: 1.55;
+}
+
+/* ── Install / Quick start ── */
+.installGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 600px) {
+  .installGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.installLabel {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--fg-2);
+}
+
+/* ── API ── */
+.apiGroup {
+  margin-bottom: 44px;
+}
+.apiGroupTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), monospace;
+  margin-bottom: 14px;
+}
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.table th {
+  text-align: left;
+  padding: 9px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--fg-3);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.table tr:last-child td {
+  border-bottom: none;
+}
+.table tr:hover td {
+  background: var(--surface);
+}
+.table code {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  color: var(--accent);
+  background: transparent;
+}
+.note {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--fg-2);
+  line-height: 1.6;
+  padding: 11px 15px;
+  border-left: 2px solid var(--accent);
+  background: var(--surface);
+  border-radius: 0 var(--r) var(--r) 0;
+}
+.note code {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--fg);
+}
+
+/* ── Examples ── */
+.exampleList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.exampleCard {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.exampleCardTitle {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg-2);
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.exampleCardBody {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+@media (max-width: 600px) {
+  .exampleCardBody {
+    grid-template-columns: 1fr;
+  }
+}
+.exampleCardPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+.exampleCardPreviewDark {
+  background: var(--gray-10);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .exampleCardPreviewDark {
+    background: var(--bg);
+  }
+}
+[data-theme="dark"] .exampleCardPreviewDark {
+  background: var(--bg);
+}
+.exampleCardCode > * {
+  border-radius: 0;
+  border: none;
+  height: 100%;
+}
+
+/* ── Footer ── */
+.footer {
+  padding: 36px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footerText {
+  font-size: 13px;
+  color: var(--fg-3);
+}
+.footerLink {
+  color: var(--accent);
+}
+.footerLink:hover {
+  text-decoration: underline;
+}

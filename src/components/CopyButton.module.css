@@ -1,0 +1,51 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #6b6b6b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.btn svg {
+  width: 15px;
+  height: 15px;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.btn:hover {
+  color: #d4d4d4;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn.copied {
+  color: #2dd4bf;
+}
+
+.btn.copied svg {
+  animation: popIn 0.25s ease forwards;
+}
