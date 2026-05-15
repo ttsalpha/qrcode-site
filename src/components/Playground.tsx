@@ -237,6 +237,7 @@ export default function Playground() {
               value={bgColor}
               onChange={setBgColor}
               defaultValue="#ffffff"
+              transparent
             />
           </Field>
         </Group>
@@ -274,7 +275,7 @@ export default function Playground() {
           </Field>
         </Group>
 
-        <Group title="QR Settings" defaultOpen>
+        <Group title="QR Settings">
           <Field label="errorCorrectionLevel">
             <Tabs
               options={["L", "M", "Q", "H"] as ECL[]}
@@ -541,12 +542,33 @@ function ColorInput({
   value,
   onChange,
   defaultValue,
+  transparent,
 }: {
   value: string;
   onChange: (v: string) => void;
   defaultValue?: string;
+  transparent?: boolean;
 }) {
   const isDirty = defaultValue !== undefined && value !== defaultValue;
+
+  if (value === "transparent") {
+    return (
+      <div className={s.colorRow}>
+        <span className={s.transparentSwatch} aria-hidden="true" />
+        <span className={s.transparentLabel}>transparent</span>
+        <button
+          type="button"
+          className={s.clearBtn}
+          onClick={() => defaultValue !== undefined && onChange(defaultValue)}
+          title="Reset to default"
+          aria-label="Reset to default"
+        >
+          <CrossIcon />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className={s.colorRow}>
       <input
@@ -561,7 +583,7 @@ function ColorInput({
         onChange={(e) => onChange(e.target.value)}
         maxLength={9}
       />
-      {isDirty && (
+      {isDirty ? (
         <button
           type="button"
           className={s.clearBtn}
@@ -571,6 +593,16 @@ function ColorInput({
         >
           <CrossIcon />
         </button>
+      ) : (
+        transparent && (
+          <button
+            type="button"
+            className={s.transparentBtn}
+            onClick={() => onChange("transparent")}
+          >
+            transparent
+          </button>
+        )
       )}
     </div>
   );
