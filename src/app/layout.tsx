@@ -8,16 +8,33 @@ import "./globals.css";
 const sans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
+const siteUrl = "https://qrcode.ttsalpha.com";
+const description =
+  "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "@ttsalpha/qrcode",
-  description:
-    "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.",
+  description,
   keywords: ["qrcode", "react", "svg", "qr", "typescript"],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: "@ttsalpha/qrcode",
-    description:
-      "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.",
+    description,
     type: "website",
+    url: siteUrl,
+    siteName: "@ttsalpha/qrcode",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "@ttsalpha/qrcode",
+    description,
   },
 };
 
