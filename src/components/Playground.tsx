@@ -7,7 +7,7 @@ import type {
 } from "@ttsalpha/qrcode";
 import { QRCode } from "@ttsalpha/qrcode";
 import type { CSSProperties } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createHighlighter, type Highlighter, type ThemedToken } from "shiki";
 import CopyButton from "./CopyButton";
 import s from "./Playground.module.css";
@@ -30,29 +30,93 @@ function tokenStyle(token: ThemedToken): CSSProperties {
 type ECL = "L" | "M" | "Q" | "H";
 
 export default function Playground() {
+  // Content
   const [value, setValue] = useState("https://github.com/ttsalpha/qrcode");
+
+  // Appearance
   const [dotStyle, setDotStyle] = useState<DotStyle>("rounded");
-  const [dotColor, setDotColor] = useState("#0d0d0d");
+  const [dotColor, setDotColor] = useState("#000000");
   const [bgColor, setBgColor] = useState("#ffffff");
+
+  // Dimensions
+  const [width, setWidth] = useState(256);
+  const [height, setHeight] = useState(256);
+  const [margin, setMargin] = useState(4);
+
+  // Corners
   const [sqStyle, setSqStyle] = useState<CornerSquareStyle>("extra-rounded");
   const [sqColor, setSqColor] = useState("#14b8a6");
   const [dotSt, setDotSt] = useState<CornerDotStyle>("rounded");
+  const [dotDotColor, setDotDotColor] = useState("");
+
+  // QR Options
   const [ecl, setEcl] = useState<ECL>("M");
+  const [qrVersion, setQrVersion] = useState<number | "">("");
+
+  // Logo
   const [logoUrl, setLogoUrl] = useState("");
+  const [logoWidth, setLogoWidth] = useState<number | "">("");
+  const [logoHeight, setLogoHeight] = useState<number | "">("");
+  const [logoPadding, setLogoPadding] = useState<number | "">("");
+
   const [tokens, setTokens] = useState<ThemedToken[][] | null>(null);
   const [preStyle, setPreStyle] = useState<CSSProperties>({});
 
-  const snippet = `<QRCode
-  value="${value}"
-  dotStyle="${dotStyle}"
-  dotColor="${dotColor}"
-  backgroundColor="${bgColor}"
-  corner={{
-    square: { style: "${sqStyle}", color: "${sqColor}" },
-    dot: { style: "${dotSt}" },
-  }}
-  qr={{ errorCorrectionLevel: "${ecl}" }}${logoUrl ? `\n  logo={{ src: "${logoUrl}", padding: 6 }}` : ""}
-/>`;
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState(256);
+  useEffect(() => {
+    const el = previewRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setContainerSize(Math.floor(entry.contentRect.width));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const previewScale = Math.min(1, containerSize / Math.max(width, height));
+  const previewW = Math.round(width * previewScale);
+  const previewH = Math.round(height * previewScale);
+
+  // Build snippet — only non-default values
+  const snippetParts: string[] = [`  value="${value}"`];
+  if (width !== 256) snippetParts.push(`  width={${width}}`);
+  if (height !== 256) snippetParts.push(`  height={${height}}`);
+  if (margin !== 4) snippetParts.push(`  margin={${margin}}`);
+  if (dotStyle !== "square") snippetParts.push(`  dotStyle="${dotStyle}"`);
+  if (dotColor !== "#000000") snippetParts.push(`  dotColor="${dotColor}"`);
+  if (bgColor !== "#ffffff")
+    snippetParts.push(`  backgroundColor="${bgColor}"`);
+
+  const sqParts: string[] = [];
+  if (sqStyle !== "square") sqParts.push(`style: "${sqStyle}"`);
+  if (sqColor && sqColor !== dotColor) sqParts.push(`color: "${sqColor}"`);
+  const dotCornerParts: string[] = [];
+  if (dotSt !== "square") dotCornerParts.push(`style: "${dotSt}"`);
+  if (dotDotColor && dotDotColor !== dotColor)
+    dotCornerParts.push(`color: "${dotDotColor}"`);
+  if (sqParts.length || dotCornerParts.length) {
+    const cornerLines: string[] = [];
+    if (sqParts.length)
+      cornerLines.push(`    square: { ${sqParts.join(", ")} }`);
+    if (dotCornerParts.length)
+      cornerLines.push(`    dot: { ${dotCornerParts.join(", ")} }`);
+    snippetParts.push(`  corner={{\n${cornerLines.join(",\n")},\n  }}`);
+  }
+
+  const qrParts: string[] = [];
+  if (ecl !== "M") qrParts.push(`errorCorrectionLevel: "${ecl}"`);
+  if (qrVersion !== "") qrParts.push(`version: ${qrVersion}`);
+  if (qrParts.length) snippetParts.push(`  qr={{ ${qrParts.join(", ")} }}`);
+
+  if (logoUrl) {
+    const logoParts = [`src: "${logoUrl}"`];
+    if (logoWidth !== "") logoParts.push(`width: ${logoWidth}`);
+    if (logoHeight !== "") logoParts.push(`height: ${logoHeight}`);
+    if (logoPadding !== "") logoParts.push(`padding: ${logoPadding}`);
+    snippetParts.push(`  logo={{\n    ${logoParts.join(",\n    ")},\n  }}`);
+  }
+
+  const snippet = `<QRCode\n${snippetParts.join("\n")}\n/>`;
 
   useEffect(() => {
     let cancelled = false;
@@ -82,21 +146,41 @@ export default function Playground() {
   return (
     <div className={s.root}>
       <div className={s.left}>
-        <div className={s.preview}>
-          <QRCode
-            value={value || "https://example.com"}
-            width={220}
-            height={220}
-            dotStyle={dotStyle}
-            dotColor={dotColor}
-            backgroundColor={bgColor}
-            corner={{
-              square: { style: sqStyle, color: sqColor },
-              dot: { style: dotSt },
-            }}
-            qr={{ errorCorrectionLevel: ecl }}
-            logo={logoUrl ? { src: logoUrl, padding: 6 } : undefined}
-          />
+        <div className={s.preview} ref={previewRef}>
+          <QRErrorBoundary resetKey={snippet}>
+            <QRCode
+              value={value || "https://example.com"}
+              width={previewW}
+              height={previewH}
+              margin={margin}
+              dotStyle={dotStyle}
+              dotColor={dotColor}
+              backgroundColor={bgColor}
+              corner={{
+                square: { style: sqStyle, color: sqColor || undefined },
+                dot: { style: dotSt, color: dotDotColor || undefined },
+              }}
+              qr={{
+                errorCorrectionLevel: ecl,
+                version: qrVersion !== "" ? (qrVersion as number) : undefined,
+              }}
+              logo={
+                logoUrl
+                  ? {
+                      src: logoUrl,
+                      width:
+                        logoWidth !== "" ? (logoWidth as number) : undefined,
+                      height:
+                        logoHeight !== "" ? (logoHeight as number) : undefined,
+                      padding:
+                        logoPadding !== ""
+                          ? (logoPadding as number)
+                          : undefined,
+                    }
+                  : undefined
+              }
+            />
+          </QRErrorBoundary>
         </div>
         <div className={s.snippetWrap}>
           <div className={s.snippetToolbar}>
@@ -122,70 +206,239 @@ export default function Playground() {
       </div>
 
       <div className={s.controls}>
-        <Field label="value">
-          <input
-            className={s.input}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder="https://example.com"
-          />
-        </Field>
+        <Group title="Content" defaultOpen>
+          <Field label="value">
+            <input
+              className={s.input}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="https://example.com"
+            />
+          </Field>
+        </Group>
 
-        <Field label="dotStyle">
-          <Tabs
-            options={["square", "circle", "rounded"] as DotStyle[]}
-            value={dotStyle}
-            onChange={setDotStyle}
-          />
-        </Field>
+        <Group title="Appearance" defaultOpen>
+          <Field label="dotStyle">
+            <Tabs
+              options={["square", "circle", "rounded"] as DotStyle[]}
+              value={dotStyle}
+              onChange={setDotStyle}
+            />
+          </Field>
+          <Field label="dotColor">
+            <ColorInput
+              value={dotColor}
+              onChange={setDotColor}
+              defaultValue="#000000"
+            />
+          </Field>
+          <Field label="backgroundColor">
+            <ColorInput
+              value={bgColor}
+              onChange={setBgColor}
+              defaultValue="#ffffff"
+            />
+          </Field>
+        </Group>
 
-        <Field label="dotColor">
-          <ColorInput value={dotColor} onChange={setDotColor} />
-        </Field>
+        <Group title="Corners" defaultOpen>
+          <Field label="corner.square.style">
+            <Tabs
+              options={
+                ["square", "rounded", "extra-rounded"] as CornerSquareStyle[]
+              }
+              value={sqStyle}
+              onChange={setSqStyle}
+            />
+          </Field>
+          <Field label="corner.square.color">
+            <NullableColorInput
+              value={sqColor}
+              onChange={setSqColor}
+              fallback={dotColor}
+            />
+          </Field>
+          <Field label="corner.dot.style">
+            <Tabs
+              options={["square", "rounded", "circle"] as CornerDotStyle[]}
+              value={dotSt}
+              onChange={setDotSt}
+            />
+          </Field>
+          <Field label="corner.dot.color">
+            <NullableColorInput
+              value={dotDotColor}
+              onChange={setDotDotColor}
+              fallback={dotColor}
+            />
+          </Field>
+        </Group>
 
-        <Field label="backgroundColor">
-          <ColorInput value={bgColor} onChange={setBgColor} />
-        </Field>
+        <Group title="QR Settings" defaultOpen>
+          <Field label="errorCorrectionLevel">
+            <Tabs
+              options={["L", "M", "Q", "H"] as ECL[]}
+              value={ecl}
+              onChange={setEcl}
+            />
+          </Field>
+          <Field label="version — 1–40, blank = auto">
+            <input
+              type="number"
+              className={s.input}
+              value={qrVersion}
+              onChange={(e) =>
+                setQrVersion(
+                  e.target.value === ""
+                    ? ""
+                    : Math.min(40, Math.max(1, Number(e.target.value))),
+                )
+              }
+              min={1}
+              max={40}
+              placeholder="auto"
+            />
+          </Field>
+        </Group>
 
-        <Field label="corner.square.style">
-          <Tabs
-            options={
-              ["square", "rounded", "extra-rounded"] as CornerSquareStyle[]
-            }
-            value={sqStyle}
-            onChange={setSqStyle}
-          />
-        </Field>
+        <Group title="Dimensions">
+          <div className={s.row3}>
+            <Field label="width">
+              <NumberInput
+                value={width}
+                onChange={setWidth}
+                min={64}
+                max={300}
+              />
+            </Field>
+            <Field label="height">
+              <NumberInput
+                value={height}
+                onChange={setHeight}
+                min={64}
+                max={300}
+              />
+            </Field>
+            <Field label="margin">
+              <NumberInput
+                value={margin}
+                onChange={setMargin}
+                min={0}
+                max={20}
+              />
+            </Field>
+          </div>
+        </Group>
 
-        <Field label="corner.square.color">
-          <ColorInput value={sqColor} onChange={setSqColor} />
-        </Field>
-
-        <Field label="corner.dot.style">
-          <Tabs
-            options={["square", "rounded", "circle"] as CornerDotStyle[]}
-            value={dotSt}
-            onChange={setDotSt}
-          />
-        </Field>
-
-        <Field label="errorCorrectionLevel">
-          <Tabs
-            options={["L", "M", "Q", "H"] as ECL[]}
-            value={ecl}
-            onChange={setEcl}
-          />
-        </Field>
-
-        <Field label="logo.src">
-          <input
-            className={s.input}
-            value={logoUrl}
-            onChange={(e) => setLogoUrl(e.target.value)}
-            placeholder="https://example.com/logo.png"
-          />
-        </Field>
+        <Group title="Logo">
+          <Field label="logo.src">
+            <input
+              className={s.input}
+              value={logoUrl}
+              onChange={(e) => setLogoUrl(e.target.value)}
+              placeholder="https://example.com/logo.png"
+            />
+          </Field>
+          <div className={s.row3}>
+            <Field label="width">
+              <input
+                type="number"
+                className={s.input}
+                value={logoWidth}
+                onChange={(e) =>
+                  setLogoWidth(
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
+                min={0}
+                placeholder="auto"
+              />
+            </Field>
+            <Field label="height">
+              <input
+                type="number"
+                className={s.input}
+                value={logoHeight}
+                onChange={(e) =>
+                  setLogoHeight(
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
+                min={0}
+                placeholder="auto"
+              />
+            </Field>
+            <Field label="padding">
+              <input
+                type="number"
+                className={s.input}
+                value={logoPadding}
+                onChange={(e) =>
+                  setLogoPadding(
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
+                min={0}
+                placeholder="0"
+              />
+            </Field>
+          </div>
+        </Group>
       </div>
+    </div>
+  );
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+import { Component, type ReactNode } from "react";
+
+class QRErrorBoundary extends Component<
+  { children: ReactNode; resetKey: unknown },
+  { error: string | null }
+> {
+  state = { error: null };
+
+  static getDerivedStateFromError(err: unknown) {
+    return { error: err instanceof Error ? err.message : String(err) };
+  }
+
+  componentDidUpdate(prev: { resetKey: unknown }) {
+    if (prev.resetKey !== this.props.resetKey && this.state.error) {
+      this.setState({ error: null });
+    }
+  }
+
+  render() {
+    if (this.state.error) {
+      return <span className={s.qrError}>{this.state.error}</span>;
+    }
+    return this.props.children;
+  }
+}
+
+function Group({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className={s.group}>
+      <button
+        type="button"
+        className={s.groupHeader}
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+      >
+        <span className={s.groupTitle}>{title}</span>
+        <ChevronIcon className={`${s.chevron} ${open ? s.chevronOpen : ""}`} />
+      </button>
+      {open && <div className={s.groupBody}>{children}</div>}
     </div>
   );
 }
@@ -230,13 +483,70 @@ function Tabs<T extends string>({
   );
 }
 
+function NumberInput({
+  value,
+  onChange,
+  min,
+  max,
+  placeholder,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  min?: number;
+  max?: number;
+  placeholder?: string;
+}) {
+  const [raw, setRaw] = useState(String(value));
+
+  const parsed = raw === "" ? Number.NaN : Number(raw);
+  const tooSmall = !Number.isNaN(parsed) && min !== undefined && parsed < min;
+  const tooBig = !Number.isNaN(parsed) && max !== undefined && parsed > max;
+  const valid = !Number.isNaN(parsed) && !tooSmall && !tooBig;
+
+  const errorMsg = tooSmall
+    ? `Min ${min} in playground`
+    : tooBig
+      ? `Max ${max} in playground`
+      : null;
+
+  return (
+    <div className={s.numberWrap}>
+      <input
+        type="number"
+        className={`${s.input} ${valid ? "" : s.inputError}`}
+        value={raw}
+        onChange={(e) => {
+          const next = e.target.value;
+          setRaw(next);
+          const n = Number(next);
+          if (
+            next !== "" &&
+            !Number.isNaN(n) &&
+            (min === undefined || n >= min) &&
+            (max === undefined || n <= max)
+          ) {
+            onChange(n);
+          }
+        }}
+        min={min}
+        max={max}
+        placeholder={placeholder}
+      />
+      {errorMsg && <span className={s.inputErrorMsg}>{errorMsg}</span>}
+    </div>
+  );
+}
+
 function ColorInput({
   value,
   onChange,
+  defaultValue,
 }: {
   value: string;
   onChange: (v: string) => void;
+  defaultValue?: string;
 }) {
+  const isDirty = defaultValue !== undefined && value !== defaultValue;
   return (
     <div className={s.colorRow}>
       <input
@@ -251,6 +561,124 @@ function ColorInput({
         onChange={(e) => onChange(e.target.value)}
         maxLength={9}
       />
+      {isDirty && (
+        <button
+          type="button"
+          className={s.clearBtn}
+          onClick={() => defaultValue !== undefined && onChange(defaultValue)}
+          title="Reset to default"
+          aria-label="Reset to default"
+        >
+          <CrossIcon />
+        </button>
+      )}
     </div>
+  );
+}
+
+function NullableColorInput({
+  value,
+  onChange,
+  fallback,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  fallback: string;
+}) {
+  if (!value) {
+    return (
+      <button
+        type="button"
+        className={s.addColorBtn}
+        onClick={() => onChange(fallback)}
+      >
+        <PlusIcon />
+        set custom color
+      </button>
+    );
+  }
+  return (
+    <div className={s.colorRow}>
+      <input
+        type="color"
+        className={s.swatch}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      <input
+        className={s.input}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        maxLength={9}
+      />
+      <button
+        type="button"
+        className={s.clearBtn}
+        onClick={() => onChange("")}
+        title="Reset to default"
+        aria-label="Reset to default"
+      >
+        <CrossIcon />
+      </button>
+    </div>
+  );
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 5l4 4 4-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M6 2v8M2 6h8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function CrossIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M2 2l8 8M10 2l-8 8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }

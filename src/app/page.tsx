@@ -122,6 +122,7 @@ export default function Page() {
                   value="https://github.com/ttsalpha/qrcode"
                   width={168}
                   height={168}
+                  style={{ borderRadius: 12, overflow: "hidden" }}
                 />
                 <span className={s.heroPreviewLabel}>square</span>
               </div>
@@ -135,6 +136,7 @@ export default function Page() {
                     square: { style: "extra-rounded" },
                     dot: { style: "circle" },
                   }}
+                  style={{ borderRadius: 12, overflow: "hidden" }}
                 />
                 <span className={s.heroPreviewLabel}>circle</span>
               </div>
@@ -145,6 +147,7 @@ export default function Page() {
                   height={168}
                   dotStyle="rounded"
                   corner={{ square: { style: "extra-rounded" } }}
+                  style={{ borderRadius: 12, overflow: "hidden" }}
                 />
                 <span className={s.heroPreviewLabel}>rounded</span>
               </div>

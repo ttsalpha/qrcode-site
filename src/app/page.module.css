@@ -99,13 +99,13 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background: var(--code-bg);
-  color: var(--code-fg);
+  background: var(--surface-2);
+  color: var(--fg);
   padding: 8px 8px 8px 18px;
   border-radius: var(--r-lg);
   font-size: 14px;
   font-family: var(--font-geist-mono), monospace;
-  border: 1px solid #1e1e1e;
+  border: 1px solid var(--border);
   margin-bottom: 52px;
 }
 .heroPreviews {

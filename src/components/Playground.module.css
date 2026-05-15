@@ -11,7 +11,8 @@
   }
 }
 
-/* Left: preview + snippet */
+/* ─── Left: preview + snippet ─────────────────────────────────────────────── */
+
 .left {
   display: flex;
   flex-direction: column;
@@ -29,6 +30,8 @@
   border-radius: 12px;
   padding: 28px;
   border: 1px solid var(--border);
+  aspect-ratio: 1;
+  box-sizing: border-box;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -75,9 +78,8 @@
   white-space: pre;
   padding: 14px 16px;
   background: var(--surface);
-  height: 248px;
-  min-height: 248px;
-  max-height: 248px;
+  min-height: 120px;
+  max-height: 300px;
   flex-shrink: 0;
 }
 
@@ -96,63 +98,172 @@
   color: var(--shiki-light);
 }
 
-/* Right: controls */
+/* ─── Right: controls ─────────────────────────────────────────────────────── */
+
 .controls {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
 }
+
+/* ─── Group ───────────────────────────────────────────────────────────────── */
+
+.group {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  background: var(--surface-2);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: background 0.12s;
+  color: var(--fg);
+}
+
+.groupHeader:hover {
+  background: var(--surface);
+}
+
+.groupTitle {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--fg-2);
+  flex: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.chevron {
+  color: var(--fg-3);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.groupBody {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* ─── Field ───────────────────────────────────────────────────────────────── */
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .label {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--fg-3);
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0.02em;
 }
 
+/* ─── Row of 3 ────────────────────────────────────────────────────────────── */
+
+.row3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+/* ─── Input ───────────────────────────────────────────────────────────────── */
+
 .input {
   width: 100%;
-  padding: 7px 11px;
-  background: var(--surface);
+  padding: 7px 10px;
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 7px;
   color: var(--fg);
-  font-size: 13px;
+  font-size: 12.5px;
   font-family: var(--font-geist-mono), monospace;
   outline: none;
   transition: border-color 0.15s;
+  box-sizing: border-box;
 }
+
 .input:focus {
   border-color: var(--accent);
 }
 
+.inputError,
+.inputError:focus {
+  border-color: #ef4444;
+}
+
+.qrError {
+  font-size: 11px;
+  color: #ef4444;
+  font-family: var(--font-geist-mono), monospace;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.numberWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.inputErrorMsg {
+  font-size: 10.5px;
+  color: #ef4444;
+  font-family: var(--font-geist-mono), monospace;
+}
+
+/* Hide number spinners */
+.input[type="number"]::-webkit-inner-spin-button,
+.input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ─── Tabs ────────────────────────────────────────────────────────────────── */
+
 .tabs {
   display: flex;
-  gap: 5px;
+  gap: 4px;
   flex-wrap: wrap;
 }
 
 .tab {
-  padding: 5px 11px;
-  border-radius: 7px;
+  padding: 5px 10px;
+  border-radius: 6px;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--surface-2);
   color: var(--fg-2);
-  font-size: 12px;
+  font-size: 11.5px;
   font-family: var(--font-geist-mono), monospace;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.12s;
+  white-space: nowrap;
 }
+
 .tab:hover {
   color: var(--fg);
   border-color: var(--accent);
 }
+
 .tabActive {
   background: var(--accent);
   border-color: var(--accent);
@@ -169,19 +280,64 @@
   color: #0a0a0a;
 }
 
+/* ─── Color input ─────────────────────────────────────────────────────────── */
+
 .colorRow {
   display: flex;
-  gap: 7px;
+  gap: 6px;
   align-items: center;
 }
 
 .swatch {
-  width: 34px;
-  height: 34px;
-  border-radius: 7px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: var(--surface-2);
   padding: 2px;
   cursor: pointer;
   flex-shrink: 0;
+}
+
+/* ─── Nullable color ──────────────────────────────────────────────────────── */
+
+.addColorBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg-3);
+  font-size: 11.5px;
+  font-family: var(--font-geist-mono), monospace;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.addColorBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.clearBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg-3);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.12s;
+  padding: 0;
+}
+
+.clearBtn:hover {
+  border-color: var(--fg-3);
+  color: var(--fg);
 }
