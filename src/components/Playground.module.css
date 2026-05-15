@@ -5,12 +5,6 @@
   align-items: start;
 }
 
-@media (max-width: 700px) {
-  .root {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* ─── Left: preview + snippet ─────────────────────────────────────────────── */
 
 .left {
@@ -386,4 +380,29 @@
   font-family: var(--font-geist-mono), monospace;
   color: var(--fg-3);
   flex: 1;
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+
+/* Tablet (≤ 768px): single column, remove sticky preview */
+@media (max-width: 768px) {
+  .root {
+    grid-template-columns: 1fr;
+  }
+
+  .left {
+    position: static;
+  }
+}
+
+/* Mobile (≤ 480px): compact preview — drop aspect-ratio so it fits content */
+@media (max-width: 480px) {
+  .preview {
+    aspect-ratio: unset;
+    height: auto;
+  }
+
+  .snippet {
+    max-height: 220px;
+  }
 }

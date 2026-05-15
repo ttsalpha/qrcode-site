@@ -1,5 +1,4 @@
 import { QRCode } from "@ttsalpha/qrcode";
-import { FaGithub } from "react-icons/fa";
 import {
   IoAppsOutline,
   IoCodeSlashOutline,
@@ -9,11 +8,10 @@ import {
   IoScanOutline,
   IoShapesOutline,
 } from "react-icons/io5";
-import { SiNpm } from "react-icons/si";
 import CodeBlock from "@/components/CodeBlock";
 import CopyButton from "@/components/CopyButton";
+import NavMenu from "@/components/NavMenu";
 import Playground from "@/components/Playground";
-import ThemeToggle from "@/components/ThemeToggle";
 import s from "./page.module.css";
 
 function SectionHead({
@@ -45,36 +43,7 @@ export default function Page() {
           <a href="/" className={s.navBrand}>
             <span className={s.navBrandAt}>@ttsalpha/</span>qrcode
           </a>
-          <div className={s.navLinks}>
-            <a href="#playground" className={s.navLink}>
-              Playground
-            </a>
-            <a href="#api" className={s.navLink}>
-              API
-            </a>
-            <a href="#examples" className={s.navLink}>
-              Examples
-            </a>
-            <a
-              href="https://www.npmjs.com/package/@ttsalpha/qrcode"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={s.navIconLink}
-              aria-label="npm"
-            >
-              <SiNpm size={20} />
-            </a>
-            <a
-              href="https://github.com/ttsalpha/qrcode"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={s.navIconLink}
-              aria-label="GitHub"
-            >
-              <FaGithub size={20} />
-            </a>
-            <ThemeToggle />
-          </div>
+          <NavMenu />
         </div>
       </nav>
 
@@ -127,7 +96,9 @@ export default function Page() {
                 />
                 <span className={s.heroPreviewLabel}>square</span>
               </div>
-              <div className={s.heroPreviewItem}>
+              <div
+                className={`${s.heroPreviewItem} ${s.heroPreviewHideMobile}`}
+              >
                 <QRCode
                   value="https://github.com/ttsalpha/qrcode"
                   width={168}

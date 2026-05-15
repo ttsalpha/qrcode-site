@@ -1,6 +1,6 @@
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
@@ -11,6 +11,13 @@ const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 const siteUrl = "https://qrcode.ttsalpha.com";
 const description =
   "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
