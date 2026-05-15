@@ -1,5 +1,5 @@
 import { QRCode } from "@ttsalpha/qrcode";
-import { FaGithub, FaNpm } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 import {
   IoAppsOutline,
   IoCodeSlashOutline,
@@ -9,6 +9,7 @@ import {
   IoScanOutline,
   IoShapesOutline,
 } from "react-icons/io5";
+import { SiNpm } from "react-icons/si";
 import CodeBlock from "@/components/CodeBlock";
 import CopyButton from "@/components/CopyButton";
 import Playground from "@/components/Playground";
@@ -61,7 +62,7 @@ export default function Page() {
               className={s.navIconLink}
               aria-label="npm"
             >
-              <FaNpm size={28} />
+              <SiNpm size={20} />
             </a>
             <a
               href="https://github.com/ttsalpha/qrcode"
@@ -605,35 +606,52 @@ export default function App() {
       {/* Footer */}
       <footer className={s.footer}>
         <div className={s.wrap}>
-          <p className={s.footerText}>
-            MIT License ·{" "}
-            <a
-              href="https://github.com/ttsalpha/qrcode"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={s.footerLink}
-            >
-              GitHub
-            </a>{" "}
-            ·{" "}
-            <a
-              href="https://www.npmjs.com/package/@ttsalpha/qrcode"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={s.footerLink}
-            >
-              npm
-            </a>{" "}
-            · Built by{" "}
-            <a
-              href="https://github.com/ttsalpha"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={s.footerLink}
-            >
-              Son Tran
-            </a>
-          </p>
+          <div className={s.footerTop}>
+            <div className={s.footerBrand}>
+              <span className={s.footerBrandAt}>@ttsalpha/</span>qrcode
+            </div>
+            <nav className={s.footerNav}>
+              <a
+                href="https://github.com/ttsalpha"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={s.footerNavLink}
+              >
+                Author
+              </a>
+              <a
+                href="https://github.com/ttsalpha/qrcode/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={s.footerNavLink}
+              >
+                Changelog
+              </a>
+
+              <a
+                href="https://github.com/ttsalpha/qrcode/blob/main/LICENSE"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={s.footerNavLink}
+              >
+                License
+              </a>
+            </nav>
+          </div>
+          <div className={s.footerBottom}>
+            <span className={s.footerCopy}>
+              © {new Date().getFullYear()}{" "}
+              <a
+                href="https://github.com/ttsalpha"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={s.footerLink}
+              >
+                Son Tran
+              </a>{" "}
+              · MIT License
+            </span>
+          </div>
         </div>
       </footer>
     </>
