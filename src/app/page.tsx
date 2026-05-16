@@ -1,6 +1,7 @@
 import { QRCode } from "@ttsalpha/qrcode";
 import {
   IoAppsOutline,
+  IoCloudDownloadOutline,
   IoCodeSlashOutline,
   IoCubeOutline,
   IoFlashOutline,
@@ -177,6 +178,11 @@ export default function Page() {
                   name: "Tree-shakeable",
                   desc: "Named exports, ESM + CJS output. Minimal bundle impact.",
                 },
+                {
+                  icon: <IoCloudDownloadOutline size={22} />,
+                  name: "Export helpers",
+                  desc: "toSVGString() generates SVG server-side without DOM. toDataURL() renders PNG/JPEG via Canvas.",
+                },
               ].map((f) => (
                 <div key={f.name} className={s.featureCard}>
                   <div className={s.featureIcon} aria-hidden="true">
@@ -276,6 +282,12 @@ export default function App() {
                       ["qr", "QROptions", "—", "QR encoding options"],
                       ["className", "string", "—", "CSS class on <svg>"],
                       ["style", "CSSProperties", "—", "Inline style on <svg>"],
+                      [
+                        "ariaLabel",
+                        "string",
+                        "—",
+                        "Accessible label for the SVG; defaults to 'QR code: {value}'",
+                      ],
                     ].map(([p, t, d, desc]) => (
                       <tr key={p}>
                         <td>
@@ -366,6 +378,9 @@ export default function App() {
                 Logo size is clamped per error-correction level to keep the QR
                 scannable: L→15%, M→22%, Q→32%, H→40% of <code>size</code>. Use{" "}
                 <code>errorCorrectionLevel: 'H'</code> for larger logos.
+                <br />
+                <code>hideDots</code> uses an SVG mask, so transparent
+                backgrounds are fully supported.
               </p>
               <p className={s.note}>
                 <strong>Security:</strong> <code>javascript:</code> and
@@ -407,6 +422,81 @@ export default function App() {
                         </td>
                         <td>{r}</td>
                         <td>{u}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className={s.apiGroup} id="exports">
+              <div className={s.apiGroupTitle}>Export Helpers</div>
+              <CodeBlock
+                lang="ts"
+                code={`import { toSVGString, toDataURL } from '@ttsalpha/qrcode';
+
+// Server-side SVG string — no DOM needed
+const svg = toSVGString({ value: 'https://example.com', size: 512 });
+
+// PNG data URL via Canvas (browser-only)
+const png = await toDataURL({ value: 'https://example.com', size: 512 });
+
+// JPEG with quality
+const jpg = await toDataURL(
+  { value: 'https://example.com', size: 512 },
+  { format: 'jpeg', quality: 0.9 },
+);
+
+// Download link
+const link = document.createElement('a');
+link.href = await toDataURL({ value: 'https://example.com' });
+link.download = 'qrcode.png';
+link.click();`}
+              />
+              <p className={s.note}>
+                <code>toSVGString</code> accepts the same props as{" "}
+                <code>{"<QRCode>"}</code> and returns a static SVG markup string
+                — useful for SSR, saving to a database, or copying to clipboard.
+                <br />
+                <code>toDataURL</code> is browser-only (requires the Canvas
+                API). JPEG automatically fills a white background when{" "}
+                <code>backgroundColor</code> is <code>'transparent'</code>.
+              </p>
+              <div className={s.tableWrap} style={{ marginTop: 14 }}>
+                <table className={s.table}>
+                  <thead>
+                    <tr>
+                      <th>Option</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      [
+                        "format",
+                        "'png' | 'jpeg'",
+                        "'png'",
+                        "Output image format",
+                      ],
+                      [
+                        "quality",
+                        "number (0–1)",
+                        "browser default",
+                        "JPEG quality. Ignored for PNG",
+                      ],
+                    ].map(([p, t, d, desc]) => (
+                      <tr key={p}>
+                        <td>
+                          <code>{p}</code>
+                        </td>
+                        <td>
+                          <code>{t}</code>
+                        </td>
+                        <td>
+                          <code>{d}</code>
+                        </td>
+                        <td>{desc}</td>
                       </tr>
                     ))}
                   </tbody>
