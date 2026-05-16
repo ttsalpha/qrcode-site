@@ -424,7 +424,12 @@ export default function Playground() {
         <Group title="Dimensions">
           <div className={s.row2}>
             <Field label="size">
-              <NumberInput value={size} onChange={setSize} min={64} max={300} />
+              <NumberInput
+                value={size}
+                onChange={setSize}
+                min={64}
+                max={2048}
+              />
             </Field>
             <Field label="margin">
               <NumberInput
