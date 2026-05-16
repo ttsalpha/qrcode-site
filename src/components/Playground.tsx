@@ -328,6 +328,7 @@ export default function Playground() {
           </Field>
           <Field label="dotColor">
             <ColorInput
+              label="dotColor"
               value={dotColor}
               onChange={setDotColor}
               defaultValue="#000000"
@@ -335,6 +336,7 @@ export default function Playground() {
           </Field>
           <Field label="backgroundColor">
             <ColorInput
+              label="backgroundColor"
               value={bgColor}
               onChange={setBgColor}
               defaultValue="#ffffff"
@@ -360,6 +362,7 @@ export default function Playground() {
           </Field>
           <Field label="corner.square.color">
             <NullableColorInput
+              label="corner.square.color"
               value={sqColor}
               onChange={setSqColor}
               fallback={dotColor}
@@ -374,6 +377,7 @@ export default function Playground() {
           </Field>
           <Field label="corner.dot.color">
             <NullableColorInput
+              label="corner.dot.color"
               value={dotDotColor}
               onChange={setDotDotColor}
               fallback={dotColor}
@@ -677,11 +681,13 @@ function NumberInput({
 }
 
 function ColorInput({
+  label,
   value,
   onChange,
   defaultValue,
   transparent,
 }: {
+  label?: string;
   value: string;
   onChange: (v: string) => void;
   defaultValue?: string;
@@ -714,12 +720,14 @@ function ColorInput({
         className={s.swatch}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        aria-label={label ? `${label} color picker` : "color picker"}
       />
       <input
         className={s.input}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         maxLength={9}
+        aria-label={label ? `${label} hex value` : "hex value"}
       />
       {isDirty ? (
         <button
@@ -747,10 +755,12 @@ function ColorInput({
 }
 
 function NullableColorInput({
+  label,
   value,
   onChange,
   fallback,
 }: {
+  label?: string;
   value: string;
   onChange: (v: string) => void;
   fallback: string;
@@ -774,12 +784,14 @@ function NullableColorInput({
         className={s.swatch}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        aria-label={label ? `${label} color picker` : "color picker"}
       />
       <input
         className={s.input}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         maxLength={9}
+        aria-label={label ? `${label} hex value` : "hex value"}
       />
       <button
         type="button"

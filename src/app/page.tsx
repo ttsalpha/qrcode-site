@@ -12,7 +12,7 @@ import {
 import CodeBlock from "@/components/CodeBlock";
 import CopyButton from "@/components/CopyButton";
 import NavMenu from "@/components/NavMenu";
-import Playground from "@/components/Playground";
+import PlaygroundLoader from "@/components/PlaygroundLoader";
 import s from "./page.module.css";
 
 function SectionHead({
@@ -58,18 +58,24 @@ export default function Page() {
                 src="https://img.shields.io/npm/v/@ttsalpha/qrcode"
                 alt="npm version"
                 height={20}
+                width={90}
+                style={{ width: "auto" }}
               />
               {/* biome-ignore lint/performance/noImgElement: external badge SVG, next/image doesn't support shields.io */}
               <img
                 src="https://img.shields.io/npm/l/@ttsalpha/qrcode"
                 alt="license"
                 height={20}
+                width={80}
+                style={{ width: "auto" }}
               />
               {/* biome-ignore lint/performance/noImgElement: external badge SVG, next/image doesn't support shields.io */}
               <img
                 src="https://img.shields.io/github/actions/workflow/status/ttsalpha/qrcode/ci.yml?label=CI"
                 alt="CI status"
                 height={20}
+                width={80}
+                style={{ width: "auto" }}
               />
             </div>
 
@@ -133,7 +139,7 @@ export default function Page() {
               title="Try it live"
               desc="Adjust every prop and see the result instantly."
             />
-            <Playground />
+            <PlaygroundLoader />
           </div>
         </section>
 

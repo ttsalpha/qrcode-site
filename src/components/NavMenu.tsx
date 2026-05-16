@@ -55,7 +55,7 @@ export default function NavMenu() {
         className={s.iconLink}
         aria-label="npm"
       >
-        <SiNpm size={20} />
+        <SiNpm size={20} aria-hidden={true} />
       </a>
       <a
         href="https://github.com/ttsalpha/qrcode"
@@ -64,7 +64,7 @@ export default function NavMenu() {
         className={s.iconLink}
         aria-label="GitHub"
       >
-        <FaGithub size={20} />
+        <FaGithub size={20} aria-hidden={true} />
       </a>
       <ThemeToggle />
 

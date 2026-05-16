@@ -94,6 +94,24 @@
   color: var(--shiki-light);
 }
 
+/* github-dark comment token (#6A737D) fails WCAG AA on #171717 bg — boost to #a0aab4 */
+.snippet span[style*="#6A737D"],
+.snippet span[style*="#6a737d"] {
+  color: #a0aab4;
+}
+
+@media (prefers-color-scheme: light) {
+  :global(:root:not([data-theme="dark"])) .snippet span[style*="#6A737D"],
+  :global(:root:not([data-theme="dark"])) .snippet span[style*="#6a737d"] {
+    color: var(--shiki-light);
+  }
+}
+
+:global([data-theme="light"]) .snippet span[style*="#6A737D"],
+:global([data-theme="light"]) .snippet span[style*="#6a737d"] {
+  color: var(--shiki-light);
+}
+
 /* ─── Preview action buttons ──────────────────────────────────────────────── */
 
 .previewActions {

@@ -60,3 +60,25 @@
 :global([data-theme="light"]) .pre :global(.shiki span) {
   color: var(--shiki-light);
 }
+
+/* github-dark comment token (#6A737D) fails WCAG AA on #171717 bg — boost to #a0aab4 */
+.pre :global(.shiki span[style*="#6A737D"]),
+.pre :global(.shiki span[style*="#6a737d"]) {
+  color: #a0aab4;
+}
+
+@media (prefers-color-scheme: light) {
+  :global(:root:not([data-theme="dark"]))
+    .pre
+    :global(.shiki span[style*="#6A737D"]),
+  :global(:root:not([data-theme="dark"]))
+    .pre
+    :global(.shiki span[style*="#6a737d"]) {
+    color: var(--shiki-light);
+  }
+}
+
+:global([data-theme="light"]) .pre :global(.shiki span[style*="#6A737D"]),
+:global([data-theme="light"]) .pre :global(.shiki span[style*="#6a737d"]) {
+  color: var(--shiki-light);
+}
