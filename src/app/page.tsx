@@ -522,7 +522,7 @@ export default function App() {
   dotStyle="rounded"
   corner={{ square: { style: 'extra-rounded' } }}
   logo={{
-    src: 'https://api.dicebear.com/9.x/rings/svg?seed=Destiny',
+    src: 'https://avatars.githubusercontent.com/u/48100204?size=64',
     size: 0.3,
     margin: 2,
   }}
@@ -535,7 +535,7 @@ export default function App() {
                   dotStyle="rounded"
                   corner={{ square: { style: "extra-rounded" } }}
                   logo={{
-                    src: "https://api.dicebear.com/9.x/rings/svg?seed=Destiny",
+                    src: "https://avatars.githubusercontent.com/u/48100204?size=64",
                     size: 0.3,
                     margin: 2,
                   }}

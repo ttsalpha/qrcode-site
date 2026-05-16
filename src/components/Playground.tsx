@@ -197,12 +197,25 @@ export default function Playground() {
       <div className={s.controls}>
         <Group title="Content" defaultOpen>
           <Field label="value">
-            <input
-              className={s.input}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="https://example.com"
-            />
+            <div className={s.colorRow}>
+              <input
+                className={s.input}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="https://example.com"
+              />
+              {value && (
+                <button
+                  type="button"
+                  className={s.clearBtn}
+                  onClick={() => setValue("")}
+                  title="Clear"
+                  aria-label="Clear"
+                >
+                  <CrossIcon />
+                </button>
+              )}
+            </div>
           </Field>
         </Group>
 
@@ -310,7 +323,7 @@ export default function Playground() {
         </Group>
 
         <Group title="Dimensions">
-          <div className={s.row3}>
+          <div className={s.row2}>
             <Field label="size">
               <NumberInput value={size} onChange={setSize} min={64} max={300} />
             </Field>
@@ -378,18 +391,31 @@ export default function Playground() {
               </div>
             </Field>
             <Field label="margin">
-              <input
-                type="number"
-                className={s.input}
-                value={logoMargin}
-                onChange={(e) =>
-                  setLogoMargin(
-                    e.target.value === "" ? "" : Number(e.target.value),
-                  )
-                }
-                min={0}
-                placeholder="0"
-              />
+              <div className={s.colorRow}>
+                <input
+                  type="number"
+                  className={s.input}
+                  value={logoMargin}
+                  onChange={(e) =>
+                    setLogoMargin(
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                  min={0}
+                  placeholder="0"
+                />
+                {logoMargin !== "" && (
+                  <button
+                    type="button"
+                    className={s.clearBtn}
+                    onClick={() => setLogoMargin("")}
+                    title="Reset to auto"
+                    aria-label="Reset to auto"
+                  >
+                    <CrossIcon />
+                  </button>
+                )}
+              </div>
             </Field>
           </div>
         </Group>
