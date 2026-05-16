@@ -90,8 +90,7 @@ export default function Page() {
               <div className={s.heroPreviewItem}>
                 <QRCode
                   value="https://github.com/ttsalpha/qrcode"
-                  width={168}
-                  height={168}
+                  size={168}
                   style={{ borderRadius: 12, overflow: "hidden" }}
                 />
                 <span className={s.heroPreviewLabel}>square</span>
@@ -101,11 +100,10 @@ export default function Page() {
               >
                 <QRCode
                   value="https://github.com/ttsalpha/qrcode"
-                  width={168}
-                  height={168}
+                  size={168}
                   dotStyle="circle"
                   corner={{
-                    square: { style: "extra-rounded" },
+                    square: { style: "circle" },
                     dot: { style: "circle" },
                   }}
                   style={{ borderRadius: 12, overflow: "hidden" }}
@@ -115,8 +113,7 @@ export default function Page() {
               <div className={s.heroPreviewItem}>
                 <QRCode
                   value="https://github.com/ttsalpha/qrcode"
-                  width={168}
-                  height={168}
+                  size={168}
                   dotStyle="rounded"
                   corner={{ square: { style: "extra-rounded" } }}
                   style={{ borderRadius: 12, overflow: "hidden" }}
@@ -150,13 +147,13 @@ export default function Page() {
                 },
                 {
                   icon: <IoScanOutline size={22} />,
-                  name: "Custom corners",
+                  name: "Customizable corners",
                   desc: "Independent style and color for each finder pattern part (dot and square ring).",
                 },
                 {
                   icon: <IoImageOutline size={22} />,
                   name: "Logo support",
-                  desc: "Embed any image URL or React node in the center. Use errorCorrectionLevel H.",
+                  desc: "Embed any image URL or React node in the center. Size auto-clamped per ECL to stay scannable.",
                 },
                 {
                   icon: <IoCodeSlashOutline size={22} />,
@@ -244,8 +241,12 @@ export default function App() {
                   <tbody>
                     {[
                       ["value", "string", "—", "Data to encode (required)"],
-                      ["width", "number", "256", "SVG width in pixels"],
-                      ["height", "number", "256", "SVG height in pixels"],
+                      [
+                        "size",
+                        "number",
+                        "256",
+                        "Width and height of the SVG in pixels",
+                      ],
                       ["margin", "number", "4", "Quiet zone in modules"],
                       [
                         "dotStyle",
@@ -335,7 +336,7 @@ export default function App() {
     color?: string;
   };
   square?: {
-    style?: 'square' | 'rounded' | 'extra-rounded'; // outer 7×7 ring
+    style?: 'square' | 'rounded' | 'extra-rounded' | 'circle'; // outer 7×7 ring
     color?: string;
   };
 }`}
@@ -343,7 +344,9 @@ export default function App() {
               <p className={s.note}>
                 When <code>corner.square.style</code> is{" "}
                 <code>'extra-rounded'</code> and <code>corner.dot.style</code>{" "}
-                is unset, the dot defaults to <code>'rounded'</code>.
+                is unset, the dot defaults to <code>'rounded'</code>. When{" "}
+                <code>corner.square.style</code> is <code>'circle'</code>, the
+                dot defaults to <code>'circle'</code>.
               </p>
             </div>
 
@@ -354,11 +357,16 @@ export default function App() {
                 code={`interface LogoOptions {
   src?: string;        // https, relative path, blob:, or data:image/… URI
   element?: ReactNode; // takes priority over src when both provided
-  width?: number;      // default: 20% of QR width
-  height?: number;     // default: 20% of QR height
-  padding?: number;    // transparent padding around the logo
+  size?: number;       // fraction of QR size (0–1); default 0.2, clamped per ECL
+  margin?: number;     // inset margin inside the cleared area; default 0
+  hideDots?: boolean;  // clear dots behind logo area; default true
 }`}
               />
+              <p className={s.note}>
+                Logo size is clamped per error-correction level to keep the QR
+                scannable: L→15%, M→22%, Q→32%, H→40% of <code>size</code>. Use{" "}
+                <code>errorCorrectionLevel: 'H'</code> for larger logos.
+              </p>
               <p className={s.note}>
                 <strong>Security:</strong> <code>javascript:</code> and
                 non-image <code>data:</code> URIs in <code>src</code> are
@@ -418,7 +426,7 @@ export default function App() {
                 title="Default"
                 code={`<QRCode value="https://example.com" />`}
               >
-                <QRCode value="https://example.com" width={160} height={160} />
+                <QRCode value="https://example.com" size={160} />
               </Example>
 
               {/* 2. Rounded fluid dots */}
@@ -432,8 +440,7 @@ export default function App() {
               >
                 <QRCode
                   value="https://example.com"
-                  width={160}
-                  height={160}
+                  size={160}
                   dotStyle="rounded"
                   corner={{ square: { style: "extra-rounded" } }}
                 />
@@ -446,18 +453,17 @@ export default function App() {
   value="https://example.com"
   dotStyle="circle"
   corner={{
-    square: { style: 'rounded' },
+    square: { style: 'circle' },
     dot: { style: 'circle' },
   }}
 />`}
               >
                 <QRCode
                   value="https://example.com"
-                  width={160}
-                  height={160}
+                  size={160}
                   dotStyle="circle"
                   corner={{
-                    square: { style: "rounded" },
+                    square: { style: "circle" },
                     dot: { style: "circle" },
                   }}
                 />
@@ -477,8 +483,7 @@ export default function App() {
               >
                 <QRCode
                   value="https://example.com"
-                  width={160}
-                  height={160}
+                  size={160}
                   dotStyle="rounded"
                   corner={{
                     square: { style: "extra-rounded", color: "#14b8a6" },
@@ -501,8 +506,7 @@ export default function App() {
               >
                 <QRCode
                   value="https://example.com"
-                  width={160}
-                  height={160}
+                  size={160}
                   dotStyle="rounded"
                   dotColor="#ffffff"
                   backgroundColor="transparent"
@@ -517,38 +521,23 @@ export default function App() {
   value="https://example.com"
   dotStyle="rounded"
   corner={{ square: { style: 'extra-rounded' } }}
-  logo={{ src: '/logo.png', width: 48, height: 48, padding: 4 }}
+  logo={{
+    src: 'https://api.dicebear.com/9.x/rings/svg?seed=Destiny',
+    size: 0.3,
+    margin: 2,
+  }}
   qr={{ errorCorrectionLevel: 'H' }}
 />`}
               >
                 <QRCode
                   value="https://example.com"
-                  width={160}
-                  height={160}
+                  size={160}
                   dotStyle="rounded"
                   corner={{ square: { style: "extra-rounded" } }}
                   logo={{
-                    element: (
-                      <div
-                        style={{
-                          width: 38,
-                          height: 38,
-                          borderRadius: 8,
-                          background: "#0a0a0a",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#fff",
-                          fontSize: 14,
-                          fontWeight: 700,
-                          fontFamily: "monospace",
-                          letterSpacing: "-0.05em",
-                        }}
-                      >
-                        QR
-                      </div>
-                    ),
-                    padding: 4,
+                    src: "https://api.dicebear.com/9.x/rings/svg?seed=Destiny",
+                    size: 0.3,
+                    margin: 2,
                   }}
                   qr={{ errorCorrectionLevel: "H" }}
                 />
@@ -564,8 +553,7 @@ export default function App() {
               >
                 <QRCode
                   value="12345"
-                  width={160}
-                  height={160}
+                  size={160}
                   qr={{ version: 1, errorCorrectionLevel: "L" }}
                 />
               </Example>

@@ -39,8 +39,7 @@ export default function Playground() {
   const [bgColor, setBgColor] = useState("#ffffff");
 
   // Dimensions
-  const [width, setWidth] = useState(256);
-  const [height, setHeight] = useState(256);
+  const [size, setSize] = useState(256);
   const [margin, setMargin] = useState(4);
 
   // Corners
@@ -55,9 +54,8 @@ export default function Playground() {
 
   // Logo
   const [logoUrl, setLogoUrl] = useState("");
-  const [logoWidth, setLogoWidth] = useState<number | "">("");
-  const [logoHeight, setLogoHeight] = useState<number | "">("");
-  const [logoPadding, setLogoPadding] = useState<number | "">("");
+  const [logoSize, setLogoSize] = useState<number | "">("");
+  const [logoMargin, setLogoMargin] = useState<number | "">("");
 
   const [tokens, setTokens] = useState<ThemedToken[][] | null>(null);
   const [preStyle, setPreStyle] = useState<CSSProperties>({});
@@ -73,14 +71,12 @@ export default function Playground() {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-  const previewScale = Math.min(1, containerSize / Math.max(width, height));
-  const previewW = Math.round(width * previewScale);
-  const previewH = Math.round(height * previewScale);
+  const previewScale = Math.min(1, containerSize / size);
+  const previewSize = Math.round(size * previewScale);
 
   // Build snippet — only non-default values
   const snippetParts: string[] = [`  value="${value}"`];
-  if (width !== 256) snippetParts.push(`  width={${width}}`);
-  if (height !== 256) snippetParts.push(`  height={${height}}`);
+  if (size !== 256) snippetParts.push(`  size={${size}}`);
   if (margin !== 4) snippetParts.push(`  margin={${margin}}`);
   if (dotStyle !== "square") snippetParts.push(`  dotStyle="${dotStyle}"`);
   if (dotColor !== "#000000") snippetParts.push(`  dotColor="${dotColor}"`);
@@ -110,9 +106,8 @@ export default function Playground() {
 
   if (logoUrl) {
     const logoParts = [`src: "${logoUrl}"`];
-    if (logoWidth !== "") logoParts.push(`width: ${logoWidth}`);
-    if (logoHeight !== "") logoParts.push(`height: ${logoHeight}`);
-    if (logoPadding !== "") logoParts.push(`padding: ${logoPadding}`);
+    if (logoSize !== "") logoParts.push(`size: ${logoSize}`);
+    if (logoMargin !== "") logoParts.push(`margin: ${logoMargin}`);
     snippetParts.push(`  logo={{\n    ${logoParts.join(",\n    ")},\n  }}`);
   }
 
@@ -150,8 +145,7 @@ export default function Playground() {
           <QRErrorBoundary resetKey={snippet}>
             <QRCode
               value={value || "https://example.com"}
-              width={previewW}
-              height={previewH}
+              size={previewSize}
               margin={margin}
               dotStyle={dotStyle}
               dotColor={dotColor}
@@ -168,14 +162,9 @@ export default function Playground() {
                 logoUrl
                   ? {
                       src: logoUrl,
-                      width:
-                        logoWidth !== "" ? (logoWidth as number) : undefined,
-                      height:
-                        logoHeight !== "" ? (logoHeight as number) : undefined,
-                      padding:
-                        logoPadding !== ""
-                          ? (logoPadding as number)
-                          : undefined,
+                      size: logoSize !== "" ? (logoSize as number) : undefined,
+                      margin:
+                        logoMargin !== "" ? (logoMargin as number) : undefined,
                     }
                   : undefined
               }
@@ -246,7 +235,12 @@ export default function Playground() {
           <Field label="corner.square.style">
             <Tabs
               options={
-                ["square", "rounded", "extra-rounded"] as CornerSquareStyle[]
+                [
+                  "square",
+                  "rounded",
+                  "extra-rounded",
+                  "circle",
+                ] as CornerSquareStyle[]
               }
               value={sqStyle}
               onChange={setSqStyle}
@@ -284,41 +278,41 @@ export default function Playground() {
             />
           </Field>
           <Field label="version — 1–40, blank = auto">
-            <input
-              type="number"
-              className={s.input}
-              value={qrVersion}
-              onChange={(e) =>
-                setQrVersion(
-                  e.target.value === ""
-                    ? ""
-                    : Math.min(40, Math.max(1, Number(e.target.value))),
-                )
-              }
-              min={1}
-              max={40}
-              placeholder="auto"
-            />
+            <div className={s.colorRow}>
+              <input
+                type="number"
+                className={s.input}
+                value={qrVersion}
+                onChange={(e) =>
+                  setQrVersion(
+                    e.target.value === ""
+                      ? ""
+                      : Math.min(40, Math.max(1, Number(e.target.value))),
+                  )
+                }
+                min={1}
+                max={40}
+                placeholder="auto"
+              />
+              {qrVersion !== "" && (
+                <button
+                  type="button"
+                  className={s.clearBtn}
+                  onClick={() => setQrVersion("")}
+                  title="Reset to auto"
+                  aria-label="Reset to auto"
+                >
+                  <CrossIcon />
+                </button>
+              )}
+            </div>
           </Field>
         </Group>
 
         <Group title="Dimensions">
           <div className={s.row3}>
-            <Field label="width">
-              <NumberInput
-                value={width}
-                onChange={setWidth}
-                min={64}
-                max={300}
-              />
-            </Field>
-            <Field label="height">
-              <NumberInput
-                value={height}
-                onChange={setHeight}
-                min={64}
-                max={300}
-              />
+            <Field label="size">
+              <NumberInput value={size} onChange={setSize} min={64} max={300} />
             </Field>
             <Field label="margin">
               <NumberInput
@@ -333,49 +327,63 @@ export default function Playground() {
 
         <Group title="Logo">
           <Field label="logo.src">
-            <input
-              className={s.input}
-              value={logoUrl}
-              onChange={(e) => setLogoUrl(e.target.value)}
-              placeholder="https://example.com/logo.png"
-            />
+            <div className={s.colorRow}>
+              <input
+                className={s.input}
+                value={logoUrl}
+                onChange={(e) => setLogoUrl(e.target.value)}
+                placeholder="https://example.com/logo.png"
+              />
+              {logoUrl && (
+                <button
+                  type="button"
+                  className={s.clearBtn}
+                  onClick={() => setLogoUrl("")}
+                  title="Clear"
+                  aria-label="Clear"
+                >
+                  <CrossIcon />
+                </button>
+              )}
+            </div>
           </Field>
-          <div className={s.row3}>
-            <Field label="width">
-              <input
-                type="number"
-                className={s.input}
-                value={logoWidth}
-                onChange={(e) =>
-                  setLogoWidth(
-                    e.target.value === "" ? "" : Number(e.target.value),
-                  )
-                }
-                min={0}
-                placeholder="auto"
-              />
+          <div className={s.row2}>
+            <Field label="size (0-1)">
+              <div className={s.colorRow}>
+                <input
+                  type="number"
+                  className={s.input}
+                  value={logoSize}
+                  onChange={(e) =>
+                    setLogoSize(
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                  min={0}
+                  max={1}
+                  step={0.05}
+                  placeholder="auto"
+                />
+                {logoSize !== "" && (
+                  <button
+                    type="button"
+                    className={s.clearBtn}
+                    onClick={() => setLogoSize("")}
+                    title="Reset to auto"
+                    aria-label="Reset to auto"
+                  >
+                    <CrossIcon />
+                  </button>
+                )}
+              </div>
             </Field>
-            <Field label="height">
+            <Field label="margin">
               <input
                 type="number"
                 className={s.input}
-                value={logoHeight}
+                value={logoMargin}
                 onChange={(e) =>
-                  setLogoHeight(
-                    e.target.value === "" ? "" : Number(e.target.value),
-                  )
-                }
-                min={0}
-                placeholder="auto"
-              />
-            </Field>
-            <Field label="padding">
-              <input
-                type="number"
-                className={s.input}
-                value={logoPadding}
-                onChange={(e) =>
-                  setLogoPadding(
+                  setLogoMargin(
                     e.target.value === "" ? "" : Number(e.target.value),
                   )
                 }

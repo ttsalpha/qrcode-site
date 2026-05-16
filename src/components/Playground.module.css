@@ -178,6 +178,12 @@
   gap: 8px;
 }
 
+.row2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
 /* ─── Input ───────────────────────────────────────────────────────────────── */
 
 .input {

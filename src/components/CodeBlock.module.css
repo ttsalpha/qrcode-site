@@ -28,6 +28,8 @@
   overflow-x: auto;
   flex: 1;
   min-width: 0; /* allow overflow-x: auto to work as scroll container */
+  display: flex;
+  flex-direction: column;
 }
 
 .pre :global(.shiki) {
@@ -36,10 +38,15 @@
   font-size: 13px;
   line-height: 1.7;
   font-family: var(--font-geist-mono), "Menlo", "Consolas", monospace;
+  /* Prevent mobile browsers from inflating font size on wide code blocks */
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
   /* Ensure background covers full horizontal scroll area */
   min-width: 100%;
   width: max-content;
   box-sizing: border-box;
+  /* Fill full height so bg doesn't leave a gap in short code blocks */
+  flex: 1;
 }
 
 /* Each span resolves var() against its own inline --shiki-* vars */
