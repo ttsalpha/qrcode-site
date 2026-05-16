@@ -4,8 +4,9 @@ import type {
   CornerDotStyle,
   CornerSquareStyle,
   DotStyle,
+  QRCodeProps,
 } from "@ttsalpha/qrcode";
-import { QRCode } from "@ttsalpha/qrcode";
+import { QRCode, toDataURL, toSVGString } from "@ttsalpha/qrcode";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import { IoCopyOutline, IoDownloadOutline } from "react-icons/io5";
@@ -60,66 +61,47 @@ export default function Playground() {
   const [logoSize, setLogoSize] = useState<number | "">("");
   const [logoMargin, setLogoMargin] = useState<number | "">("");
 
+  const [containerSize, setContainerSize] = useState(256);
   const [tokens, setTokens] = useState<ThemedToken[][] | null>(null);
   const [preStyle, setPreStyle] = useState<CSSProperties>({});
 
   const previewRef = useRef<HTMLDivElement>(null);
 
-  function getExportSvgString(): string | null {
-    const svg = previewRef.current?.querySelector("svg");
-    if (!svg) return null;
-    const clone = svg.cloneNode(true) as SVGSVGElement;
-    if (!clone.getAttribute("viewBox")) {
-      const w = clone.getAttribute("width") ?? previewSize;
-      const h = clone.getAttribute("height") ?? previewSize;
-      clone.setAttribute("viewBox", `0 0 ${w} ${h}`);
-    }
-    clone.setAttribute("width", String(size));
-    clone.setAttribute("height", String(size));
-    return new XMLSerializer().serializeToString(clone);
-  }
-
-  async function svgToBlob(
-    svgStr: string,
-    fmt: "png" | "jpg",
-  ): Promise<Blob | null> {
-    return new Promise((resolve) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return resolve(null);
-      const img = new Image();
-      img.onload = () => {
-        if (fmt === "jpg") {
-          ctx.fillStyle = bgColor === "transparent" ? "#ffffff" : bgColor;
-          ctx.fillRect(0, 0, size, size);
-        }
-        ctx.drawImage(img, 0, 0, size, size);
-        URL.revokeObjectURL(img.src);
-        canvas.toBlob(
-          resolve,
-          fmt === "jpg" ? "image/jpeg" : "image/png",
-          0.95,
-        );
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(img.src);
-        resolve(null);
-      };
-      const blob = new Blob([svgStr], { type: "image/svg+xml" });
-      img.src = URL.createObjectURL(blob);
-    });
+  function buildProps(): QRCodeProps {
+    return {
+      value: value || "https://example.com",
+      size,
+      margin,
+      dotStyle,
+      dotColor,
+      backgroundColor: bgColor,
+      corner: {
+        square: { style: sqStyle, color: sqColor || undefined },
+        dot: { style: dotSt, color: dotDotColor || undefined },
+      },
+      qr: {
+        errorCorrectionLevel: ecl,
+        version: qrVersion !== "" ? (qrVersion as number) : undefined,
+      },
+      logo: logoUrl
+        ? {
+            src: logoUrl,
+            size: logoSize !== "" ? (logoSize as number) : undefined,
+            margin: logoMargin !== "" ? (logoMargin as number) : undefined,
+          }
+        : undefined,
+    };
   }
 
   async function handleCopy(fmt: ExportFormat) {
-    const svgStr = getExportSvgString();
-    if (!svgStr) return;
+    const props = buildProps();
     if (fmt === "svg") {
-      await navigator.clipboard.writeText(svgStr);
+      await navigator.clipboard.writeText(toSVGString(props));
     } else {
-      const blob = await svgToBlob(svgStr, fmt);
-      if (!blob) return;
+      const dataUrl = await toDataURL(props, {
+        format: fmt === "jpg" ? "jpeg" : "png",
+      });
+      const blob = await fetch(dataUrl).then((r) => r.blob());
       await navigator.clipboard.write([
         new ClipboardItem({ [blob.type]: blob }),
       ]);
@@ -127,26 +109,25 @@ export default function Playground() {
   }
 
   async function handleDownload(fmt: ExportFormat) {
-    const svgStr = getExportSvgString();
-    if (!svgStr) return;
-    let blob: Blob | null;
-    let filename: string;
+    const props = buildProps();
     if (fmt === "svg") {
-      blob = new Blob([svgStr], { type: "image/svg+xml" });
-      filename = "qrcode.svg";
+      const blob = new Blob([toSVGString(props)], { type: "image/svg+xml" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "qrcode.svg";
+      a.click();
+      URL.revokeObjectURL(url);
     } else {
-      blob = await svgToBlob(svgStr, fmt);
-      filename = `qrcode.${fmt}`;
+      const dataUrl = await toDataURL(props, {
+        format: fmt === "jpg" ? "jpeg" : "png",
+      });
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `qrcode.${fmt}`;
+      a.click();
     }
-    if (!blob) return;
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
   }
-  const [containerSize, setContainerSize] = useState(256);
   useEffect(() => {
     const el = previewRef.current;
     if (!el) return;
@@ -228,32 +209,7 @@ export default function Playground() {
       <div className={s.left}>
         <div className={s.preview} ref={previewRef}>
           <QRErrorBoundary resetKey={snippet}>
-            <QRCode
-              value={value || "https://example.com"}
-              size={previewSize}
-              margin={margin}
-              dotStyle={dotStyle}
-              dotColor={dotColor}
-              backgroundColor={bgColor}
-              corner={{
-                square: { style: sqStyle, color: sqColor || undefined },
-                dot: { style: dotSt, color: dotDotColor || undefined },
-              }}
-              qr={{
-                errorCorrectionLevel: ecl,
-                version: qrVersion !== "" ? (qrVersion as number) : undefined,
-              }}
-              logo={
-                logoUrl
-                  ? {
-                      src: logoUrl,
-                      size: logoSize !== "" ? (logoSize as number) : undefined,
-                      margin:
-                        logoMargin !== "" ? (logoMargin as number) : undefined,
-                    }
-                  : undefined
-              }
-            />
+            <QRCode {...buildProps()} size={previewSize} />
           </QRErrorBoundary>
           <div className={s.previewActions}>
             <SplitButton
