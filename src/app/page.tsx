@@ -53,30 +53,48 @@ export default function Page() {
         <section className={s.hero}>
           <div className={s.wrap}>
             <div className={s.heroBadges}>
-              {/* biome-ignore lint/performance/noImgElement: external badge SVG, next/image doesn't support shields.io */}
-              <img
-                src="https://img.shields.io/npm/v/@ttsalpha/qrcode"
-                alt="npm version"
-                height={20}
-                width={90}
-                style={{ width: "auto" }}
-              />
-              {/* biome-ignore lint/performance/noImgElement: external badge SVG, next/image doesn't support shields.io */}
-              <img
-                src="https://img.shields.io/npm/l/@ttsalpha/qrcode"
-                alt="license"
-                height={20}
-                width={80}
-                style={{ width: "auto" }}
-              />
-              {/* biome-ignore lint/performance/noImgElement: external badge SVG, next/image doesn't support shields.io */}
-              <img
-                src="https://img.shields.io/github/actions/workflow/status/ttsalpha/qrcode/ci.yml?label=CI"
-                alt="CI status"
-                height={20}
-                width={80}
-                style={{ width: "auto" }}
-              />
+              <a
+                href="https://www.npmjs.com/package/@ttsalpha/qrcode"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {/* biome-ignore lint/performance/noImgElement: external badge SVG, next/image doesn't support shields.io */}
+                <img
+                  src="https://img.shields.io/npm/v/@ttsalpha/qrcode"
+                  alt="npm version"
+                  height={20}
+                  width={90}
+                  style={{ width: "auto" }}
+                />
+              </a>
+              <a
+                href="https://github.com/ttsalpha/qrcode/blob/main/LICENSE"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {/* biome-ignore lint/performance/noImgElement: external badge SVG, next/image doesn't support shields.io */}
+                <img
+                  src="https://img.shields.io/npm/l/@ttsalpha/qrcode"
+                  alt="license"
+                  height={20}
+                  width={80}
+                  style={{ width: "auto" }}
+                />
+              </a>
+              <a
+                href="https://github.com/ttsalpha/qrcode/actions/workflows/ci.yml"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {/* biome-ignore lint/performance/noImgElement: external badge SVG, next/image doesn't support shields.io */}
+                <img
+                  src="https://img.shields.io/github/actions/workflow/status/ttsalpha/qrcode/ci.yml?label=CI"
+                  alt="CI status"
+                  height={20}
+                  width={80}
+                  style={{ width: "auto" }}
+                />
+              </a>
             </div>
 
             <h1 className={s.heroTitle}>
