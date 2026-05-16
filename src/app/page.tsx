@@ -124,8 +124,20 @@ export default function Page() {
           </div>
         </section>
 
+        {/* Playground */}
+        <section className={`${s.section} ${s.sectionAlt}`} id="playground">
+          <div className={s.wrap}>
+            <SectionHead
+              tag="Playground"
+              title="Try it live"
+              desc="Adjust every prop and see the result instantly."
+            />
+            <Playground />
+          </div>
+        </section>
+
         {/* Features */}
-        <section className={`${s.section} ${s.sectionAlt}`} id="features">
+        <section className={s.section} id="features">
           <div className={s.wrap}>
             <SectionHead tag="Features" title="What's included" />
             <div className={s.featureGrid}>
@@ -175,18 +187,6 @@ export default function Page() {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* Playground */}
-        <section className={s.section} id="playground">
-          <div className={s.wrap}>
-            <SectionHead
-              tag="Playground"
-              title="Try it live"
-              desc="Adjust every prop and see the result instantly."
-            />
-            <Playground />
           </div>
         </section>
 
