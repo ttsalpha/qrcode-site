@@ -18,11 +18,13 @@
 
 .preview {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 8px;
   background: #f5f5f5;
   border-radius: 12px;
-  padding: 28px;
+  padding: 20px;
   border: 1px solid var(--border);
   aspect-ratio: 1;
   box-sizing: border-box;
@@ -90,6 +92,112 @@
 
 :global([data-theme="light"]) .snippet span {
   color: var(--shiki-light);
+}
+
+/* ─── Preview action buttons ──────────────────────────────────────────────── */
+
+.previewActions {
+  display: flex;
+  gap: 8px;
+}
+
+.splitBtnWrap {
+  position: relative;
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.12s;
+}
+
+.splitBtnWrap:has(.splitBtnMain:hover),
+.splitBtnWrap:has(.splitBtnArrow:hover),
+.splitBtnWrap:has(.splitBtnArrowOpen) {
+  border-color: var(--accent);
+}
+
+.splitBtnMain {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: none;
+  border-right: 1px solid var(--border);
+  border-radius: 7px 0 0 7px;
+  background: var(--surface-2);
+  color: var(--fg-2);
+  font-size: 12.5px;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    color 0.12s;
+  white-space: nowrap;
+}
+
+.splitBtnMain:hover {
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.splitBtnArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  border: none;
+  border-radius: 0 7px 7px 0;
+  background: var(--surface-2);
+  color: var(--fg-3);
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    color 0.12s;
+}
+
+.splitBtnArrow:hover {
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.splitBtnArrowOpen {
+  color: var(--fg);
+  background: var(--surface);
+}
+
+.splitBtnArrowOpen svg {
+  transform: rotate(180deg);
+}
+
+.splitBtnDropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 50;
+  min-width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.splitBtnOption {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--fg);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s;
+}
+
+.splitBtnOption:hover {
+  background: var(--surface);
 }
 
 /* ─── Right: controls ─────────────────────────────────────────────────────── */

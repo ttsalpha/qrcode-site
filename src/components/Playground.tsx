@@ -8,9 +8,12 @@ import type {
 import { QRCode } from "@ttsalpha/qrcode";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
+import { IoCopyOutline, IoDownloadOutline } from "react-icons/io5";
 import { createHighlighter, type Highlighter, type ThemedToken } from "shiki";
 import CopyButton from "./CopyButton";
 import s from "./Playground.module.css";
+
+type ExportFormat = "svg" | "png" | "jpg";
 
 let highlighterPromise: Promise<Highlighter> | null = null;
 function getHighlighter() {
@@ -61,6 +64,88 @@ export default function Playground() {
   const [preStyle, setPreStyle] = useState<CSSProperties>({});
 
   const previewRef = useRef<HTMLDivElement>(null);
+
+  function getExportSvgString(): string | null {
+    const svg = previewRef.current?.querySelector("svg");
+    if (!svg) return null;
+    const clone = svg.cloneNode(true) as SVGSVGElement;
+    if (!clone.getAttribute("viewBox")) {
+      const w = clone.getAttribute("width") ?? previewSize;
+      const h = clone.getAttribute("height") ?? previewSize;
+      clone.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    }
+    clone.setAttribute("width", String(size));
+    clone.setAttribute("height", String(size));
+    return new XMLSerializer().serializeToString(clone);
+  }
+
+  async function svgToBlob(
+    svgStr: string,
+    fmt: "png" | "jpg",
+  ): Promise<Blob | null> {
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return resolve(null);
+      const img = new Image();
+      img.onload = () => {
+        if (fmt === "jpg") {
+          ctx.fillStyle = bgColor === "transparent" ? "#ffffff" : bgColor;
+          ctx.fillRect(0, 0, size, size);
+        }
+        ctx.drawImage(img, 0, 0, size, size);
+        URL.revokeObjectURL(img.src);
+        canvas.toBlob(
+          resolve,
+          fmt === "jpg" ? "image/jpeg" : "image/png",
+          0.95,
+        );
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(img.src);
+        resolve(null);
+      };
+      const blob = new Blob([svgStr], { type: "image/svg+xml" });
+      img.src = URL.createObjectURL(blob);
+    });
+  }
+
+  async function handleCopy(fmt: ExportFormat) {
+    const svgStr = getExportSvgString();
+    if (!svgStr) return;
+    if (fmt === "svg") {
+      await navigator.clipboard.writeText(svgStr);
+    } else {
+      const blob = await svgToBlob(svgStr, fmt);
+      if (!blob) return;
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob }),
+      ]);
+    }
+  }
+
+  async function handleDownload(fmt: ExportFormat) {
+    const svgStr = getExportSvgString();
+    if (!svgStr) return;
+    let blob: Blob | null;
+    let filename: string;
+    if (fmt === "svg") {
+      blob = new Blob([svgStr], { type: "image/svg+xml" });
+      filename = "qrcode.svg";
+    } else {
+      blob = await svgToBlob(svgStr, fmt);
+      filename = `qrcode.${fmt}`;
+    }
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
   const [containerSize, setContainerSize] = useState(256);
   useEffect(() => {
     const el = previewRef.current;
@@ -170,6 +255,20 @@ export default function Playground() {
               }
             />
           </QRErrorBoundary>
+          <div className={s.previewActions}>
+            <SplitButton
+              label="Copy"
+              icon={<IoCopyOutline size={14} />}
+              onMain={() => handleCopy("svg")}
+              onOption={handleCopy}
+            />
+            <SplitButton
+              label="Download"
+              icon={<IoDownloadOutline size={14} />}
+              onMain={() => handleDownload("svg")}
+              onOption={handleDownload}
+            />
+          </div>
         </div>
         <div className={s.snippetWrap}>
           <div className={s.snippetToolbar}>
@@ -686,6 +785,79 @@ function NullableColorInput({
       >
         <CrossIcon />
       </button>
+    </div>
+  );
+}
+
+function SplitButton({
+  label,
+  icon,
+  onMain,
+  onOption,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  onMain: () => Promise<void>;
+  onOption: (fmt: ExportFormat) => Promise<void>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [done, setDone] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  async function run(action: () => Promise<void>) {
+    await action();
+    if (label === "Copy") {
+      setDone(true);
+      setTimeout(() => setDone(false), 1500);
+    }
+  }
+
+  return (
+    <div className={s.splitBtnWrap} ref={ref}>
+      <button
+        type="button"
+        className={s.splitBtnMain}
+        onClick={() => run(onMain)}
+      >
+        {icon}
+        <span>{done ? "Copied!" : label}</span>
+      </button>
+      <button
+        type="button"
+        className={`${s.splitBtnArrow} ${open ? s.splitBtnArrowOpen : ""}`}
+        onClick={() => setOpen((o) => !o)}
+        aria-label={`${label} options`}
+      >
+        <ChevronIcon />
+      </button>
+      {open && (
+        <div className={s.splitBtnDropdown}>
+          {(["svg", "png", "jpg"] as ExportFormat[]).map((fmt) => (
+            <button
+              key={fmt}
+              type="button"
+              className={s.splitBtnOption}
+              onClick={() => {
+                setOpen(false);
+                run(() => onOption(fmt));
+              }}
+            >
+              {label} as {fmt.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
