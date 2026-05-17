@@ -424,7 +424,7 @@
   }
 
   .heroPreviews {
-    gap: 28px;
+    gap: 20px;
     justify-content: center;
   }
 
@@ -433,8 +433,8 @@
   }
 
   .heroPreviewItem svg {
-    width: 128px;
-    height: 128px;
+    width: 144px;
+    height: 144px;
   }
 
   /* Feature cards: icon + title on one line */

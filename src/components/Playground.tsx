@@ -393,14 +393,14 @@ export default function Playground() {
         </Group>
 
         <Group title="QR Settings">
-          <Field label="errorCorrectionLevel">
+          <Field label="qr.errorCorrectionLevel">
             <Tabs
               options={["L", "M", "Q", "H"] as ECL[]}
               value={ecl}
               onChange={setEcl}
             />
           </Field>
-          <Field label="version — 1–40, blank = auto">
+          <Field label="qr.version (1–40, blank = auto)">
             <div className={s.colorRow}>
               <input
                 type="number"
@@ -504,7 +504,7 @@ export default function Playground() {
             </div>
           </Field>
           <div className={s.row2}>
-            <Field label="size">
+            <Field label="logo.size">
               <div className={s.colorRow}>
                 <input
                   type="number"
@@ -533,7 +533,7 @@ export default function Playground() {
                 )}
               </div>
             </Field>
-            <Field label="margin">
+            <Field label="logo.margin">
               <div className={s.colorRow}>
                 <input
                   type="number"
@@ -561,7 +561,7 @@ export default function Playground() {
               </div>
             </Field>
           </div>
-          <Field label="hideDots">
+          <Field label="logo.hideDots">
             <label className={s.toggle}>
               <input
                 type="checkbox"
