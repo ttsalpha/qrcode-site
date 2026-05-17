@@ -10,6 +10,9 @@ import { QRCode, toDataURL, toSVGString } from "@ttsalpha/qrcode";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  IoAdd,
+  IoChevronDown,
+  IoClose,
   IoCloudUploadOutline,
   IoCopyOutline,
   IoDownloadOutline,
@@ -334,7 +337,7 @@ export default function Playground() {
                   title="Clear"
                   aria-label="Clear"
                 >
-                  <CrossIcon />
+                  <IoClose />
                 </button>
               )}
             </div>
@@ -441,7 +444,7 @@ export default function Playground() {
                   title="Reset to auto"
                   aria-label="Reset to auto"
                 >
-                  <CrossIcon />
+                  <IoClose />
                 </button>
               )}
             </div>
@@ -514,7 +517,7 @@ export default function Playground() {
                   title="Clear"
                   aria-label="Clear"
                 >
-                  <CrossIcon />
+                  <IoClose />
                 </button>
               )}
             </div>
@@ -544,7 +547,7 @@ export default function Playground() {
                     title="Reset to auto"
                     aria-label="Reset to auto"
                   >
-                    <CrossIcon />
+                    <IoClose />
                   </button>
                 )}
               </div>
@@ -571,7 +574,7 @@ export default function Playground() {
                     title="Reset to auto"
                     aria-label="Reset to auto"
                   >
-                    <CrossIcon />
+                    <IoClose />
                   </button>
                 )}
               </div>
@@ -617,7 +620,9 @@ function Group({
         aria-expanded={open}
       >
         <span className={s.groupTitle}>{title}</span>
-        <ChevronIcon className={`${s.chevron} ${open ? s.chevronOpen : ""}`} />
+        <IoChevronDown
+          className={`${s.chevron} ${open ? s.chevronOpen : ""}`}
+        />
       </button>
       {open && <div className={s.groupBody}>{children}</div>}
     </div>
@@ -745,7 +750,7 @@ function ColorInput({
           title="Reset to default"
           aria-label="Reset to default"
         >
-          <CrossIcon />
+          <IoClose />
         </button>
       </div>
     );
@@ -775,7 +780,7 @@ function ColorInput({
           title="Reset to default"
           aria-label="Reset to default"
         >
-          <CrossIcon />
+          <IoClose />
         </button>
       ) : (
         transparent && (
@@ -810,7 +815,7 @@ function NullableColorInput({
         className={s.addColorBtn}
         onClick={() => onChange(fallback)}
       >
-        <PlusIcon />
+        <IoAdd />
         set custom color
       </button>
     );
@@ -838,7 +843,7 @@ function NullableColorInput({
         title="Reset to default"
         aria-label="Reset to default"
       >
-        <CrossIcon />
+        <IoClose />
       </button>
     </div>
   );
@@ -894,7 +899,7 @@ function SplitButton({
         onClick={() => setOpen((o) => !o)}
         aria-label={`${label} options`}
       >
-        <ChevronIcon />
+        <IoChevronDown />
       </button>
       {open && (
         <div className={s.splitBtnDropdown}>
@@ -914,64 +919,5 @@ function SplitButton({
         </div>
       )}
     </div>
-  );
-}
-
-function ChevronIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M3 5l4 4 4-4"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function PlusIcon() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M6 2v8M2 6h8"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function CrossIcon() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M2 2l8 8M10 2l-8 8"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
   );
 }
