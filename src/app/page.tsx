@@ -401,14 +401,19 @@ export default function App() {
                 code={`interface LogoOptions {
   src?: string;        // https, relative path, blob:, or data:image/… URI
   element?: ReactNode; // takes priority over src when both provided
-  size?: number;       // fraction of QR size (0–1); default 0.2, clamped per ECL
+  size?: number;       // logo height as a fraction of QR size (0–1); default 0.2
   margin?: number;     // inset margin inside the cleared area; default 0
   hideDots?: boolean;  // clear dots behind logo area; default true
 }`}
               />
               <p className={s.note}>
-                Logo size is clamped per error-correction level to keep the QR
-                scannable: L→15%, M→22%, Q→32%, H→40% of <code>size</code>. Use{" "}
+                Aspect ratio is auto-detected (
+                <code>naturalWidth/naturalHeight</code> for <code>src</code>;{" "}
+                <code>getBoundingClientRect</code> for <code>element</code>).
+                Clamping is area-based: the masked width&nbsp;×&nbsp;height
+                stays within the EC recovery budget — square logos are unchanged
+                (L→15%, M→22%, Q→32%, H→40%), while landscape logos get a
+                reduced height so they never overflow the QR. Use{" "}
                 <code>errorCorrectionLevel: 'H'</code> for larger logos.
                 <br />
                 <code>hideDots</code> uses an SVG mask, so transparent

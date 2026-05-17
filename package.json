@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@next/third-parties": "16.2.6",
-    "@ttsalpha/qrcode": "2.1.0",
+    "@ttsalpha/qrcode": "2.2.0",
     "@vercel/analytics": "2.0.1",
     "next": "16.2.6",
     "react": "19.2.4",
