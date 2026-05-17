@@ -93,7 +93,10 @@ export default function Playground() {
 
   async function resolveLogoSrc(src: string): Promise<string> {
     if (!src || src.startsWith("data:") || src.startsWith("blob:")) return src;
-    const res = await fetch(src);
+    const fetchUrl = src.startsWith("http")
+      ? `/api/proxy-image?url=${encodeURIComponent(src)}`
+      : src;
+    const res = await fetch(fetchUrl);
     const blob = await res.blob();
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

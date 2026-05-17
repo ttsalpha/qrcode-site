@@ -114,7 +114,7 @@ export default function Page() {
             <div className={s.heroPreviews}>
               <div className={s.heroPreviewItem}>
                 <QRCode
-                  value="https://github.com/ttsalpha/qrcode"
+                  value="@ttsalpha/qrcode"
                   size={168}
                   style={{ borderRadius: 12, overflow: "hidden" }}
                 />
@@ -126,24 +126,32 @@ export default function Page() {
                 <QRCode
                   value="https://github.com/ttsalpha/qrcode"
                   size={168}
-                  dotStyle="circle"
+                  dotStyle="rounded"
                   corner={{
-                    square: { style: "circle" },
-                    dot: { style: "circle" },
+                    square: { style: "extra-rounded", color: "#14b8a6" },
+                    dot: { style: "rounded" },
+                  }}
+                  style={{ borderRadius: 12, overflow: "hidden" }}
+                />
+                <span className={s.heroPreviewLabel}>rounded</span>
+              </div>
+              <div className={s.heroPreviewItem}>
+                <QRCode
+                  value="@ttsalpha/qrcode"
+                  size={168}
+                  dotStyle="circle"
+                  qr={{ errorCorrectionLevel: "H" }}
+                  corner={{
+                    square: { style: "circle", color: "#fe4f45" },
+                    dot: { style: "circle", color: "#aa322c" },
+                  }}
+                  logo={{
+                    src: "https://cdn.ttsalpha.com/qrcode/snow.svg",
+                    size: 0.19,
                   }}
                   style={{ borderRadius: 12, overflow: "hidden" }}
                 />
                 <span className={s.heroPreviewLabel}>circle</span>
-              </div>
-              <div className={s.heroPreviewItem}>
-                <QRCode
-                  value="https://github.com/ttsalpha/qrcode"
-                  size={168}
-                  dotStyle="rounded"
-                  corner={{ square: { style: "extra-rounded" } }}
-                  style={{ borderRadius: 12, overflow: "hidden" }}
-                />
-                <span className={s.heroPreviewLabel}>rounded</span>
               </div>
             </div>
           </div>
