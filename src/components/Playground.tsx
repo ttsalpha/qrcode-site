@@ -65,6 +65,7 @@ export default function Playground() {
   const [logoFileName, setLogoFileName] = useState<string | null>(null);
   const [logoSize, setLogoSize] = useState<number | "">("");
   const [logoMargin, setLogoMargin] = useState<number | "">("");
+  const [logoHideDots, setLogoHideDots] = useState(true);
 
   const [containerSize, setContainerSize] = useState(256);
   const [tokens, setTokens] = useState<ThemedToken[][] | null>(null);
@@ -123,6 +124,7 @@ export default function Playground() {
             src: logoUrl,
             size: logoSize !== "" ? (logoSize as number) : undefined,
             margin: logoMargin !== "" ? (logoMargin as number) : undefined,
+            hideDots: logoHideDots,
           }
         : undefined,
     };
@@ -219,6 +221,7 @@ export default function Playground() {
     const logoParts = [`src: ${logoSrcSnippet}`];
     if (logoSize !== "") logoParts.push(`size: ${logoSize}`);
     if (logoMargin !== "") logoParts.push(`margin: ${logoMargin}`);
+    if (!logoHideDots) logoParts.push(`hideDots: false`);
     snippetParts.push(`  logo={{\n    ${logoParts.join(",\n    ")},\n  }}`);
   }
 
@@ -498,7 +501,7 @@ export default function Playground() {
             </div>
           </Field>
           <div className={s.row2}>
-            <Field label="size (0-1)">
+            <Field label="size">
               <div className={s.colorRow}>
                 <input
                   type="number"
@@ -511,7 +514,7 @@ export default function Playground() {
                   }
                   min={0}
                   max={1}
-                  step={0.05}
+                  step={0.01}
                   placeholder="auto"
                 />
                 {logoSize !== "" && (
@@ -555,6 +558,19 @@ export default function Playground() {
               </div>
             </Field>
           </div>
+          <Field label="hideDots">
+            <label className={s.toggle}>
+              <input
+                type="checkbox"
+                checked={logoHideDots}
+                onChange={(e) => setLogoHideDots(e.target.checked)}
+              />
+              <span className={s.toggleTrack}>
+                <span className={s.toggleThumb} />
+              </span>
+              <span className={s.toggleLabel}>clear dots behind logo</span>
+            </label>
+          </Field>
         </Group>
       </div>
     </div>

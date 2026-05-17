@@ -514,6 +514,58 @@
   flex: 1;
 }
 
+/* ─── Toggle ─────────────────────────────────────────────────────────────── */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  position: relative;
+  width: 28px;
+  height: 16px;
+  background: var(--border);
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.toggle input:checked ~ .toggleTrack {
+  background: var(--accent);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+
+.toggle input:checked ~ .toggleTrack .toggleThumb {
+  transform: translateX(12px);
+}
+
+.toggleLabel {
+  font-size: 12px;
+  font-family: var(--font-geist-mono), monospace;
+  color: var(--fg-2);
+}
+
 /* ─── Logo file upload ────────────────────────────────────────────────────── */
 
 .fileInput {
