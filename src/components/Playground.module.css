@@ -514,6 +514,23 @@
   flex: 1;
 }
 
+/* ─── Logo file upload ────────────────────────────────────────────────────── */
+
+.fileInput {
+  display: none;
+}
+
+.logoFileName {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--fg-2);
+  font-style: italic;
+  cursor: default;
+  user-select: none;
+}
+
 /* ─── Responsive ──────────────────────────────────────────────────────────── */
 
 /* Tablet (≤ 768px): single column, remove sticky preview */

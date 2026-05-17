@@ -9,7 +9,11 @@ import type {
 import { QRCode, toDataURL, toSVGString } from "@ttsalpha/qrcode";
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
-import { IoCopyOutline, IoDownloadOutline } from "react-icons/io5";
+import {
+  IoCloudUploadOutline,
+  IoCopyOutline,
+  IoDownloadOutline,
+} from "react-icons/io5";
 import { createHighlighter, type Highlighter, type ThemedToken } from "shiki";
 import CopyButton from "./CopyButton";
 import s from "./Playground.module.css";
@@ -58,6 +62,7 @@ export default function Playground() {
 
   // Logo
   const [logoUrl, setLogoUrl] = useState("");
+  const [logoFileName, setLogoFileName] = useState<string | null>(null);
   const [logoSize, setLogoSize] = useState<number | "">("");
   const [logoMargin, setLogoMargin] = useState<number | "">("");
 
@@ -66,6 +71,36 @@ export default function Playground() {
   const [preStyle, setPreStyle] = useState<CSSProperties>({});
 
   const previewRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleLogoFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setLogoUrl(ev.target?.result as string);
+      setLogoFileName(file.name);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  }
+
+  function clearLogoUrl() {
+    setLogoUrl("");
+    setLogoFileName(null);
+  }
+
+  async function resolveLogoSrc(src: string): Promise<string> {
+    if (!src || src.startsWith("data:") || src.startsWith("blob:")) return src;
+    const res = await fetch(src);
+    const blob = await res.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
 
   function buildProps(): QRCodeProps {
     return {
@@ -93,8 +128,15 @@ export default function Playground() {
     };
   }
 
-  async function handleCopy(fmt: ExportFormat) {
+  async function buildExportProps(): Promise<QRCodeProps> {
     const props = buildProps();
+    if (!props.logo?.src) return props;
+    const resolvedSrc = await resolveLogoSrc(props.logo.src);
+    return { ...props, logo: { ...props.logo, src: resolvedSrc } };
+  }
+
+  async function handleCopy(fmt: ExportFormat) {
+    const props = await buildExportProps();
     if (fmt === "svg") {
       await navigator.clipboard.writeText(toSVGString(props));
     } else {
@@ -109,7 +151,7 @@ export default function Playground() {
   }
 
   async function handleDownload(fmt: ExportFormat) {
-    const props = buildProps();
+    const props = await buildExportProps();
     if (fmt === "svg") {
       const blob = new Blob([toSVGString(props)], { type: "image/svg+xml" });
       const url = URL.createObjectURL(blob);
@@ -171,7 +213,10 @@ export default function Playground() {
   if (qrParts.length) snippetParts.push(`  qr={{ ${qrParts.join(", ")} }}`);
 
   if (logoUrl) {
-    const logoParts = [`src: "${logoUrl}"`];
+    const logoSrcSnippet = logoFileName
+      ? `/* ${logoFileName} — replace with a URL */`
+      : `"${logoUrl}"`;
+    const logoParts = [`src: ${logoSrcSnippet}`];
     if (logoSize !== "") logoParts.push(`size: ${logoSize}`);
     if (logoMargin !== "") logoParts.push(`margin: ${logoMargin}`);
     snippetParts.push(`  logo={{\n    ${logoParts.join(",\n    ")},\n  }}`);
@@ -405,17 +450,45 @@ export default function Playground() {
         <Group title="Logo">
           <Field label="logo.src">
             <div className={s.colorRow}>
+              {logoFileName ? (
+                <span
+                  className={`${s.input} ${s.logoFileName}`}
+                  title={logoFileName}
+                >
+                  {logoFileName}
+                </span>
+              ) : (
+                <input
+                  className={s.input}
+                  value={logoUrl}
+                  onChange={(e) => {
+                    setLogoUrl(e.target.value);
+                    setLogoFileName(null);
+                  }}
+                  placeholder="https://example.com/logo.png"
+                />
+              )}
               <input
-                className={s.input}
-                value={logoUrl}
-                onChange={(e) => setLogoUrl(e.target.value)}
-                placeholder="https://example.com/logo.png"
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className={s.fileInput}
+                onChange={handleLogoFileUpload}
               />
+              <button
+                type="button"
+                className={s.clearBtn}
+                onClick={() => fileInputRef.current?.click()}
+                title="Upload local image"
+                aria-label="Upload local image"
+              >
+                <IoCloudUploadOutline size={12} />
+              </button>
               {logoUrl && (
                 <button
                   type="button"
                   className={s.clearBtn}
-                  onClick={() => setLogoUrl("")}
+                  onClick={clearLogoUrl}
                   title="Clear"
                   aria-label="Clear"
                 >
