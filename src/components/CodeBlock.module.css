@@ -25,28 +25,29 @@
 }
 
 .pre {
-  overflow-x: auto;
   flex: 1;
-  min-width: 0; /* allow overflow-x: auto to work as scroll container */
+  min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
 .pre :global(.shiki) {
   background: var(--surface);
-  padding: 18px 20px;
+  /* padding-right moved to code below to survive Webkit scroll truncation */
+  padding: 18px 0 18px 20px;
   font-size: 13px;
   line-height: 1.7;
   font-family: var(--font-geist-mono), "Menlo", "Consolas", monospace;
-  /* Prevent browser from auto-scaling text in code blocks */
-  -webkit-text-size-adjust: none;
-  text-size-adjust: none;
-  /* Ensure background covers full horizontal scroll area */
-  min-width: 100%;
-  width: max-content;
+  /* Scroll lives on <pre> so iOS sees column-width = 100% container, not max-content */
+  overflow-x: auto;
   box-sizing: border-box;
-  /* Fill full height so bg doesn't leave a gap in short code blocks */
   flex: 1;
+}
+
+/* padding-right as inline content so Webkit includes it in scrollable area */
+.pre :global(.shiki code) {
+  padding-right: 20px;
+  display: block;
 }
 
 /* Each span resolves var() against its own inline --shiki-* vars */
