@@ -347,7 +347,7 @@ export default function Playground() {
         <Group title="Appearance" defaultOpen>
           <Field label="dotStyle">
             <Tabs
-              options={["square", "circle", "rounded"] as DotStyle[]}
+              options={["square", "rounded", "circle"] as DotStyle[]}
               value={dotStyle}
               onChange={setDotStyle}
             />

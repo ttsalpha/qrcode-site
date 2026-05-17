@@ -38,6 +38,9 @@
   font-size: 13px;
   line-height: 1.7;
   font-family: var(--font-geist-mono), "Menlo", "Consolas", monospace;
+  /* Prevent browser from auto-scaling text in code blocks */
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
   /* Ensure background covers full horizontal scroll area */
   min-width: 100%;
   width: max-content;
