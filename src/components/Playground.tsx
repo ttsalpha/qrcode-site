@@ -8,7 +8,7 @@ import type {
 } from "@ttsalpha/qrcode";
 import { QRCode, toDataURL, toSVGString } from "@ttsalpha/qrcode";
 import type { CSSProperties } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IoCloudUploadOutline,
   IoCopyOutline,
@@ -187,6 +187,20 @@ export default function Playground() {
   const previewScale = Math.min(1, containerSize / size);
   const previewSize = Math.round(size * previewScale);
 
+  // Pre-validate when version is manually set — prevents throwing inside render
+  const qrError = useMemo<string | null>(() => {
+    if (qrVersion === "") return null;
+    try {
+      toSVGString({
+        value: value || "https://example.com",
+        qr: { errorCorrectionLevel: ecl, version: qrVersion as number },
+      });
+      return null;
+    } catch (e) {
+      return e instanceof Error ? e.message : String(e);
+    }
+  }, [value, ecl, qrVersion]);
+
   // Build snippet — only non-default values
   const snippetParts: string[] = [`  value="${value}"`];
   if (size !== 256) snippetParts.push(`  size={${size}}`);
@@ -259,9 +273,11 @@ export default function Playground() {
     <div className={s.root}>
       <div className={s.left}>
         <div className={s.preview} ref={previewRef}>
-          <QRErrorBoundary resetKey={snippet}>
+          {qrError ? (
+            <span className={s.qrError}>{qrError}</span>
+          ) : (
             <QRCode {...buildProps()} size={previewSize} />
-          </QRErrorBoundary>
+          )}
           <div className={s.previewActions}>
             <SplitButton
               label="Copy"
@@ -581,32 +597,6 @@ export default function Playground() {
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-
-import { Component, type ReactNode } from "react";
-
-class QRErrorBoundary extends Component<
-  { children: ReactNode; resetKey: unknown },
-  { error: string | null }
-> {
-  state = { error: null };
-
-  static getDerivedStateFromError(err: unknown) {
-    return { error: err instanceof Error ? err.message : String(err) };
-  }
-
-  componentDidUpdate(prev: { resetKey: unknown }) {
-    if (prev.resetKey !== this.props.resetKey && this.state.error) {
-      this.setState({ error: null });
-    }
-  }
-
-  render() {
-    if (this.state.error) {
-      return <span className={s.qrError}>{this.state.error}</span>;
-    }
-    return this.props.children;
-  }
-}
 
 function Group({
   title,
