@@ -108,7 +108,10 @@ export default function Page() {
 
             <div className={s.heroInstall}>
               <code>pnpm add @ttsalpha/qrcode</code>
-              <CopyButton text="pnpm add @ttsalpha/qrcode" />
+              <CopyButton
+                text="pnpm add @ttsalpha/qrcode"
+                eventName="install_copy"
+              />
             </div>
 
             <div className={s.heroPreviews}>

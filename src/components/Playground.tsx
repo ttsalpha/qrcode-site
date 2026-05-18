@@ -7,6 +7,7 @@ import type {
   QRCodeProps,
 } from "@ttsalpha/qrcode";
 import { QRCode, toDataURL, toSVGString } from "@ttsalpha/qrcode";
+import { track } from "@vercel/analytics";
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -70,6 +71,15 @@ export default function Playground() {
   const [logoMargin, setLogoMargin] = useState<number | "">("");
   const [logoHideDots, setLogoHideDots] = useState(true);
 
+  const hasInteracted = useRef(false);
+  function trackEvent(name: string, props?: Record<string, string>) {
+    if (!hasInteracted.current) {
+      hasInteracted.current = true;
+      track("playground_first_interact");
+    }
+    track(name, props);
+  }
+
   const [containerSize, setContainerSize] = useState(256);
   const [tokens, setTokens] = useState<ThemedToken[][] | null>(null);
   const [preStyle, setPreStyle] = useState<CSSProperties>({});
@@ -84,6 +94,7 @@ export default function Playground() {
     reader.onload = (ev) => {
       setLogoUrl(ev.target?.result as string);
       setLogoFileName(file.name);
+      trackEvent("logo_added", { method: "upload" });
     };
     reader.readAsDataURL(file);
     e.target.value = "";
@@ -144,6 +155,7 @@ export default function Playground() {
   }
 
   async function handleCopy(fmt: ExportFormat) {
+    trackEvent("export_copy", { format: fmt });
     const props = await buildExportProps();
     if (fmt === "svg") {
       await navigator.clipboard.writeText(toSVGString(props));
@@ -159,6 +171,7 @@ export default function Playground() {
   }
 
   async function handleDownload(fmt: ExportFormat) {
+    trackEvent("export_download", { format: fmt });
     const props = await buildExportProps();
     if (fmt === "svg") {
       const blob = new Blob([toSVGString(props)], { type: "image/svg+xml" });
@@ -349,7 +362,10 @@ export default function Playground() {
             <Tabs
               options={["square", "rounded", "circle"] as DotStyle[]}
               value={dotStyle}
-              onChange={setDotStyle}
+              onChange={(v) => {
+                trackEvent("dot_style_change", { value: v });
+                setDotStyle(v);
+              }}
             />
           </Field>
           <Field label="dotColor">
@@ -383,7 +399,10 @@ export default function Playground() {
                 ] as CornerSquareStyle[]
               }
               value={sqStyle}
-              onChange={setSqStyle}
+              onChange={(v) => {
+                trackEvent("corner_square_style_change", { value: v });
+                setSqStyle(v);
+              }}
             />
           </Field>
           <Field label="corner.square.color">
@@ -398,7 +417,10 @@ export default function Playground() {
             <Tabs
               options={["square", "rounded", "circle"] as CornerDotStyle[]}
               value={dotSt}
-              onChange={setDotSt}
+              onChange={(v) => {
+                trackEvent("corner_dot_style_change", { value: v });
+                setDotSt(v);
+              }}
             />
           </Field>
           <Field label="corner.dot.color">
@@ -416,7 +438,10 @@ export default function Playground() {
             <Tabs
               options={["L", "M", "Q", "H"] as ECL[]}
               value={ecl}
-              onChange={setEcl}
+              onChange={(v) => {
+                trackEvent("ecl_change", { value: v });
+                setEcl(v);
+              }}
             />
           </Field>
           <Field label="qr.version (1–40, blank = auto)">
@@ -487,6 +512,8 @@ export default function Playground() {
                   className={s.input}
                   value={logoUrl}
                   onChange={(e) => {
+                    if (!logoUrl && e.target.value)
+                      trackEvent("logo_added", { method: "url" });
                     setLogoUrl(e.target.value);
                     setLogoFileName(null);
                   }}

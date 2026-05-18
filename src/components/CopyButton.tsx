@@ -1,9 +1,16 @@
 "use client";
 
+import { track } from "@vercel/analytics";
 import { useState } from "react";
 import s from "./CopyButton.module.css";
 
-export default function CopyButton({ text }: { text: string }) {
+export default function CopyButton({
+  text,
+  eventName,
+}: {
+  text: string;
+  eventName?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -11,6 +18,7 @@ export default function CopyButton({ text }: { text: string }) {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      if (eventName) track(eventName);
     } catch {
       // silent fail
     }
