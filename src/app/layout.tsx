@@ -35,11 +35,13 @@ export const metadata: Metadata = {
     type: "website",
     url: siteUrl,
     siteName: "@ttsalpha/qrcode",
+    images: [{ url: "/og.jpeg", width: 800, height: 446 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "@ttsalpha/qrcode",
     description,
+    images: ["/og.jpeg"],
   },
 };
 
