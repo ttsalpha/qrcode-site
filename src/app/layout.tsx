@@ -19,7 +19,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "@ttsalpha/qrcode",
+  title: "@ttsalpha/qrcode | QR code generator",
   description,
   keywords: ["qrcode", "react", "svg", "qr", "typescript"],
   alternates: {
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: "@ttsalpha/qrcode",
+    title: "@ttsalpha/qrcode | QR code generator",
     description,
     type: "website",
     url: siteUrl,
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "@ttsalpha/qrcode",
+    title: "@ttsalpha/qrcode | QR code generator",
     description,
     images: ["/og.jpeg"],
   },
