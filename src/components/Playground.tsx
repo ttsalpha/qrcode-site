@@ -39,7 +39,7 @@ function tokenStyle(token: ThemedToken): CSSProperties {
   return (token.htmlStyle as CSSProperties | undefined) ?? {};
 }
 
-type ECL = "L" | "M" | "Q" | "H";
+type ECL = "" | "L" | "M" | "Q" | "H";
 
 export default function Playground() {
   // Content
@@ -61,7 +61,7 @@ export default function Playground() {
   const [dotDotColor, setDotDotColor] = useState("");
 
   // QR Options
-  const [ecl, setEcl] = useState<ECL>("M");
+  const [ecl, setEcl] = useState<ECL>("");
   const [qrVersion, setQrVersion] = useState<number | "">("");
 
   // Logo
@@ -133,7 +133,7 @@ export default function Playground() {
         dot: { style: dotSt, color: dotDotColor || undefined },
       },
       qr: {
-        errorCorrectionLevel: ecl,
+        errorCorrectionLevel: ecl || undefined,
         version: qrVersion !== "" ? (qrVersion as number) : undefined,
       },
       logo: logoUrl
@@ -209,7 +209,10 @@ export default function Playground() {
     try {
       toSVGString({
         value: value || "https://example.com",
-        qr: { errorCorrectionLevel: ecl, version: qrVersion as number },
+        qr: {
+          errorCorrectionLevel: ecl || undefined,
+          version: qrVersion as number,
+        },
       });
       return null;
     } catch (e) {
@@ -243,7 +246,7 @@ export default function Playground() {
   }
 
   const qrParts: string[] = [];
-  if (ecl !== "M") qrParts.push(`errorCorrectionLevel: "${ecl}"`);
+  if (ecl) qrParts.push(`errorCorrectionLevel: "${ecl}"`);
   if (qrVersion !== "") qrParts.push(`version: ${qrVersion}`);
   if (qrParts.length) snippetParts.push(`  qr={{ ${qrParts.join(", ")} }}`);
 
@@ -436,11 +439,12 @@ export default function Playground() {
         <Group title="QR Settings">
           <Field label="qr.errorCorrectionLevel">
             <Tabs
-              options={["L", "M", "Q", "H"] as ECL[]}
-              value={ecl}
+              options={["auto", "L", "M", "Q", "H"]}
+              value={ecl || "auto"}
               onChange={(v) => {
+                const next = v === "auto" ? "" : (v as ECL);
                 trackEvent("ecl_change", { value: v });
-                setEcl(v);
+                setEcl(next);
               }}
             />
           </Field>
@@ -550,12 +554,21 @@ export default function Playground() {
             </div>
           </Field>
           <div className={s.row2}>
-            <Field label="logo.size">
+            <Field label="logo.size (0–1)">
               <div className={s.colorRow}>
                 <input
                   type="number"
                   className={s.input}
                   value={logoSize}
+                  onKeyDown={(e) => {
+                    if (
+                      (e.key === "ArrowUp" || e.key === "ArrowDown") &&
+                      logoSize === ""
+                    ) {
+                      e.preventDefault();
+                      setLogoSize(0.4);
+                    }
+                  }}
                   onChange={(e) =>
                     setLogoSize(
                       e.target.value === "" ? "" : Number(e.target.value),

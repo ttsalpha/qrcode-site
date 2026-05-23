@@ -150,7 +150,6 @@ export default function Page() {
                   }}
                   logo={{
                     src: "https://cdn.ttsalpha.com/qrcode/snow.svg",
-                    size: 0.19,
                   }}
                   style={{ borderRadius: 12, overflow: "hidden" }}
                 />
@@ -404,20 +403,21 @@ export default function App() {
                 code={`interface LogoOptions {
   src?: string;        // https, relative path, blob:, or data:image/… URI
   element?: ReactNode; // takes priority over src when both provided
-  size?: number;       // logo height as a fraction of QR size (0–1); default 0.2
-  margin?: number;     // inset margin inside the cleared area; default 0
+  size?: number;       // 0–1 relative to max safe area; ECL auto-picked; default 0.4
+  margin?: number;     // space between logo and edge of cleared area; default 0
   hideDots?: boolean;  // clear dots behind logo area; default true
 }`}
               />
               <p className={s.note}>
-                Aspect ratio is auto-detected (
-                <code>naturalWidth/naturalHeight</code> for <code>src</code>;{" "}
-                <code>getBoundingClientRect</code> for <code>element</code>).
-                Clamping is area-based: the masked width&nbsp;×&nbsp;height
-                stays within the EC recovery budget — square logos are unchanged
-                (L→15%, M→22%, Q→32%, H→40%), while landscape logos get a
-                reduced height so they never overflow the QR. Use{" "}
-                <code>errorCorrectionLevel: 'H'</code> for larger logos.
+                ECL is auto-picked based on <code>size</code>:{" "}
+                <code>≤&nbsp;0.25</code> → L (≤&nbsp;15% width),{" "}
+                <code>≤&nbsp;0.44</code> → M (≤&nbsp;20%),{" "}
+                <code>≤&nbsp;0.69</code> → Q (≤&nbsp;25%),{" "}
+                <code>≤&nbsp;1.0</code> → H (≤&nbsp;30%). If{" "}
+                <code>errorCorrectionLevel</code> is set explicitly, the size is
+                clamped to that ECL's safe limit. Aspect ratio is auto-detected
+                — landscape logos get a proportionally reduced height so they
+                never overflow the QR.
                 <br />
                 <code>hideDots</code> uses an SVG mask, so transparent
                 backgrounds are fully supported.
@@ -646,17 +646,16 @@ link.click();`}
 
               {/* 6. Logo */}
               <Example
-                title="With logo — errorCorrectionLevel: 'H'"
+                title="With logo — ECL auto-picked"
                 code={`<QRCode
   value="https://example.com"
   dotStyle="rounded"
   corner={{ square: { style: 'extra-rounded' } }}
   logo={{
     src: 'https://avatars.githubusercontent.com/u/48100204?size=64',
-    size: 0.3,
+    size: 0.5,
     margin: 2,
   }}
-  qr={{ errorCorrectionLevel: 'H' }}
 />`}
               >
                 <QRCode
@@ -666,10 +665,9 @@ link.click();`}
                   corner={{ square: { style: "extra-rounded" } }}
                   logo={{
                     src: "https://avatars.githubusercontent.com/u/48100204?size=64",
-                    size: 0.3,
+                    size: 0.5,
                     margin: 2,
                   }}
-                  qr={{ errorCorrectionLevel: "H" }}
                 />
               </Example>
 
