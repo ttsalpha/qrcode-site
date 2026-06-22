@@ -21,19 +21,6 @@
 .navBrandAt {
   color: var(--fg-2);
 }
-.navRight {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.navBack {
-  font-size: 13px;
-  color: var(--fg-3);
-  transition: color 0.15s;
-}
-.navBack:hover {
-  color: var(--fg);
-}
 
 @media (max-width: 480px) {
   .navInner {

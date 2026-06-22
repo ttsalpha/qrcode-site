@@ -25,7 +25,6 @@ export default async function CodeBlock({
         {showLang ? <span className={s.lang}>{lang}</span> : <span />}
         <CopyButton text={code.trim()} />
       </div>
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: trusted shiki output */}
       <div className={s.pre} dangerouslySetInnerHTML={{ __html: html }} />
     </div>
   );

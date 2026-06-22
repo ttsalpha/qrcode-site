@@ -36,13 +36,13 @@ export default function NavMenu() {
     <div ref={rootRef} className={s.root}>
       {/* Text nav links — desktop: inline, mobile: dropdown */}
       <nav className={`${s.links} ${open ? s.open : ""}`}>
-        <a href="#playground" className={s.link}>
+        <a href="/#playground" className={s.link}>
           Playground
         </a>
-        <a href="#api" className={s.link}>
+        <a href="/#api" className={s.link}>
           API
         </a>
-        <a href="#examples" className={s.link}>
+        <a href="/examples" className={s.link}>
           Examples
         </a>
         <a href="/benchmark" className={s.link}>

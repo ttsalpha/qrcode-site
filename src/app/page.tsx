@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { QRCode } from "@ttsalpha/qrcode";
+import type { Metadata } from "next";
 import {
   IoAppsOutline,
   IoCloudDownloadOutline,
@@ -12,13 +12,13 @@ import {
 } from "react-icons/io5";
 import CodeBlock from "@/components/CodeBlock";
 import CopyButton from "@/components/CopyButton";
-import NavMenu from "@/components/NavMenu";
 import PlaygroundLoader from "@/components/PlaygroundLoader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteNav } from "@/components/SiteNav";
 import s from "./page.module.css";
 
 const homeDescription =
-  "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.";
+  "Create and download custom QR codes instantly — or use as a React library: pure SVG, zero dependencies, fully typed.";
 
 export const metadata: Metadata = {
   title: { absolute: "@ttsalpha/qrcode | QR Code Generator" },
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "@ttsalpha/qrcode | QR Code Generator",
     description: homeDescription,
-    url: "/",
+    url: "https://qrcode.ttsalpha.com",
   },
   twitter: {
     title: "@ttsalpha/qrcode | QR Code Generator",
@@ -69,18 +69,96 @@ function SectionHead({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "@ttsalpha/qrcode",
+      url: "https://qrcode.ttsalpha.com",
+      description:
+        "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Web",
+      softwareVersion: "2.3.1",
+      programmingLanguage: ["TypeScript", "JavaScript"],
+      license: "https://github.com/ttsalpha/qrcode/blob/main/LICENSE",
+      codeRepository: "https://github.com/ttsalpha/qrcode",
+      downloadUrl: "https://www.npmjs.com/package/@ttsalpha/qrcode",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+    {
+      "@type": "WebApplication",
+      name: "@ttsalpha/qrcode — QR Code Generator",
+      url: "https://qrcode.ttsalpha.com",
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Web",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How is this different from other QR code libraries?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Most libs handle either SSR or styling — not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 2× faster cold start than qrcode.react, 20× faster styled renders than qr-code-styling.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Does it work with Next.js and server-side rendering?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. The library is pure SVG — no DOM, no Canvas. The QRCode component renders server-side in Next.js App Router and works on Edge runtimes. For SSR without React, use toSVGString().",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can I generate QR codes without React (Node.js, CLI, email templates)?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. toSVGString() produces a static SVG string — no DOM or React required. toDataURL() is browser-only as it requires the Canvas API.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "How do I add a logo to the center of a QR code?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Use the logo prop with src for an image URL, or element for any React node. Error correction level is auto-picked based on logo size to keep the code scannable.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "How do I export a QR code as PNG or JPEG?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: 'Call toDataURL({ value: "..." }) in the browser. It returns a data URL you can attach to a download link. Use the format option for JPEG.',
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Does it support custom colors and dark mode?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. Use dotColor for data modules, backgroundColor (accepts transparent), and the corner prop to color finder patterns independently.",
+          },
+        },
+      ],
+    },
+  ],
+};
+
 export default function Page() {
   return (
     <>
-      {/* Nav */}
-      <nav className={s.nav}>
-        <div className={s.navInner}>
-          <a href="/" className={s.navBrand}>
-            <span className={s.navBrandAt}>@ttsalpha/</span>qrcode
-          </a>
-          <NavMenu />
-        </div>
-      </nav>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <SiteNav maxWidth={860} />
 
       <main>
         {/* Hero */}
@@ -580,145 +658,91 @@ link.click();`}
           </div>
         </section>
 
-        {/* Examples */}
-        <section className={`${s.section} ${s.sectionAlt}`} id="examples">
+        {/* FAQ */}
+        <section className={`${s.section} ${s.sectionAlt}`} id="faq">
           <div className={s.wrap}>
-            <SectionHead tag="Examples" title="Common patterns" />
-            <div className={s.exampleList}>
-              {/* 1. Default */}
-              <Example
-                title="Default"
-                code={`<QRCode value="https://example.com" />`}
-              >
-                <QRCode value="https://example.com" size={160} />
-              </Example>
-
-              {/* 2. Rounded fluid dots */}
-              <Example
-                title="Rounded dots"
-                code={`<QRCode
-  value="https://example.com"
-  dotStyle="rounded"
-  corner={{ square: { style: 'extra-rounded' } }}
-/>`}
-              >
-                <QRCode
-                  value="https://example.com"
-                  size={160}
-                  dotStyle="rounded"
-                  corner={{ square: { style: "extra-rounded" } }}
-                />
-              </Example>
-
-              {/* 3. Circle dots */}
-              <Example
-                title="Circle dots"
-                code={`<QRCode
-  value="https://example.com"
-  dotStyle="circle"
-  corner={{
-    square: { style: 'circle' },
-    dot: { style: 'circle' },
-  }}
-/>`}
-              >
-                <QRCode
-                  value="https://example.com"
-                  size={160}
-                  dotStyle="circle"
-                  corner={{
-                    square: { style: "circle" },
-                    dot: { style: "circle" },
-                  }}
-                />
-              </Example>
-
-              {/* 4. Accent color — same color everywhere */}
-              <Example
-                title="Accent corners (single color)"
-                code={`<QRCode
-  value="https://example.com"
-  dotStyle="rounded"
-  corner={{
-    square: { style: 'extra-rounded', color: '#14b8a6' },
-    dot: { color: '#14b8a6' },
-  }}
-/>`}
-              >
-                <QRCode
-                  value="https://example.com"
-                  size={160}
-                  dotStyle="rounded"
-                  corner={{
-                    square: { style: "extra-rounded", color: "#14b8a6" },
-                    dot: { color: "#14b8a6" },
-                  }}
-                />
-              </Example>
-
-              {/* 5. Transparent background */}
-              <Example
-                title="Transparent background"
-                code={`<QRCode
-  value="https://example.com"
-  dotStyle="rounded"
-  dotColor="#ffffff"
-  backgroundColor="transparent"
-  corner={{ square: { style: 'extra-rounded' } }}
-/>`}
-                dark
-              >
-                <QRCode
-                  value="https://example.com"
-                  size={160}
-                  dotStyle="rounded"
-                  dotColor="#ffffff"
-                  backgroundColor="transparent"
-                  corner={{ square: { style: "extra-rounded" } }}
-                />
-              </Example>
-
-              {/* 6. Logo */}
-              <Example
-                title="With logo — ECL auto-picked"
-                code={`<QRCode
-  value="https://example.com"
-  dotStyle="rounded"
-  corner={{ square: { style: 'extra-rounded' } }}
-  logo={{
-    src: 'https://avatars.githubusercontent.com/u/48100204?size=64',
-    size: 0.5,
-    margin: 2,
-  }}
-/>`}
-              >
-                <QRCode
-                  value="https://example.com"
-                  size={160}
-                  dotStyle="rounded"
-                  corner={{ square: { style: "extra-rounded" } }}
-                  logo={{
-                    src: "https://avatars.githubusercontent.com/u/48100204?size=64",
-                    size: 0.5,
-                    margin: 2,
-                  }}
-                />
-              </Example>
-
-              {/* 7. Version 1 */}
-              <Example
-                title="Version 1 — numeric data"
-                code={`<QRCode
-  value="12345"
-  qr={{ version: 1, errorCorrectionLevel: 'L' }}
-/>`}
-              >
-                <QRCode
-                  value="12345"
-                  size={160}
-                  qr={{ version: 1, errorCorrectionLevel: "L" }}
-                />
-              </Example>
+            <SectionHead tag="FAQ" title="Frequently asked questions" />
+            <div className={s.faqList}>
+              <details className={s.faqItem}>
+                <summary className={s.faqQ}>
+                  How is this different from other QR code libraries?
+                </summary>
+                <p className={s.faqA}>
+                  Most libs handle either SSR or styling — not both.{" "}
+                  <code>qrcode.react</code> is SSR-safe but has no styling API.{" "}
+                  <code>qr-code-styling</code> covers custom dots, colors, and
+                  logos but relies on Canvas and breaks server-side. This lib
+                  covers all of it: custom dot shapes, per-corner colors, logo
+                  support, pure SVG, SSR-safe. 2× faster cold start than{" "}
+                  <code>qrcode.react</code>, 20× faster styled renders than{" "}
+                  <code>qr-code-styling</code>.{" "}
+                  <a href="/benchmark" className={s.faqLink}>
+                    See the benchmark →
+                  </a>
+                </p>
+              </details>
+              {[
+                {
+                  q: "Does it work with Next.js and server-side rendering?",
+                  a: (
+                    <>
+                      Yes. The library is pure SVG — no DOM, no Canvas. The{" "}
+                      <code>QRCode</code> component renders server-side in
+                      Next.js App Router and works on Edge runtimes. For SSR
+                      without React, use <code>toSVGString()</code>.
+                    </>
+                  ),
+                },
+                {
+                  q: "Can I generate QR codes without React (Node.js, CLI, email templates)?",
+                  a: (
+                    <>
+                      Yes. <code>toSVGString()</code> produces a static SVG
+                      string — no DOM or React required.{" "}
+                      <code>toDataURL()</code> is browser-only as it requires
+                      the Canvas API.
+                    </>
+                  ),
+                },
+                {
+                  q: "How do I add a logo to the center of a QR code?",
+                  a: (
+                    <>
+                      Use the <code>logo</code> prop with <code>src</code> for
+                      an image URL, or <code>element</code> for any React node.
+                      Error correction level is auto-picked based on logo size
+                      to keep the code scannable.
+                    </>
+                  ),
+                },
+                {
+                  q: "How do I export a QR code as PNG or JPEG?",
+                  a: (
+                    <>
+                      Call <code>toDataURL()</code> in the browser — it returns
+                      a data URL you can attach to a download link. Use the{" "}
+                      <code>format</code> option for JPEG.
+                    </>
+                  ),
+                },
+                {
+                  q: "Does it support custom colors and dark mode?",
+                  a: (
+                    <>
+                      Yes. Use <code>dotColor</code> for data modules,{" "}
+                      <code>backgroundColor</code> (accepts{" "}
+                      <code>"transparent"</code>), and the <code>corner</code>{" "}
+                      prop to color finder patterns independently. Pair with
+                      your own dark-mode logic to switch colors at runtime.
+                    </>
+                  ),
+                },
+              ].map(({ q, a }) => (
+                <details key={q} className={s.faqItem}>
+                  <summary className={s.faqQ}>{q}</summary>
+                  <p className={s.faqA}>{a}</p>
+                </details>
+              ))}
             </div>
           </div>
         </section>
@@ -726,33 +750,5 @@ link.click();`}
 
       <SiteFooter maxWidth={860} />
     </>
-  );
-}
-
-function Example({
-  title,
-  code,
-  children,
-  dark,
-}: {
-  title: string;
-  code: string;
-  children: React.ReactNode;
-  dark?: boolean;
-}) {
-  return (
-    <div className={s.exampleCard}>
-      <div className={s.exampleCardTitle}>{title}</div>
-      <div className={s.exampleCardBody}>
-        <div
-          className={`${s.exampleCardPreview} ${dark ? s.exampleCardPreviewDark : ""}`}
-        >
-          {children}
-        </div>
-        <div className={s.exampleCardCode}>
-          <CodeBlock code={code} />
-        </div>
-      </div>
-    </div>
   );
 }

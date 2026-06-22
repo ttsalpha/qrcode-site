@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { PageNav } from "@/components/PageNav";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteNav } from "@/components/SiteNav";
 import s from "./page.module.css";
 
 const benchmarkDescription =
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Benchmark | @ttsalpha/qrcode",
     description: benchmarkDescription,
-    url: "/benchmark",
+    url: "https://qrcode.ttsalpha.com/benchmark",
   },
   twitter: {
     title: "Benchmark | @ttsalpha/qrcode",
@@ -96,10 +96,35 @@ const LIBS = [
   "react-qr-code",
 ] as const;
 
+const benchmarkJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  name: "React QR Code Library Benchmark",
+  description: benchmarkDescription,
+  url: "https://qrcode.ttsalpha.com/benchmark",
+  creator: {
+    "@type": "Person",
+    name: "Son Tran",
+    url: "https://github.com/ttsalpha",
+  },
+  license: "https://github.com/ttsalpha/qrcode-benchmark",
+  variableMeasured: [
+    "Throughput (renders/second)",
+    "True cold start latency",
+    "SSR latency",
+    "Sequential batch time",
+    "Bundle size",
+  ],
+};
+
 export default function BenchmarkPage() {
   return (
     <>
-      <PageNav maxWidth={920} backHref="/" backLabel="← Docs" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(benchmarkJsonLd) }}
+      />
+      <SiteNav maxWidth={920} />
 
       <main>
         {/* Hero */}
@@ -489,7 +514,7 @@ export default function BenchmarkPage() {
             </div>
             <p className={s.note}>
               <code>toSVGString</code> first-renders in{" "}
-              <strong>7.026 ms</strong> — 2.1× faster than qrcode.react (14.817
+              <strong>7.026 ms</strong> — 2× faster than qrcode.react (14.817
               ms). qr-code-styling has the fastest import (4.55 ms) but the
               slowest first render (58 ms), and stays slow at 37 ms on the
               second render because its DOM-based async pipeline does not

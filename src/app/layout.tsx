@@ -18,6 +18,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: "@ttsalpha/qrcode",
   title: {
     template: "%s | @ttsalpha/qrcode",
     default: "@ttsalpha/qrcode | QR Code Generator",
@@ -33,6 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    creator: "@ttsalpha",
     images: ["/og.jpeg"],
   },
 };

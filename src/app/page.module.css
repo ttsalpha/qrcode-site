@@ -10,32 +10,6 @@
   background: var(--surface-2);
 }
 
-/* ── Nav ── */
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-}
-.navInner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 52px;
-  margin: 0 auto;
-  padding: 0 24px;
-  max-width: 860px;
-}
-.navBrand {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.navBrandAt {
-  color: var(--fg-2);
-}
-
 /* ── Hero ── */
 .hero {
   padding: 72px 0 60px;
@@ -254,61 +228,65 @@
   color: var(--fg);
 }
 
-/* ── Examples ── */
-.exampleList {
+/* ── FAQ ── */
+.faqList {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  border-top: 1px solid var(--border);
 }
-.exampleCard {
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  overflow: hidden;
-}
-.exampleCardTitle {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--fg-2);
-  padding: 10px 18px;
+.faqItem {
   border-bottom: 1px solid var(--border);
-  background: var(--surface);
 }
-.exampleCardBody {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-}
-@media (max-width: 480px) {
-  .exampleCardBody {
-    grid-template-columns: 1fr;
-  }
-}
-.exampleCardPreview {
+.faqQ {
+  list-style: none;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  padding: 28px 20px;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
+  gap: 12px;
+  padding: 18px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.4;
+  cursor: pointer;
+  user-select: none;
 }
-.exampleCardPreviewDark {
-  background: var(--gray-10);
+.faqQ::-webkit-details-marker {
+  display: none;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .exampleCardPreviewDark {
-    background: var(--bg);
-  }
+.faqQ::after {
+  content: "›";
+  flex-shrink: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--fg-3);
+  transition: transform 0.18s ease;
 }
-[data-theme="dark"] .exampleCardPreviewDark {
-  background: var(--bg);
+.faqItem[open] > .faqQ::after {
+  transform: rotate(90deg);
 }
-.exampleCardCode {
-  min-width: 0;
-  overflow: hidden;
+.faqA {
+  font-size: 13.5px;
+  color: var(--fg-2);
+  line-height: 1.65;
+  margin: 0;
+  padding-bottom: 18px;
 }
-.exampleCardCode > * {
-  border-radius: 0;
-  border: none;
-  height: 100%;
+.faqLink {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+.faqLink:hover {
+  text-decoration: underline;
+}
+.faqA code {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--fg);
 }
 
 /* ── Responsive: Tablet (≤ 768px) ── */
@@ -385,9 +363,5 @@
   .featureDesc {
     grid-column: 1 / span 2;
     grid-row: 2;
-  }
-  .exampleCardPreview {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
   }
 }
