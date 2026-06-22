@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { QRCode } from "@ttsalpha/qrcode";
 import {
   IoAppsOutline,
@@ -13,7 +14,40 @@ import CodeBlock from "@/components/CodeBlock";
 import CopyButton from "@/components/CopyButton";
 import NavMenu from "@/components/NavMenu";
 import PlaygroundLoader from "@/components/PlaygroundLoader";
+import { SiteFooter } from "@/components/SiteFooter";
 import s from "./page.module.css";
+
+const homeDescription =
+  "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.";
+
+export const metadata: Metadata = {
+  title: { absolute: "@ttsalpha/qrcode | QR Code Generator" },
+  description: homeDescription,
+  keywords: [
+    "qrcode",
+    "react",
+    "svg",
+    "qr",
+    "typescript",
+    "npm",
+    "React QR code",
+    "QR code component",
+    "customizable QR code",
+    "zero dependency",
+    "SVG QR code",
+    "QR code generator",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "@ttsalpha/qrcode | QR Code Generator",
+    description: homeDescription,
+    url: "/",
+  },
+  twitter: {
+    title: "@ttsalpha/qrcode | QR Code Generator",
+    description: homeDescription,
+  },
+};
 
 function SectionHead({
   tag,
@@ -690,57 +724,7 @@ link.click();`}
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className={s.footer}>
-        <div className={s.wrap}>
-          <div className={s.footerTop}>
-            <div className={s.footerBrand}>
-              <span className={s.footerBrandAt}>@ttsalpha/</span>qrcode
-            </div>
-            <nav className={s.footerNav}>
-              <a
-                href="https://github.com/ttsalpha"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={s.footerNavLink}
-              >
-                Author
-              </a>
-              <a
-                href="https://github.com/ttsalpha/qrcode/releases"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={s.footerNavLink}
-              >
-                Changelog
-              </a>
-
-              <a
-                href="https://github.com/ttsalpha/qrcode/blob/main/LICENSE"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={s.footerNavLink}
-              >
-                License
-              </a>
-            </nav>
-          </div>
-          <div className={s.footerBottom}>
-            <span className={s.footerCopy}>
-              © {new Date().getFullYear()}{" "}
-              <a
-                href="https://github.com/ttsalpha"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={s.footerLink}
-              >
-                Son Tran
-              </a>{" "}
-              · MIT License
-            </span>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter maxWidth={860} />
     </>
   );
 }

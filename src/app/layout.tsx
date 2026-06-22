@@ -3,14 +3,13 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
+import type { ReactNode } from "react";
 import "./globals.css";
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 const siteUrl = "https://qrcode.ttsalpha.com";
-const description =
-  "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -19,28 +18,21 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "@ttsalpha/qrcode | QR code generator",
-  description,
-  keywords: ["qrcode", "react", "svg", "qr", "typescript"],
-  alternates: {
-    canonical: "/",
+  title: {
+    template: "%s | @ttsalpha/qrcode",
+    default: "@ttsalpha/qrcode | QR Code Generator",
   },
   robots: {
     index: true,
     follow: true,
   },
   openGraph: {
-    title: "@ttsalpha/qrcode | QR code generator",
-    description,
     type: "website",
-    url: siteUrl,
     siteName: "@ttsalpha/qrcode",
     images: [{ url: "/og.jpeg", width: 800, height: 446 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "@ttsalpha/qrcode | QR code generator",
-    description,
     images: ["/og.jpeg"],
   },
 };
@@ -48,7 +40,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const cookieStore = await cookies();
   const theme = cookieStore.get("theme")?.value;
@@ -60,11 +52,13 @@ export default async function RootLayout({
       className={`${sans.variable} ${mono.variable}`}
       {...(dataTheme ? { "data-theme": dataTheme } : {})}
     >
-      <body>{children}</body>
-      <Analytics />
-      {process.env.NEXT_PUBLIC_GA_ID && (
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
-      )}
+      <body>
+        {children}
+        <Analytics />
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
+      </body>
     </html>
   );
 }

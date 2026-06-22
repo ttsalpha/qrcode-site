@@ -1,0 +1,67 @@
+.wrap {
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.footer {
+  border-top: 1px solid var(--border);
+}
+.footerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 0;
+}
+.footerBrand {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.footerBrandAt {
+  color: var(--fg-3);
+}
+.footerNav {
+  display: flex;
+  gap: 24px;
+}
+.footerNavLink {
+  font-size: 13px;
+  color: var(--fg-3);
+  transition: color 0.15s;
+}
+.footerNavLink:hover {
+  color: var(--fg);
+}
+.footerBottom {
+  display: flex;
+  align-items: center;
+  padding: 16px 0 24px;
+  border-top: 1px solid var(--border);
+}
+.footerCopy {
+  font-size: 12.5px;
+  color: var(--fg-3);
+}
+.footerLink {
+  color: var(--fg-3);
+  transition: color 0.15s;
+}
+.footerLink:hover {
+  color: var(--fg);
+}
+
+@media (max-width: 480px) {
+  .wrap {
+    padding: 0 16px;
+  }
+  .footerTop {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 0;
+  }
+  .footerNav {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}

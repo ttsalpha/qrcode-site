@@ -1,0 +1,42 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.navInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.navBrand {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.navBrandAt {
+  color: var(--fg-2);
+}
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.navBack {
+  font-size: 13px;
+  color: var(--fg-3);
+  transition: color 0.15s;
+}
+.navBack:hover {
+  color: var(--fg);
+}
+
+@media (max-width: 480px) {
+  .navInner {
+    padding: 0 16px;
+  }
+}

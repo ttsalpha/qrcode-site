@@ -1,7 +1,7 @@
 .wrap {
-  max-width: 860px;
   margin: 0 auto;
   padding: 0 24px;
+  max-width: 860px;
 }
 
 .playgroundSkeleton {
@@ -23,9 +23,9 @@
   align-items: center;
   justify-content: space-between;
   height: 52px;
-  max-width: 860px;
   margin: 0 auto;
   padding: 0 24px;
+  max-width: 860px;
 }
 .navBrand {
   font-size: 14px;
@@ -88,9 +88,6 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-}
-.heroPreviewHideMobile {
-  /* visible by default, hidden on mobile via breakpoint below */
 }
 .heroPreviewLabel {
   font-size: 11px;
@@ -217,8 +214,8 @@
 .table td {
   padding: 9px 14px;
   border-bottom: 1px solid var(--border);
-  vertical-align: top;
   line-height: 1.5;
+  vertical-align: top;
 }
 .table td:not(:last-child) {
   white-space: nowrap;
@@ -314,130 +311,55 @@
   height: 100%;
 }
 
-/* ── Footer ── */
-.footer {
-  border-top: 1px solid var(--border);
-}
-
-.footerTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 32px 0;
-}
-
-.footerBrand {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--fg);
-}
-
-.footerBrandAt {
-  color: var(--fg-3);
-}
-
-.footerNav {
-  display: flex;
-  gap: 24px;
-}
-
-.footerNavLink {
-  font-size: 13px;
-  color: var(--fg-3);
-  transition: color 0.15s;
-}
-
-.footerNavLink:hover {
-  color: var(--fg);
-}
-
-.footerBottom {
-  display: flex;
-  align-items: center;
-  padding: 16px 0 24px;
-  border-top: 1px solid var(--border);
-}
-
-.footerCopy {
-  font-size: 12.5px;
-  color: var(--fg-3);
-}
-
-.footerLink {
-  color: var(--fg-3);
-  transition: color 0.15s;
-}
-
-.footerLink:hover {
-  color: var(--fg);
-}
-
-/* ── Responsive: Tablet (≤ 768px) ───────────────────────────────────────── */
-
+/* ── Responsive: Tablet (≤ 768px) ── */
 @media (max-width: 768px) {
   .section {
     padding: 56px 0;
   }
-
   .hero {
     padding: 56px 0 48px;
   }
 }
 
-/* ── Responsive: Mobile (≤ 480px) ───────────────────────────────────────── */
-
+/* ── Responsive: Mobile (≤ 480px) ── */
 @media (max-width: 480px) {
   .wrap {
     padding: 0 16px;
   }
-
   .navInner {
     padding: 0 16px;
   }
-
   .section {
     padding: 40px 0;
   }
-
   .hero {
     padding: 40px 0 36px;
   }
-
   .heroTitle {
     font-size: 28px;
   }
-
   .heroSub {
     font-size: 13px;
     line-height: 1.6;
   }
-
   .heroInstall {
     max-width: 100%;
     overflow-x: auto;
   }
-
-  /* Hero previews: hide circle variant, remaining two shrink with gap */
   .heroPreviewHideMobile {
     display: none;
   }
-
   .heroPreviews {
     gap: 20px;
     justify-content: center;
   }
-
   .heroPreviewItem {
     flex: 0 0 auto;
   }
-
   .heroPreviewItem svg {
     width: 144px;
     height: 144px;
   }
-
-  /* Feature cards: icon + title on one line */
   .featureCard {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -446,7 +368,6 @@
     row-gap: 4px;
     padding: 14px 16px;
   }
-
   .featureIcon {
     grid-column: 1;
     grid-row: 1;
@@ -455,35 +376,18 @@
     align-self: center;
     margin-bottom: 0;
   }
-
   .featureName {
     grid-column: 2;
     grid-row: 1;
     align-self: center;
     margin-bottom: 0;
   }
-
   .featureDesc {
     grid-column: 1 / span 2;
     grid-row: 2;
   }
-
-  /* Example card: switch separator from right border to bottom border */
   .exampleCardPreview {
     border-right: none;
     border-bottom: 1px solid var(--border);
-  }
-
-  /* Footer: stack brand and links vertically */
-  .footerTop {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 24px 0;
-  }
-
-  .footerNav {
-    flex-wrap: wrap;
-    gap: 16px;
   }
 }

@@ -45,6 +45,9 @@ export default function NavMenu() {
         <a href="#examples" className={s.link}>
           Examples
         </a>
+        <a href="/benchmark" className={s.link}>
+          Benchmark
+        </a>
       </nav>
 
       {/* Icon links — always visible */}
