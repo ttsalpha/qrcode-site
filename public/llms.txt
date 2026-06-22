@@ -1,0 +1,93 @@
+# @ttsalpha/qrcode
+
+> Lightweight React QR code library — pure SVG, zero dependencies, fully typed. Covers SSR, custom dot/corner shapes, logo embedding, and PNG/SVG export. Version 2.3.1. MIT license.
+
+Requires React 18+ as peer dependency.
+
+Install: `pnpm add @ttsalpha/qrcode`
+
+Quick start:
+
+```tsx
+import { QRCode } from '@ttsalpha/qrcode';
+
+export default function App() {
+  return <QRCode value="https://example.com" />;
+}
+```
+
+**QRCodeProps**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| value | string | — | Data to encode (required) |
+| size | number | 256 | Width and height in pixels |
+| margin | number | 4 | Quiet zone in modules |
+| dotStyle | DotStyle | 'square' | Style of data modules |
+| dotColor | string | '#000000' | Color of data modules |
+| backgroundColor | string | '#ffffff' | Background color; 'transparent' accepted |
+| corner | CornerOptions | — | Finder pattern styles and colors |
+| logo | LogoOptions | — | Logo in center |
+| qr | QROptions | — | QR encoding options |
+| className | string | — | CSS class on `<svg>` |
+| style | CSSProperties | — | Inline style on `<svg>` |
+| ariaLabel | string | — | Accessible label; defaults to 'QR code: {value}' |
+
+**DotStyle**: `'square'` (default) | `'circle'` | `'rounded'` (adjacent modules connect smoothly)
+
+**CornerOptions**:
+
+```ts
+interface CornerOptions {
+  dot?: { style?: 'square' | 'rounded' | 'circle'; color?: string };     // inner 3×3 block
+  square?: { style?: 'square' | 'rounded' | 'extra-rounded' | 'circle'; color?: string }; // outer 7×7 ring
+}
+```
+
+When `square.style` is `'extra-rounded'` and dot is unset, dot defaults to `'rounded'`. When `'circle'`, dot defaults to `'circle'`.
+
+**LogoOptions**:
+
+```ts
+interface LogoOptions {
+  src?: string;        // https, relative path, blob:, or data:image/… URI
+  element?: ReactNode; // takes priority over src
+  size?: number;       // 0–1 relative to max safe area; ECL auto-picked; default 0.4
+  margin?: number;     // space between logo and cleared area edge; default 0
+  hideDots?: boolean;  // clear dots behind logo via SVG mask; default true
+}
+```
+
+ECL auto-picked by size: ≤0.25 → L, ≤0.44 → M, ≤0.69 → Q, ≤1.0 → H. `javascript:` and non-image `data:` URIs are silently rejected.
+
+**QROptions**: `errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H'` (default M) · `version?: number` (1–40, auto)
+
+**Export helpers**:
+
+```ts
+import { toSVGString, toDataURL } from '@ttsalpha/qrcode';
+
+// Server-side SVG — no DOM, no React required
+const svg = toSVGString({ value: 'https://example.com', size: 512 });
+
+// PNG data URL via Canvas (browser-only)
+const png = await toDataURL({ value: 'https://example.com', size: 512 });
+
+// JPEG
+const jpg = await toDataURL({ value: 'https://example.com' }, { format: 'jpeg', quality: 0.9 });
+```
+
+`toDataURL` is browser-only (Canvas API). JPEG auto-fills white background when `backgroundColor` is `'transparent'`.
+
+vs. alternatives: 2× faster cold start than qrcode.react · 20× faster styled renders than qr-code-styling · SSR/Edge-safe (no Canvas dependency) · adds dot styles, logo, per-corner colors, export helpers over react-qr-code
+
+## Docs
+
+- [Homepage](https://qrcode.ttsalpha.com): Interactive playground, install guide, full API reference
+- [Examples](https://qrcode.ttsalpha.com/examples): Dot styles, corner styles, colors, logos, transparent background, export helpers
+- [Benchmark](https://qrcode.ttsalpha.com/benchmark): Performance comparison vs qrcode.react, qr-code-styling, react-qr-code
+
+## Optional
+
+- [npm](https://www.npmjs.com/package/@ttsalpha/qrcode)
+- [GitHub](https://github.com/ttsalpha/qrcode)
