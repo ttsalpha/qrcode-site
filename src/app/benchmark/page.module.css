@@ -140,7 +140,7 @@
   border-bottom: none;
 }
 .table tr:hover td {
-  background: var(--surface);
+  background: var(--surface-2);
 }
 .table code {
   font-family: var(--font-geist-mono), monospace;
@@ -318,7 +318,8 @@
   text-transform: uppercase;
   color: var(--fg-3);
   white-space: nowrap;
-  min-width: 140px;
+  width: 180px;
+  flex-shrink: 0;
 }
 .reproduceLink {
   font-size: 13px;
@@ -340,6 +341,14 @@
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
+  .reproduceCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .reproduceLabel {
+    min-width: unset;
+  }
   .barRow {
     grid-template-columns: 1fr 80px;
     grid-template-rows: auto auto;

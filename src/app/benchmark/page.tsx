@@ -323,85 +323,8 @@ export default function BenchmarkPage() {
           </div>
         </section>
 
-        {/* At a Glance */}
-        <section className={s.section}>
-          <div className={s.wrap}>
-            <SectionHead title="At a Glance" />
-            <div className={s.tableWrap}>
-              <table className={s.table}>
-                <thead>
-                  <tr>
-                    <th>Metric</th>
-                    <th>@ttsalpha/qrcode</th>
-                    <th>qrcode.react</th>
-                    <th>qr-code-styling</th>
-                    <th>react-qr-code</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    {
-                      metric: "Throughput (r/s)",
-                      vals: ["2,126", "1,714", "79", "1,017"],
-                      win: 0,
-                    },
-                    {
-                      metric: "SSR median (ms)",
-                      vals: ["1.256", "2.41", "✕ no SSR", "3.288"],
-                      win: 0,
-                    },
-                    {
-                      metric: "True cold start 1st render (ms)",
-                      vals: ["7.026", "14.817", "58", "14.921"],
-                      win: 0,
-                    },
-                    {
-                      metric: "Styled QR (ms/render)",
-                      vals: ["0.622", "—", "12.231", "—"],
-                      win: 0,
-                    },
-                    {
-                      metric: "Memory drift (5k renders)",
-                      vals: ["+0.02 MB", "−0.07 MB", "—", "−0.01 MB"],
-                      win: -1,
-                    },
-                    {
-                      metric: "Bundle size (gzip)",
-                      vals: ["8.7 KB", "6.1 KB", "13.8 KB", "8.5 KB"],
-                      win: 1,
-                    },
-                    {
-                      metric: "Feature score",
-                      vals: ["15 / 17", "12 / 17", "11 / 17", "8 / 17"],
-                      win: 0,
-                    },
-                  ].map(({ metric, vals, win }) => (
-                    <tr key={metric}>
-                      <td>{metric}</td>
-                      {vals.map((v, i) => (
-                        <td
-                          key={LIBS[i]}
-                          className={
-                            win === i
-                              ? s.cellWin
-                              : v.startsWith("✕")
-                                ? s.cellNo
-                                : ""
-                          }
-                        >
-                          <CellVal v={v} />
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
         {/* 1. Throughput */}
-        <section className={`${s.section} ${s.sectionAlt}`}>
+        <section className={s.section}>
           <div className={s.wrap}>
             <SectionHead
               num="01 — Throughput"
@@ -744,7 +667,7 @@ export default function BenchmarkPage() {
                 <tbody>
                   {[
                     {
-                      type: "Short URL (ttsalpha.com)",
+                      type: "Short URL",
                       vals: ["0.447 ms", "0.928 ms", "0.55 ms", "1.001 ms"],
                       win: 0,
                     },
@@ -1044,7 +967,7 @@ export default function BenchmarkPage() {
                     { cat: "Styled QR", vals: ["#1", "—", "#2", "—"], win: 0 },
                     {
                       cat: "Bundle size",
-                      vals: ["#2", "#1", "#4", "#3*"],
+                      vals: ["#2", "#1", "#3", "#4"],
                       win: 1,
                     },
                     {
@@ -1068,14 +991,11 @@ export default function BenchmarkPage() {
                 </tbody>
               </table>
             </div>
-            <p className={s.note}>
-              *react-qr-code actual bundle is ~45 KB due to hidden dependencies.
-            </p>
           </div>
         </section>
 
         {/* Reproduce */}
-        <section className={`${s.section} ${s.sectionAlt}`}>
+        <section className={s.section}>
           <div className={s.wrap}>
             <SectionHead
               title="Reproduce"
@@ -1114,7 +1034,7 @@ export default function BenchmarkPage() {
         </section>
 
         {/* When to Choose */}
-        <section className={s.section}>
+        <section className={`${s.section} ${s.sectionAlt}`}>
           <div className={s.wrap}>
             <SectionHead title="When to Choose" />
             <div className={s.chooseGrid}>
