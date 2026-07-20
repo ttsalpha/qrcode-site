@@ -254,16 +254,13 @@
 .faqQ::-webkit-details-marker {
   display: none;
 }
-.faqQ::after {
-  content: "›";
+.faqChevron {
   flex-shrink: 0;
-  font-size: 22px;
-  line-height: 1;
   color: var(--fg-3);
-  transition: transform 0.18s ease;
+  transition: transform 0.2s ease;
 }
-.faqItem[open] > .faqQ::after {
-  transform: rotate(90deg);
+.faqItem[open] > .faqQ > .faqChevron {
+  transform: rotate(180deg);
 }
 .faqA {
   font-size: 13.5px;

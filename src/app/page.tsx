@@ -2,6 +2,7 @@ import { QRCode } from "@ttsalpha/qrcode";
 import type { Metadata } from "next";
 import {
   IoAppsOutline,
+  IoChevronDown,
   IoCloudDownloadOutline,
   IoCodeSlashOutline,
   IoCubeOutline,
@@ -80,7 +81,7 @@ const jsonLd = {
         "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.",
       applicationCategory: "DeveloperApplication",
       operatingSystem: "Web",
-      softwareVersion: "2.3.1",
+      softwareVersion: "2.4.1",
       programmingLanguage: ["TypeScript", "JavaScript"],
       license: "https://github.com/ttsalpha/qrcode/blob/main/LICENSE",
       codeRepository: "https://github.com/ttsalpha/qrcode",
@@ -103,7 +104,7 @@ const jsonLd = {
           name: "How is this different from other QR code libraries?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Most libs handle either SSR or styling — not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 2× faster cold start than qrcode.react, 20× faster styled renders than qr-code-styling.",
+            text: "Most libs handle either SSR or styling — not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 3.5× faster cold start than qrcode.react, 34× faster styled renders than qr-code-styling.",
           },
         },
         {
@@ -135,7 +136,7 @@ const jsonLd = {
           name: "How do I export a QR code as PNG or JPEG?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: 'Call toDataURL({ value: "..." }) in the browser. It returns a data URL you can attach to a download link. Use the format option for JPEG.',
+            text: "Call toDataURL() in the browser — it returns a data URL you can attach to a download link. Use the format option for JPEG.",
           },
         },
         {
@@ -143,7 +144,7 @@ const jsonLd = {
           name: "Does it support custom colors and dark mode?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. Use dotColor for data modules, backgroundColor (accepts transparent), and the corner prop to color finder patterns independently.",
+            text: 'Yes. Use dotColor for data modules, backgroundColor (accepts "transparent"), and the corner prop to color finder patterns independently. Pair with your own dark-mode logic to switch colors at runtime.',
           },
         },
       ],
@@ -658,9 +659,12 @@ link.click();`}
           <div className={s.wrap}>
             <SectionHead tag="FAQ" title="Frequently asked questions" />
             <div className={s.faqList}>
-              <details className={s.faqItem}>
+              <details className={s.faqItem} open>
                 <summary className={s.faqQ}>
-                  How is this different from other QR code libraries?
+                  <span>
+                    How is this different from other QR code libraries?
+                  </span>
+                  <IoChevronDown className={s.faqChevron} />
                 </summary>
                 <p className={s.faqA}>
                   Most libs handle either SSR or styling — not both.{" "}
@@ -668,8 +672,8 @@ link.click();`}
                   <code>qr-code-styling</code> covers custom dots, colors, and
                   logos but relies on Canvas and breaks server-side. This lib
                   covers all of it: custom dot shapes, per-corner colors, logo
-                  support, pure SVG, SSR-safe. 2× faster cold start than{" "}
-                  <code>qrcode.react</code>, 20× faster styled renders than{" "}
+                  support, pure SVG, SSR-safe. 3.5× faster cold start than{" "}
+                  <code>qrcode.react</code>, 34× faster styled renders than{" "}
                   <code>qr-code-styling</code>.{" "}
                   <a href="/benchmark" className={s.faqLink}>
                     See the benchmark →
@@ -734,7 +738,10 @@ link.click();`}
                 },
               ].map(({ q, a }) => (
                 <details key={q} className={s.faqItem}>
-                  <summary className={s.faqQ}>{q}</summary>
+                  <summary className={s.faqQ}>
+                    <span>{q}</span>
+                    <IoChevronDown className={s.faqChevron} />
+                  </summary>
                   <p className={s.faqA}>{a}</p>
                 </details>
               ))}
