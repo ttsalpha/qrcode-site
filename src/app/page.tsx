@@ -349,12 +349,7 @@ export default function Page() {
             <div className={s.installGrid}>
               <div>
                 <p className={s.installLabel}>Install</p>
-                <CodeBlock
-                  lang="bash"
-                  code={`pnpm add @ttsalpha/qrcode
-# npm install @ttsalpha/qrcode
-# yarn add @ttsalpha/qrcode`}
-                />
+                <CodeBlock lang="bash" code={`pnpm add @ttsalpha/qrcode`} />
               </div>
               <div>
                 <p className={s.installLabel}>Quick start</p>
