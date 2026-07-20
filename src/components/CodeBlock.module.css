@@ -18,7 +18,7 @@
 
 .lang {
   font-size: 10px;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   color: var(--fg-3);
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -37,7 +37,7 @@
   padding: 18px 0 18px 20px;
   font-size: 13px;
   line-height: 1.7;
-  font-family: var(--font-geist-mono), "Menlo", "Consolas", monospace;
+  font-family: var(--font-mono), "Menlo", "Consolas", monospace;
   /* Scroll lives on <pre> so iOS sees column-width = 100% container, not max-content */
   overflow-x: auto;
   box-sizing: border-box;

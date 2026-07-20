@@ -47,7 +47,7 @@
   padding: 8px 8px 8px 18px;
   border-radius: var(--r-lg);
   font-size: 14px;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   border: 1px solid var(--border);
   margin-bottom: 52px;
 }
@@ -67,7 +67,7 @@
   font-size: 11px;
   color: var(--fg-3);
   letter-spacing: 0.06em;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   text-transform: uppercase;
 }
 
@@ -88,7 +88,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent);
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   margin-bottom: 10px;
 }
 .sectionTitle {
@@ -160,7 +160,7 @@
   font-size: 13.5px;
   font-weight: 600;
   color: var(--accent);
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   margin-bottom: 14px;
 }
 .tableWrap {
@@ -204,7 +204,7 @@
   background: var(--surface);
 }
 .table code {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px;
   color: var(--accent);
   background: transparent;
@@ -220,7 +220,7 @@
   border-radius: 0 var(--r) var(--r) 0;
 }
 .note code {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px;
   background: var(--surface-2);
   padding: 1px 5px;
@@ -281,7 +281,7 @@
   text-decoration: underline;
 }
 .faqA code {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 12px;
   background: var(--surface-2);
   padding: 1px 5px;

@@ -16,7 +16,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent);
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   margin-bottom: 12px;
 }
 .heroTitle {

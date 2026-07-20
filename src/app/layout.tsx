@@ -1,13 +1,19 @@
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cascadia_Mono, Google_Sans } from "next/font/google";
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 import "./globals.css";
 
-const sans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+const sans = Google_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+const mono = Cascadia_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 const siteUrl = "https://qrcode.ttsalpha.com";
 

@@ -82,7 +82,7 @@ body {
   min-height: 100%;
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -98,5 +98,5 @@ img {
 code,
 pre,
 kbd {
-  font-family: var(--font-geist-mono), "Menlo", "Consolas", monospace;
+  font-family: var(--font-mono), "Menlo", "Consolas", monospace;
 }
