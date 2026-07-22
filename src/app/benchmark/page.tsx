@@ -4,7 +4,7 @@ import { SiteNav } from "@/components/SiteNav";
 import s from "./page.module.css";
 
 const benchmarkDescription =
-  "Performance comparison of @ttsalpha/qrcode vs qrcode.react, qr-code-styling, react-qr-code, and qrcode — true cold start, SSR, throughput, repeated-value caching, sequential batch, bundle size, and features.";
+  "Performance comparison of @ttsalpha/qrcode vs qrcode.react, react-qr-code, qr-code-styling, and qrcode. Covers true cold start, SSR, throughput, repeated-value caching, sequential batch, bundle size, and features.";
 
 export const metadata: Metadata = {
   title: "Benchmark",
@@ -144,7 +144,7 @@ export default function BenchmarkPage() {
               >
                 <code>@ttsalpha/qrcode</code>
               </a>{" "}
-              against the three most popular React QR libraries —{" "}
+              against the three QR libraries most React apps use:{" "}
               <a
                 href="https://www.npmjs.com/package/qrcode.react"
                 target="_blank"
@@ -155,6 +155,15 @@ export default function BenchmarkPage() {
               </a>
               ,{" "}
               <a
+                href="https://www.npmjs.com/package/react-qr-code"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={s.heroSubLink}
+              >
+                react-qr-code
+              </a>
+              , and{" "}
+              <a
                 href="https://www.npmjs.com/package/qr-code-styling"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -162,16 +171,7 @@ export default function BenchmarkPage() {
               >
                 qr-code-styling
               </a>
-              ,{" "}
-              <a
-                href="https://www.npmjs.com/package/react-qr-code"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={s.heroSubLink}
-              >
-                react-qr-code
-              </a>{" "}
-              — and the most-downloaded QR package on npm,{" "}
+              . I also included{" "}
               <a
                 href="https://www.npmjs.com/package/qrcode"
                 target="_blank"
@@ -179,10 +179,11 @@ export default function BenchmarkPage() {
                 className={s.heroSubLink}
               >
                 qrcode
-              </a>{" "}
-              (headless baseline) — covering true cold start, SSR latency,
-              throughput, repeated-value caching, sequential batch, bundle size,
-              and feature completeness.
+              </a>
+              , the most-downloaded QR package on npm, as a headless baseline.
+              The tests cover true cold start, SSR latency, throughput,
+              repeated-value caching, sequential batch, bundle size, and feature
+              completeness.
             </p>
             <p className={s.heroBadges}>
               Environment: ubuntu-latest · Node.js v24.18.0 · ECL pinned to M ·
@@ -207,7 +208,7 @@ export default function BenchmarkPage() {
           <div className={s.wrap}>
             <SectionHead
               title="Feature Comparison"
-              desc="Key capabilities across all five libraries — before we look at numbers."
+              desc="Key capabilities across all five libraries, before we get to the numbers."
             />
             <div className={s.tableWrap}>
               <table className={`${s.table} ${s.tableWrapCells}`}>
@@ -237,8 +238,8 @@ export default function BenchmarkPage() {
                       },
                       {
                         feature: "React component",
-                        vals: ["✓", "✓", "✓", "✓", "—"],
-                        wins: [0, 1, 2, 3],
+                        vals: ["✓", "✓", "—", "✓", "—"],
+                        wins: [0, 1, 3],
                       },
                       {
                         feature: "Logo support",
@@ -356,7 +357,7 @@ export default function BenchmarkPage() {
             <SectionHead
               num="01 — Throughput"
               title="Unique input per render, 3 s window"
-              desc="Each call receives a distinct URL — no lib can benefit from caching. Higher r/s is better."
+              desc="Each call receives a distinct URL, so no lib can benefit from caching. Higher r/s is better."
             />
             <BarChart
               unit="r/s"
@@ -389,7 +390,7 @@ export default function BenchmarkPage() {
             <SectionHead
               num="02 — Repeated Value"
               title="Same input every render"
-              desc="Re-rendering one QR across requests or mounts — receipts, kiosk screens, shared links. @ttsalpha/qrcode ≥2.4 memoizes matrices in a 16-entry LRU, so this test is expected to favor it by design; it is kept separate from the cold-path tests above."
+              desc="Re-rendering one QR across requests or mounts, like receipts, kiosk screens, and shared links. @ttsalpha/qrcode ≥2.4 memoizes matrices in a 16-entry LRU, so this test is expected to favor it by design; it is kept separate from the cold-path tests above."
             />
             <BarChart
               unit="r/s"
@@ -608,7 +609,7 @@ export default function BenchmarkPage() {
             <SectionHead
               num="05 — Sequential Batch"
               title="Burst of N renders, single thread"
-              desc="Node.js is single-threaded — React renders run sequentially. Batch=100 (qr-code-styling: 20). 20 rounds (qr-code-styling: 10)."
+              desc="Node.js is single-threaded, so React renders run sequentially. Batch=100 (qr-code-styling: 20). 20 rounds (qr-code-styling: 10)."
             />
             <div className={s.tableWrap}>
               <table className={s.table}>
@@ -1023,7 +1024,7 @@ export default function BenchmarkPage() {
                         false,
                         false,
                       ],
-                      ["React component", true, true, true, true, false],
+                      ["React component", true, true, false, true, false],
                       ["SSR / Edge runtime safe", true, true, null, true, true],
                       ["Zero dependencies", true, true, false, false, false],
                       ["Dot shape styles", true, false, true, false, false],
@@ -1049,8 +1050,8 @@ export default function BenchmarkPage() {
                         true,
                         false,
                       ],
-                      ["React 18+ support", true, true, true, true, true],
-                      ["React 16 / 17 support", false, true, true, true, true],
+                      ["React 18+ support", true, true, false, true, true],
+                      ["React 16 / 17 support", false, true, false, true, true],
                     ] as [
                       string,
                       boolean,
@@ -1079,7 +1080,7 @@ export default function BenchmarkPage() {
                     <td>Score</td>
                     <td className={`${s.center} ${s.cellWin}`}>16 / 18</td>
                     <td className={s.center}>13 / 18</td>
-                    <td className={s.center}>12 / 18</td>
+                    <td className={s.center}>9 / 18</td>
                     <td className={s.center}>9 / 18</td>
                     <td className={s.center}>8 / 18</td>
                   </tr>
@@ -1144,7 +1145,7 @@ export default function BenchmarkPage() {
                     },
                     {
                       cat: "Feature score",
-                      vals: ["#1", "#2", "#3", "#4", "#5"],
+                      vals: ["#1", "#2", "#3", "#3", "#5"],
                       win: 0,
                     },
                   ].map(({ cat, vals, win }) => (
@@ -1289,7 +1290,10 @@ export default function BenchmarkPage() {
                 </div>
                 <ul className={s.chooseList}>
                   <li>No strong reason to choose over the others</li>
-                  <li>Fewest features, slowest renders</li>
+                  <li>
+                    Fewest features and slowest renders among the SSR-safe React
+                    libraries
+                  </li>
                   <li>Hidden bundle cost from dependencies</li>
                 </ul>
               </div>
