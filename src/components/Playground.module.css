@@ -54,8 +54,41 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 6px 2px 14px;
-  border-bottom: 1px solid var(--border);
+  padding: 2px 6px 2px 4px;
+}
+
+.snippetToggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 8px;
+  border: none;
+  background: transparent;
+  color: var(--fg-2);
+  font-size: 12.5px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.12s;
+}
+
+.snippetToggle:hover {
+  color: var(--fg);
+}
+
+.chevron {
+  color: var(--fg-3);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.snippetLabel {
+  font-weight: 500;
 }
 
 .snippetLang {
@@ -74,9 +107,10 @@
   white-space: pre;
   padding: 14px 16px;
   background: var(--surface);
-  min-height: 120px;
+  min-height: 100px;
   max-height: 300px;
   flex-shrink: 0;
+  border-top: 1px solid var(--border);
 }
 
 /* Each span resolves var() against its own inline --shiki-* vars */
@@ -223,62 +257,124 @@
 .controls {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 }
 
-/* ─── Group ───────────────────────────────────────────────────────────────── */
+/* ─── Presets ─────────────────────────────────────────────────────────────── */
 
-.group {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.groupHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 12px;
-  background: var(--surface-2);
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-  transition: background 0.12s;
-  color: var(--fg);
-}
-
-.groupHeader:hover {
-  background: var(--surface);
-}
-
-.groupTitle {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--fg-2);
-  flex: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-family: var(--font-mono), monospace;
-}
-
-.chevron {
-  color: var(--fg-3);
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.chevronOpen {
-  transform: rotate(180deg);
-}
-
-.groupBody {
-  padding: 12px;
+.presets {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border-top: 1px solid var(--border);
-  background: var(--surface);
+  padding: 18px 0 8px;
+}
+
+.presetsLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg-2);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.presetsRow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.presetsRow::-webkit-scrollbar {
+  display: none;
+}
+
+.presetChip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+
+.presetChip:hover {
+  background: var(--surface-2);
+}
+
+.presetThumb {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.presetName {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fg-2);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* ─── Value block + tabs ──────────────────────────────────────────────────── */
+
+.valueBlock {
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabBar {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabBar::-webkit-scrollbar {
+  display: none;
+}
+
+.tabBtn {
+  padding: 10px 14px;
+  margin-bottom: -1px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--fg-3);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color 0.12s,
+    border-color 0.12s;
+}
+
+.tabBtn:hover {
+  color: var(--fg);
+}
+
+.tabBtnActive,
+.tabBtnActive:hover {
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+}
+
+.tabPanel {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 /* ─── Field ───────────────────────────────────────────────────────────────── */
@@ -286,14 +382,14 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 }
 
 .label {
-  font-size: 11px;
-  color: var(--fg-3);
-  font-family: var(--font-mono), monospace;
-  letter-spacing: 0.02em;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--fg-2);
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 /* ─── Row of 3 ────────────────────────────────────────────────────────────── */
@@ -307,19 +403,19 @@
 .row2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: 12px;
 }
 
 /* ─── Input ───────────────────────────────────────────────────────────────── */
 
 .input {
   width: 100%;
-  padding: 7px 10px;
+  padding: 9px 11px;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: 8px;
   color: var(--fg);
-  font-size: 12.5px;
+  font-size: 13px;
   font-family: var(--font-mono), monospace;
   outline: none;
   transition: border-color 0.15s;
@@ -328,6 +424,12 @@
 
 .input:focus {
   border-color: var(--accent);
+}
+
+/* Friendlier sans font for free-text fields (content, logo URL) */
+.inputText {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
 }
 
 .inputError,
@@ -373,13 +475,14 @@
 }
 
 .tab {
-  padding: 5px 10px;
-  border-radius: 6px;
+  padding: 7px 13px;
+  border-radius: 7px;
   border: 1px solid var(--border);
   background: var(--surface-2);
   color: var(--fg-2);
-  font-size: 11.5px;
-  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  text-transform: capitalize;
   cursor: pointer;
   transition: all 0.12s;
   white-space: nowrap;
@@ -404,6 +507,64 @@
 
 :global([data-theme="dark"]) .tabActive {
   color: #0a0a0a;
+}
+
+/* ─── Shape picker ────────────────────────────────────────────────────────── */
+
+.shapePicker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 80px);
+  gap: 4px;
+}
+
+.shapeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.shapeOption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--fg-2);
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+}
+
+.shapeOption:hover {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--fg);
+}
+
+.shapeOptionActive,
+.shapeOptionActive:hover {
+  background: var(--surface-2);
+  color: var(--fg);
+}
+
+.shapeName {
+  font-size: 10.5px;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  text-transform: capitalize;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--fg-3);
+}
+
+.shapeItem:has(.shapeOptionActive) .shapeName {
+  color: var(--fg);
 }
 
 /* ─── Color input ─────────────────────────────────────────────────────────── */
@@ -436,8 +597,8 @@
   border-radius: 6px;
   background: transparent;
   color: var(--fg-3);
-  font-size: 11.5px;
-  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-family: var(--font-sans), system-ui, sans-serif;
   cursor: pointer;
   transition: all 0.12s;
 }
@@ -474,8 +635,8 @@
   border: 1px dashed var(--border);
   background: transparent;
   color: var(--fg-3);
-  font-size: 11px;
-  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+  font-family: var(--font-sans), system-ui, sans-serif;
   cursor: pointer;
   transition: all 0.12s;
   white-space: nowrap;
@@ -508,8 +669,8 @@
 }
 
 .transparentLabel {
-  font-size: 12px;
-  font-family: var(--font-mono), monospace;
+  font-size: 12.5px;
+  font-family: var(--font-sans), system-ui, sans-serif;
   color: var(--fg-3);
   flex: 1;
 }
@@ -561,9 +722,9 @@
 }
 
 .toggleLabel {
-  font-size: 12px;
-  font-family: var(--font-mono), monospace;
-  color: var(--fg-2);
+  font-size: 12.5px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--fg-3);
 }
 
 /* ─── Logo file upload ────────────────────────────────────────────────────── */
