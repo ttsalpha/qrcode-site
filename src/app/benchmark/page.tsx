@@ -311,11 +311,11 @@ export default function BenchmarkPage() {
                       {
                         feature: "Bundle size (gzip)",
                         vals: [
-                          "8.9 KB",
-                          "6.1 KB",
-                          "14.7 KB",
-                          "9.0 KB",
-                          "9.5 KB",
+                          "7.9 KB",
+                          "5.9 KB",
+                          "13.5 KB",
+                          "8.3 KB",
+                          "8.5 KB",
                         ],
                         wins: [1],
                       },
@@ -929,7 +929,7 @@ export default function BenchmarkPage() {
             <SectionHead
               num="09 — Bundle Size"
               title="Minified + gzip, dependencies bundled"
-              desc="Measured with esbuild (browser ESM, react/react-dom external). Each lib's own dependencies are included in its number."
+              desc="Source: bundlephobia.com — minified + gzip, react/react-dom external, each lib's own dependencies bundled."
             />
             <div className={s.tableWrap}>
               <table className={s.table}>
@@ -945,33 +945,33 @@ export default function BenchmarkPage() {
                   {[
                     {
                       lib: "qrcode.react",
-                      min: "16.3",
-                      gz: "6.1",
+                      min: "15.9",
+                      gz: "5.9",
                       deps: "0",
                       winGz: true,
                     },
                     {
                       lib: "@ttsalpha/qrcode",
-                      min: "27.6",
-                      gz: "8.9",
+                      min: "17.8",
+                      gz: "7.9",
                       deps: "0",
                     },
                     {
                       lib: "react-qr-code",
-                      min: "24.3",
-                      gz: "9.0",
+                      min: "22.8",
+                      gz: "8.3",
                       deps: "2 (bundled)",
                     },
                     {
                       lib: "qrcode",
-                      min: "24.3",
-                      gz: "9.5",
+                      min: "22.9",
+                      gz: "8.5",
                       deps: "3 (bundled)",
                     },
                     {
                       lib: "qr-code-styling",
-                      min: "47.5",
-                      gz: "14.7",
+                      min: "45.8",
+                      gz: "13.5",
                       deps: "1 (bundled)",
                     },
                   ].map(({ lib, min, gz, deps, winGz }) => (
@@ -986,8 +986,8 @@ export default function BenchmarkPage() {
               </table>
             </div>
             <p className={s.note}>
-              qrcode.react stays the smallest at 6.1 KB gzip. @ttsalpha/qrcode
-              lands at 8.9 KB with zero dependencies and is fully tree-shakeable
+              qrcode.react stays the smallest at 5.9 KB gzip. @ttsalpha/qrcode
+              lands at 7.9 KB with zero dependencies and is fully tree-shakeable
               (<code>sideEffects: false</code>) — apps that only use the
               component don&apos;t pay for the export helpers.
             </p>
@@ -1255,7 +1255,7 @@ export default function BenchmarkPage() {
                   </a>
                 </div>
                 <ul className={s.chooseList}>
-                  <li>Bundle size is the primary constraint (6.1 KB gzip)</li>
+                  <li>Bundle size is the primary constraint (5.9 KB gzip)</li>
                   <li>Targeting React 16/17 legacy projects</li>
                   <li>Need Canvas output alongside SVG</li>
                   <li>Simplest possible API is sufficient</li>
