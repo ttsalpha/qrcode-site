@@ -159,7 +159,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <SiteNav maxWidth={860} />
+      <SiteNav maxWidth={920} />
 
       <main>
         {/* Hero */}
@@ -651,6 +651,124 @@ link.click();`}
                 </table>
               </div>
             </div>
+
+            <div className={s.apiGroup}>
+              <div className={s.apiGroupTitle}>HTTP API — /api/qr</div>
+              <p className={s.note} style={{ marginBottom: 14 }}>
+                Render a QR straight from a URL — no install needed. Paste the
+                link into any <code>{"<img>"}</code> tag, email, or doc. The
+                quickest way to build one: configure it in the playground above
+                and hit “Copy link”. Output is deterministic per URL and cached
+                on the CDN.
+              </p>
+              <CodeBlock
+                lang="html"
+                code={`<!-- SVG (default) -->
+<img src="https://qrcode.ttsalpha.com/api/qr?data=https://example.com" alt="QR code" />
+
+<!-- PNG output -->
+<img src="https://qrcode.ttsalpha.com/api/qr?data=Hello&dotStyle=rounded&dotColor=%2314b8a6&format=png" />
+
+<!-- With a center logo -->
+<img src="https://qrcode.ttsalpha.com/api/qr?data=https://example.com&logo=https://example.com/logo.png" />`}
+              />
+              <div className={s.tableWrap} style={{ marginTop: 14 }}>
+                <table className={s.table}>
+                  <thead>
+                    <tr>
+                      <th>Param</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ["data", "string", "—", "Content to encode (required)"],
+                      [
+                        "format",
+                        "'svg' | 'png' | 'jpg'",
+                        "'svg'",
+                        "Output image format",
+                      ],
+                      ["size", "number (64–2048)", "256", "Image size in px"],
+                      ["margin", "number (0–20)", "4", "Quiet zone in modules"],
+                      [
+                        "dotStyle",
+                        "'square' | 'circle' | 'rounded'",
+                        "'square'",
+                        "Data module style",
+                      ],
+                      ["dotColor", "#rrggbb", "'#000000'", "Data module color"],
+                      [
+                        "bg",
+                        "#rrggbb | 'transparent'",
+                        "'#ffffff'",
+                        "Background color",
+                      ],
+                      [
+                        "cornerSquareStyle",
+                        "'square' | 'rounded' | 'extra-rounded' | 'circle'",
+                        "'square'",
+                        "Finder frame style",
+                      ],
+                      [
+                        "cornerSquareColor",
+                        "#rrggbb",
+                        "dotColor",
+                        "Finder frame color",
+                      ],
+                      [
+                        "cornerDotStyle",
+                        "'square' | 'rounded' | 'circle'",
+                        "derived",
+                        "Finder center style",
+                      ],
+                      [
+                        "cornerDotColor",
+                        "#rrggbb",
+                        "dotColor",
+                        "Finder center color",
+                      ],
+                      [
+                        "ecl",
+                        "'L' | 'M' | 'Q' | 'H'",
+                        "M *",
+                        "Error correction level (* raised automatically when a logo is set)",
+                      ],
+                      ["qrVersion", "number (1–40)", "auto", "QR version"],
+                      ["logo", "url", "—", "Center logo image URL"],
+                      [
+                        "logoSize",
+                        "number (0–1)",
+                        "0.4",
+                        "Logo size relative to QR",
+                      ],
+                      ["logoMargin", "number", "0", "Space around the logo"],
+                      [
+                        "logoHideDots",
+                        "boolean",
+                        "true",
+                        "Clear QR dots behind the logo",
+                      ],
+                    ].map(([p, t, d, desc]) => (
+                      <tr key={p}>
+                        <td>
+                          <code>{p}</code>
+                        </td>
+                        <td>
+                          <code>{t}</code>
+                        </td>
+                        <td>
+                          <code>{d}</code>
+                        </td>
+                        <td>{desc}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -750,7 +868,7 @@ link.click();`}
         </section>
       </main>
 
-      <SiteFooter maxWidth={860} />
+      <SiteFooter maxWidth={920} />
     </>
   );
 }

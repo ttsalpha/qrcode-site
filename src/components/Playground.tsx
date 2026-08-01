@@ -17,16 +17,30 @@ import {
   IoCloudUploadOutline,
   IoCopyOutline,
   IoDownloadOutline,
+  IoLinkOutline,
 } from "react-icons/io5";
 import { createHighlighter, type Highlighter, type ThemedToken } from "shiki";
+import { buildQRUrl, HEX6 } from "@/lib/qr-params";
 import CopyButton from "./CopyButton";
 import s from "./Playground.module.css";
 
 type ExportFormat = "svg" | "png" | "jpg";
 
-// <input type="color"> only accepts 6-digit hex; guard so partial/named
-// values don't silently coerce the swatch to black
-const HEX6 = /^#[0-9a-fA-F]{6}$/;
+type SplitOption = { key: string; label: string };
+
+const FORMAT_OPTIONS: SplitOption[] = [
+  { key: "svg", label: "SVG" },
+  { key: "png", label: "PNG" },
+  { key: "jpg", label: "JPG" },
+];
+
+const LINK_OPTIONS: SplitOption[] = [
+  { key: "svg", label: "SVG link" },
+  { key: "png", label: "PNG link" },
+  { key: "jpg", label: "JPG link" },
+  { key: "html", label: "HTML <img>" },
+  { key: "markdown", label: "Markdown" },
+];
 
 // Shown when the input is empty — the field starts blank (placeholder visible)
 // but the QR still encodes this so the preview is never empty
@@ -322,6 +336,32 @@ export default function Playground() {
       throw new Error("download failed");
     }
   }
+
+  // Copy an /api/qr link that renders the current QR. Uploaded data:/blob: logos
+  // don't fit in a URL — buildQRUrl drops them, so warn.
+  async function handleCopyUrl(key: string) {
+    trackEvent("export_copy_url", { format: key });
+    const origin = window.location.origin;
+    const props = buildProps();
+    let text: string;
+    if (key === "html") {
+      text = `<img src="${buildQRUrl(props, "svg", origin)}" alt="QR code" />`;
+    } else if (key === "markdown") {
+      text = `![QR code](${buildQRUrl(props, "svg", origin)})`;
+    } else {
+      text = buildQRUrl(props, key as ExportFormat, origin);
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      flashError("Couldn't copy the link — check clipboard access.");
+      throw new Error("copy failed");
+    }
+    if (logoUrl && !/^https?:\/\//i.test(logoUrl)) {
+      flashError("Uploaded logo can't go in a link — use a logo URL instead.");
+    }
+  }
+
   useEffect(() => {
     const el = previewRef.current;
     if (!el) return;
@@ -429,26 +469,33 @@ export default function Playground() {
           ) : (
             <QRCode {...buildProps()} size={previewSize} />
           )}
-          <div className={s.previewActions}>
-            <SplitButton
-              label="Copy"
-              icon={<IoCopyOutline size={14} />}
-              onMain={() => handleCopy("svg")}
-              onOption={handleCopy}
-            />
-            <SplitButton
-              label="Download"
-              icon={<IoDownloadOutline size={14} />}
-              onMain={() => handleDownload("svg")}
-              onOption={handleDownload}
-            />
-          </div>
-          {exportError && (
-            <span className={s.qrError} role="alert">
-              {exportError}
-            </span>
-          )}
         </div>
+        <div className={s.previewActions}>
+          <SplitButton
+            label="Copy image"
+            icon={<IoCopyOutline size={14} />}
+            onMain={() => handleCopy("svg")}
+            onOption={(k) => handleCopy(k as ExportFormat)}
+          />
+          <SplitButton
+            label="Copy link"
+            icon={<IoLinkOutline size={14} />}
+            onMain={() => handleCopyUrl("svg")}
+            onOption={handleCopyUrl}
+            options={LINK_OPTIONS}
+          />
+          <SplitButton
+            label="Download"
+            icon={<IoDownloadOutline size={14} />}
+            onMain={() => handleDownload("svg")}
+            onOption={(k) => handleDownload(k as ExportFormat)}
+          />
+        </div>
+        {exportError && (
+          <span className={s.qrError} role="alert">
+            {exportError}
+          </span>
+        )}
         <div className={s.snippetWrap}>
           <div className={s.snippetToolbar}>
             <button
@@ -1193,11 +1240,13 @@ function SplitButton({
   icon,
   onMain,
   onOption,
+  options,
 }: {
   label: string;
   icon: React.ReactNode;
   onMain: () => Promise<void>;
-  onOption: (fmt: ExportFormat) => Promise<void>;
+  onOption: (key: string) => Promise<void>;
+  options?: SplitOption[];
 }) {
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
@@ -1224,7 +1273,7 @@ function SplitButton({
     setTimeout(() => setDone(false), 1500);
   }
 
-  const doneLabel = label === "Copy" ? "Copied!" : "Downloaded!";
+  const doneLabel = label.startsWith("Copy") ? "Copied!" : "Downloaded!";
   const mainLabel = done ? doneLabel : label;
 
   return (
@@ -1247,17 +1296,17 @@ function SplitButton({
       </button>
       {open && (
         <div className={s.splitBtnDropdown}>
-          {(["svg", "png", "jpg"] as ExportFormat[]).map((fmt) => (
+          {(options ?? FORMAT_OPTIONS).map((opt) => (
             <button
-              key={fmt}
+              key={opt.key}
               type="button"
               className={s.splitBtnOption}
               onClick={() => {
                 setOpen(false);
-                run(() => onOption(fmt));
+                run(() => onOption(opt.key));
               }}
             >
-              {label} as {fmt.toUpperCase()}
+              {options ? opt.label : `${label} as ${opt.label}`}
             </button>
           ))}
         </div>

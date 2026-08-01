@@ -1,5 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { fetchRemoteImage } from "@/lib/safe-fetch";
 
+// Proxies a remote image so the Playground can rasterize it to canvas without
+// tainting. Guarded against SSRF / hangs / oversized bodies via fetchRemoteImage.
 export async function GET(req: NextRequest) {
   const url = req.nextUrl.searchParams.get("url");
   if (!url) return new NextResponse("missing url", { status: 400 });
@@ -15,19 +18,21 @@ export async function GET(req: NextRequest) {
     return new NextResponse("disallowed protocol", { status: 400 });
   }
 
-  const res = await fetch(url);
-  if (!res.ok) {
-    return new NextResponse("upstream error", { status: 502 });
+  const image = await fetchRemoteImage(parsed);
+  if (!image) {
+    return new NextResponse("upstream error, blocked host, or not an image", {
+      status: 502,
+    });
   }
 
-  const contentType =
-    res.headers.get("content-type") ?? "application/octet-stream";
-  const body = await res.arrayBuffer();
-
-  return new NextResponse(body, {
+  return new NextResponse(new Uint8Array(image.buffer), {
     headers: {
-      "Content-Type": contentType,
+      "Content-Type": image.contentType,
       "Cache-Control": "public, max-age=86400",
+      // The body is attacker-controlled bytes served from our origin — stop the
+      // browser sniffing it into HTML/script.
+      "X-Content-Type-Options": "nosniff",
+      "Content-Disposition": "inline",
     },
   });
 }
