@@ -4,12 +4,8 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   // sharp is native — keep it out of the server bundle (/api/qr rasterizes with it).
   serverExternalPackages: ["sharp"],
-  // /api/qr imports @ttsalpha/qrcode via a runtime (turbopackIgnore) import that
-  // file tracing can't see — force it into the route bundle.
-  outputFileTracingIncludes: {
-    // whole package (incl. package.json) so the runtime import resolves on Vercel
-    "/api/qr": ["./node_modules/@ttsalpha/qrcode/**/*"],
-  },
+  // No outputFileTracingIncludes: qrcode is pre-bundled into the route (see
+  // scripts/gen-qr-server.mjs) and nft traces sharp's binary automatically.
 };
 
 export default nextConfig;

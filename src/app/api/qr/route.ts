@@ -1,28 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
-import sharp from "sharp";
 import { parseQRParams, type QRFormat } from "@/lib/qr-params";
+// Pre-bundled server build of @ttsalpha/qrcode (which ships "use client" and so
+// can't be imported directly on the server). See scripts/gen-qr-server.mjs.
+import { toSVGString } from "@/lib/qrcode-server.generated.cjs";
 import { fetchRemoteImage } from "@/lib/safe-fetch";
 
 // Public QR image endpoint: SVG via toSVGString, PNG/JPG via sharp. Node only.
-
-// @ttsalpha/qrcode ships "use client", so a bundled import makes toSVGString a
-// client reference that throws on the server. Import it natively at runtime
-// (turbopackIgnore) so Node loads the real module and ignores the directive.
-type ToSVGString = typeof import("@ttsalpha/qrcode")["toSVGString"];
-let svgFnPromise: Promise<ToSVGString> | null = null;
-function loadToSVGString(): Promise<ToSVGString> {
-  if (!svgFnPromise) {
-    svgFnPromise = import(
-      /* webpackIgnore: true */ /* turbopackIgnore: true */ "@ttsalpha/qrcode"
-    )
-      .then((m) => m.toSVGString)
-      .catch((err) => {
-        svgFnPromise = null; // don't cache a rejection — allow a later retry
-        throw err;
-      });
-  }
-  return svgFnPromise;
-}
+// sharp is imported lazily in the raster branch — a top-level native import
+// crashes the whole route (incl. svg) when the platform binary is missing.
 
 export async function GET(req: NextRequest) {
   const parsed = parseQRParams(req.nextUrl.searchParams);
@@ -45,7 +30,6 @@ export async function GET(req: NextRequest) {
 
   let svg: string;
   try {
-    const toSVGString = await loadToSVGString();
     svg = toSVGString(props);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "could not encode QR";
@@ -59,6 +43,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    const { default: sharp } = await import("sharp");
     const pipeline = sharp(Buffer.from(svg));
     const buf =
       format === "jpg"

@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "gen:qr": "node scripts/gen-qr-server.mjs",
+    "dev": "pnpm gen:qr && next dev",
+    "build": "pnpm gen:qr && next build",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"
@@ -26,6 +27,7 @@
     "@types/react": "19",
     "@types/react-dom": "19",
     "babel-plugin-react-compiler": "1.0.0",
+    "esbuild": "0.28.1",
     "typescript": "5"
   }
 }

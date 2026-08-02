@@ -46,3 +46,6 @@ next-env.d.ts
 # local
 .local
 *.local.*
+
+# generated (see scripts/gen-qr-server.mjs)
+src/lib/qrcode-server.generated.cjs
