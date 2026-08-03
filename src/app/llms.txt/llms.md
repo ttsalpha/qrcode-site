@@ -1,6 +1,6 @@
 # @ttsalpha/qrcode
 
-> Lightweight React QR code library — pure SVG, zero dependencies, fully typed. Covers SSR, custom dot/corner shapes, logo embedding, and PNG/SVG export. Version 2.4.1. MIT license.
+> Lightweight React QR code library: pure SVG, zero dependencies, fully typed. Covers SSR, custom dot/corner shapes, logo embedding, and PNG/SVG export. Version 2.4.3. MIT license.
 
 Requires React 18+ as peer dependency.
 
@@ -39,7 +39,7 @@ export default function App() {
 
 ```ts
 interface CornerOptions {
-  dot?: { style?: 'square' | 'rounded' | 'circle'; color?: string };     // inner 3×3 block
+  dot?: { style?: 'square' | 'rounded' | 'circle'; color?: string }; // inner 3×3 block
   square?: { style?: 'square' | 'rounded' | 'extra-rounded' | 'circle'; color?: string }; // outer 7×7 ring
 }
 ```
@@ -67,7 +67,7 @@ ECL auto-picked by size: ≤0.25 → L, ≤0.44 → M, ≤0.69 → Q, ≤1.0 →
 ```ts
 import { toSVGString, toDataURL } from '@ttsalpha/qrcode';
 
-// Server-side SVG — no DOM, no React required
+// Server-side SVG, no DOM or React required
 const svg = toSVGString({ value: 'https://example.com', size: 512 });
 
 // PNG data URL via Canvas (browser-only)
@@ -79,7 +79,7 @@ const jpg = await toDataURL({ value: 'https://example.com' }, { format: 'jpeg', 
 
 `toDataURL` is browser-only (Canvas API). JPEG auto-fills white background when `backgroundColor` is `'transparent'`.
 
-vs. alternatives: 3.5× faster cold start than qrcode.react · 34× faster styled renders than qr-code-styling · SSR/Edge-safe (no Canvas dependency) · adds dot styles, logo, per-corner colors, export helpers over react-qr-code
+vs. alternatives: 4× faster cold start than qrcode.react · 38× faster styled renders than qr-code-styling · SSR/Edge-safe (no Canvas dependency) · adds dot styles, logo, per-corner colors, export helpers over react-qr-code
 
 ## Docs
 
