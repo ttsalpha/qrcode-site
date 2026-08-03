@@ -119,6 +119,399 @@ const benchmarkJsonLd = {
   ],
 };
 
+// ── Data ─────────────────────────────────────────────────────────────────────
+
+type BarRow = {
+  label: string;
+  value: number;
+  winner?: boolean;
+  slow?: boolean;
+};
+
+const THROUGHPUT_ROWS: BarRow[] = [
+  { label: "@ttsalpha/qrcode (toSVGString)", value: 5795, winner: true },
+  { label: "qrcode (headless)", value: 4666 },
+  { label: "@ttsalpha/qrcode (React)", value: 3561 },
+  { label: "qrcode.react (SVG)", value: 1729 },
+  { label: "react-qr-code", value: 1046 },
+  { label: "qr-code-styling (async)", value: 78, slow: true },
+];
+
+const REPEATED_ROWS: BarRow[] = [
+  { label: "@ttsalpha/qrcode (toSVGString)", value: 13053, winner: true },
+  { label: "@ttsalpha/qrcode (React)", value: 5789 },
+  { label: "qrcode (headless)", value: 4017 },
+  { label: "qrcode.react (SVG)", value: 1521 },
+  { label: "react-qr-code", value: 745 },
+  { label: "qr-code-styling (async)", value: 58, slow: true },
+];
+
+const STYLED_ROWS: BarRow[] = [
+  { label: "@ttsalpha/qrcode (toSVGString)", value: 0.311, winner: true },
+  { label: "@ttsalpha/qrcode (React)", value: 0.833 },
+  { label: "qr-code-styling (async DOM)", value: 11.84, slow: true },
+];
+
+type ColdStartRow = {
+  lib: string;
+  imp: string;
+  impP95: string;
+  r1: string;
+  r1P95: string;
+  r2: string;
+  win?: boolean;
+  slow?: boolean;
+};
+
+const COLD_START_ROWS: ColdStartRow[] = [
+  {
+    lib: "@ttsalpha/qrcode (toSVGString)",
+    imp: "31.48 ms",
+    impP95: "31.94 ms",
+    r1: "3.551 ms",
+    r1P95: "4.199 ms",
+    r2: "0.815 ms",
+    win: true,
+  },
+  {
+    lib: "qrcode (headless)",
+    imp: "23.63 ms",
+    impP95: "24.55 ms",
+    r1: "8.605 ms",
+    r1P95: "11.373 ms",
+    r2: "1.672 ms",
+  },
+  {
+    lib: "@ttsalpha/qrcode (React)",
+    imp: "30.99 ms",
+    impP95: "33.95 ms",
+    r1: "11.553 ms",
+    r1P95: "12.037 ms",
+    r2: "1.869 ms",
+  },
+  {
+    lib: "qrcode.react",
+    imp: "29.24 ms",
+    impP95: "32.22 ms",
+    r1: "14.271 ms",
+    r1P95: "14.646 ms",
+    r2: "4.252 ms",
+  },
+  {
+    lib: "react-qr-code",
+    imp: "36.97 ms",
+    impP95: "37.47 ms",
+    r1: "16.788 ms",
+    r1P95: "19.075 ms",
+    r2: "8.986 ms",
+  },
+  {
+    lib: "qr-code-styling",
+    imp: "4.73 ms",
+    impP95: "4.82 ms",
+    r1: "59.535 ms",
+    r1P95: "61.319 ms",
+    r2: "36.572 ms",
+    slow: true,
+  },
+];
+
+type SsrRow = {
+  lib: string;
+  med: string;
+  p95: string;
+  p99: string;
+  win?: boolean;
+};
+
+const SSR_ROWS: SsrRow[] = [
+  {
+    lib: "@ttsalpha/qrcode (toSVGString)",
+    med: "0.51",
+    p95: "0.556",
+    p99: "0.556",
+    win: true,
+  },
+  { lib: "@ttsalpha/qrcode (React)", med: "1.266", p95: "1.411", p99: "1.411" },
+  { lib: "qrcode (headless)", med: "1.626", p95: "1.823", p99: "1.823" },
+  { lib: "qrcode.react", med: "2.634", p95: "2.946", p99: "2.946" },
+  { lib: "react-qr-code", med: "3.418", p95: "4.156", p99: "4.156" },
+  { lib: "qr-code-styling", med: "✕ Not SSR-safe", p95: "—", p99: "—" },
+];
+
+type BatchRow = {
+  lib: string;
+  batch: string;
+  med: string;
+  p95: string;
+  avg: string;
+  win?: boolean;
+  slow?: boolean;
+};
+
+const BATCH_ROWS: BatchRow[] = [
+  {
+    lib: "@ttsalpha/qrcode (toSVGString)",
+    batch: "100",
+    med: "42",
+    p95: "42.44",
+    avg: "0.42",
+    win: true,
+  },
+  {
+    lib: "qrcode (headless)",
+    batch: "100",
+    med: "71.25",
+    p95: "74.94",
+    avg: "0.713",
+  },
+  {
+    lib: "@ttsalpha/qrcode (React)",
+    batch: "100",
+    med: "80.77",
+    p95: "104.83",
+    avg: "0.808",
+  },
+  {
+    lib: "qrcode.react",
+    batch: "100",
+    med: "154.37",
+    p95: "158.58",
+    avg: "1.544",
+  },
+  {
+    lib: "react-qr-code",
+    batch: "100",
+    med: "250.08",
+    p95: "258.66",
+    avg: "2.501",
+  },
+  {
+    lib: "qr-code-styling",
+    batch: "20",
+    med: "567.65",
+    p95: "582.16",
+    avg: "28.383",
+    slow: true,
+  },
+];
+
+type DataComplexityRow = { type: string; vals: string[]; win: number };
+
+const DATA_COMPLEXITY_ROWS: DataComplexityRow[] = [
+  {
+    type: "Short URL",
+    vals: ["0.143 ms", "0.531 ms", "0.571 ms", "0.998 ms", "0.228 ms"],
+    win: 0,
+  },
+  {
+    type: "Numeric (20 digits)",
+    vals: ["0.092 ms", "0.162 ms", "0.442 ms", "0.993 ms", "0.121 ms"],
+    win: 0,
+  },
+  {
+    type: "AlphaNumeric",
+    vals: ["0.142 ms", "0.211 ms", "0.628 ms", "0.957 ms", "0.223 ms"],
+    win: 0,
+  },
+  {
+    type: "Unicode (Japanese)",
+    vals: ["0.204 ms", "0.578 ms", "0.831 ms", "1.361 ms", "0.265 ms"],
+    win: 0,
+  },
+  {
+    type: "Long URL (120 chars)",
+    vals: ["0.523 ms", "0.62 ms", "1.824 ms", "3.218 ms", "0.653 ms"],
+    win: 0,
+  },
+  {
+    type: "vCard",
+    vals: ["0.429 ms", "0.518 ms", "1.518 ms", "2.705 ms", "0.61 ms"],
+    win: 0,
+  },
+];
+
+type MemoryRow = {
+  lib: string;
+  base: string;
+  peak: string;
+  fin: string;
+  drift: string;
+  win?: boolean;
+};
+
+const MEMORY_ROWS: MemoryRow[] = [
+  {
+    lib: "@ttsalpha/qrcode (toSVGString)",
+    base: "45.37 MB",
+    peak: "45.39 MB",
+    fin: "45.37 MB",
+    drift: "+0.02 MB",
+    win: true,
+  },
+  {
+    lib: "@ttsalpha/qrcode (React)",
+    base: "45.37 MB",
+    peak: "45.49 MB",
+    fin: "45.37 MB",
+    drift: "−0.02 MB",
+  },
+  {
+    lib: "react-qr-code",
+    base: "45.4 MB",
+    peak: "45.49 MB",
+    fin: "45.39 MB",
+    drift: "0 MB",
+  },
+  {
+    lib: "qrcode.react",
+    base: "45.43 MB",
+    peak: "45.56 MB",
+    fin: "45.37 MB",
+    drift: "−0.07 MB",
+  },
+  {
+    lib: "qrcode (headless)",
+    base: "45.46 MB",
+    peak: "45.58 MB",
+    fin: "45.47 MB",
+    drift: "0 MB",
+  },
+];
+
+type BundleRow = {
+  lib: string;
+  min: string;
+  gz: string;
+  deps: string;
+  winGz?: boolean;
+};
+
+const BUNDLE_ROWS: BundleRow[] = [
+  { lib: "qrcode.react", min: "15.9", gz: "5.9", deps: "0", winGz: true },
+  { lib: "@ttsalpha/qrcode", min: "17.6", gz: "7.9", deps: "0" },
+  { lib: "react-qr-code", min: "22.8", gz: "8.3", deps: "2 (bundled)" },
+  { lib: "qrcode", min: "22.9", gz: "8.5", deps: "3 (bundled)" },
+  { lib: "qr-code-styling", min: "45.8", gz: "13.5", deps: "1 (bundled)" },
+];
+
+type FeatureComparisonRow = { feature: string; vals: string[]; wins: number[] };
+
+const FEATURE_COMPARISON: FeatureComparisonRow[] = [
+  {
+    feature: "Output formats",
+    vals: [
+      "SVG · PNG",
+      "SVG · Canvas",
+      "SVG · Canvas · PNG",
+      "SVG only",
+      "SVG · Canvas · PNG",
+    ],
+    wins: [],
+  },
+  {
+    feature: "React component",
+    vals: ["✓", "✓", "—", "✓", "—"],
+    wins: [0, 1, 3],
+  },
+  {
+    feature: "Logo support",
+    vals: ["URL + React node", "URL", "URL", "—", "—"],
+    wins: [0],
+  },
+  {
+    feature: "Auto ECL for logo",
+    vals: ["✓ auto", "manual only", "manual only", "—", "—"],
+    wins: [0],
+  },
+  {
+    feature: "Custom dot & corner styles",
+    vals: ["✓", "—", "✓", "—", "—"],
+    wins: [0, 2],
+  },
+  {
+    feature: "Standalone string API",
+    vals: ["✓ sync", "—", "—", "—", "✓ async"],
+    wins: [0],
+  },
+  {
+    feature: "SSR / Edge runtime",
+    vals: ["✓", "✓", "✕ browser only", "✓", "✓"],
+    wins: [0, 1, 3, 4],
+  },
+  {
+    feature: "Error correction level",
+    vals: ["✓", "✓", "✓", "✓", "✓"],
+    wins: [0, 1, 2, 3, 4],
+  },
+  {
+    feature: "QR version control",
+    vals: ["✓", "✓", "✓", "—", "✓"],
+    wins: [0, 1, 2, 4],
+  },
+  {
+    feature: "Zero dependencies",
+    vals: ["✓ (0)", "✓ (0)", "✕ (1 dep)", "✕ (2 deps)", "✕ (3 deps)"],
+    wins: [0, 1],
+  },
+  {
+    feature: "TypeScript built-in",
+    vals: ["✓", "✓", "✓", "✓", "✕ via @types"],
+    wins: [0, 1, 2, 3],
+  },
+  {
+    feature: "ESM + CJS dual export",
+    vals: ["✓", "✓", "✕", "✓", "✕ CJS only"],
+    wins: [0, 1, 3],
+  },
+  {
+    feature: "Accessibility (aria / title)",
+    vals: ["✓", "✓", "—", "✓", "—"],
+    wins: [0, 1, 3],
+  },
+  {
+    feature: "Bundle size (gzip)",
+    vals: ["7.9 KB", "5.9 KB", "13.5 KB", "8.3 KB", "8.5 KB"],
+    wins: [1],
+  },
+];
+
+type FeatureRow = [string, boolean, boolean, boolean | null, boolean, boolean];
+
+const FEATURES: FeatureRow[] = [
+  ["SVG output", true, true, true, true, true],
+  ["Canvas output", false, true, true, false, true],
+  ["PNG export", true, false, true, false, true],
+  ["toSVGString() — sync, no DOM", true, false, false, false, false],
+  ["React component", true, true, false, true, false],
+  ["SSR / Edge runtime safe", true, true, null, true, true],
+  ["Zero dependencies", true, true, false, false, false],
+  ["Dot shape styles", true, false, true, false, false],
+  ["Corner styles", true, false, true, false, false],
+  ["Logo — image URL", true, true, true, false, false],
+  ["Logo — any React node", true, false, false, false, false],
+  ["Error correction level", true, true, true, true, true],
+  ["QR version control", true, true, true, false, true],
+  ["TypeScript built-in", true, true, true, true, false],
+  ["ESM + CJS dual export", true, true, false, true, false],
+  ["Accessibility (aria / title)", true, true, false, true, true],
+  ["React 18+ support", true, true, true, true, true],
+  ["React 16 / 17 support", false, true, true, true, true],
+];
+
+type SummaryRow = { cat: string; vals: string[]; win: number };
+
+const SUMMARY_ROWS: SummaryRow[] = [
+  { cat: "Throughput", vals: ["#1", "#3", "✕", "#4", "#2"], win: 0 },
+  { cat: "Repeated value", vals: ["#1", "#3", "✕", "#4", "#2"], win: 0 },
+  { cat: "True cold start", vals: ["#1", "#3", "✕", "#4", "#2"], win: 0 },
+  { cat: "SSR latency", vals: ["#1", "#3", "✕", "#4", "#2"], win: 0 },
+  { cat: "Sequential batch", vals: ["#1", "#3", "✕", "#4", "#2"], win: 0 },
+  { cat: "Styled QR", vals: ["#1", "—", "#2", "—", "—"], win: 0 },
+  { cat: "Bundle size", vals: ["#2", "#1", "#5", "#3", "#4"], win: 1 },
+  { cat: "Feature score", vals: ["#1", "#2", "#3", "#4", "#5"], win: 0 },
+];
+
 export default function BenchmarkPage() {
   return (
     <>
@@ -187,7 +580,7 @@ export default function BenchmarkPage() {
             </p>
             <p className={s.heroBadges}>
               Environment: ubuntu-latest · Node.js v24.18.0 · ECL pinned to M ·
-              median / p95 / p99 · July 2026
+              median / p95 / p99 · August 2026
             </p>
             <p className={s.heroSource}>
               Source:{" "}
@@ -223,108 +616,7 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(
-                    [
-                      {
-                        feature: "Output formats",
-                        vals: [
-                          "SVG · PNG",
-                          "SVG · Canvas",
-                          "SVG · Canvas · PNG",
-                          "SVG only",
-                          "SVG · Canvas · PNG",
-                        ],
-                        wins: [],
-                      },
-                      {
-                        feature: "React component",
-                        vals: ["✓", "✓", "—", "✓", "—"],
-                        wins: [0, 1, 3],
-                      },
-                      {
-                        feature: "Logo support",
-                        vals: ["URL + React node", "URL", "URL", "—", "—"],
-                        wins: [0],
-                      },
-                      {
-                        feature: "Auto ECL for logo",
-                        vals: [
-                          "✓ auto",
-                          "manual only",
-                          "manual only",
-                          "—",
-                          "—",
-                        ],
-                        wins: [0],
-                      },
-                      {
-                        feature: "Custom dot & corner styles",
-                        vals: ["✓", "—", "✓", "—", "—"],
-                        wins: [0, 2],
-                      },
-                      {
-                        feature: "Standalone string API",
-                        vals: ["✓ sync", "—", "—", "—", "✓ async"],
-                        wins: [0],
-                      },
-                      {
-                        feature: "SSR / Edge runtime",
-                        vals: ["✓", "✓", "✕ browser only", "✓", "✓"],
-                        wins: [0, 1, 3, 4],
-                      },
-                      {
-                        feature: "Error correction level",
-                        vals: ["✓", "✓", "✓", "✓", "✓"],
-                        wins: [0, 1, 2, 3, 4],
-                      },
-                      {
-                        feature: "QR version control",
-                        vals: ["✓", "✓", "✓", "—", "✓"],
-                        wins: [0, 1, 2, 4],
-                      },
-                      {
-                        feature: "Zero dependencies",
-                        vals: [
-                          "✓ (0)",
-                          "✓ (0)",
-                          "✕ (1 dep)",
-                          "✕ (2 deps)",
-                          "✕ (3 deps)",
-                        ],
-                        wins: [0, 1],
-                      },
-                      {
-                        feature: "TypeScript built-in",
-                        vals: ["✓", "✓", "✓", "✓", "✕ via @types"],
-                        wins: [0, 1, 2, 3],
-                      },
-                      {
-                        feature: "ESM + CJS dual export",
-                        vals: ["✓", "✓", "✕", "✓", "✕ CJS only"],
-                        wins: [0, 1, 3],
-                      },
-                      {
-                        feature: "Accessibility (aria / title)",
-                        vals: ["✓", "✓", "—", "✓", "—"],
-                        wins: [0, 1, 3],
-                      },
-                      {
-                        feature: "Bundle size (gzip)",
-                        vals: [
-                          "7.9 KB",
-                          "5.9 KB",
-                          "13.5 KB",
-                          "8.3 KB",
-                          "8.5 KB",
-                        ],
-                        wins: [1],
-                      },
-                    ] as {
-                      feature: string;
-                      vals: string[];
-                      wins: number[];
-                    }[]
-                  ).map(({ feature, vals, wins }) => (
+                  {FEATURE_COMPARISON.map(({ feature, vals, wins }) => (
                     <tr key={feature}>
                       <td>{feature}</td>
                       {vals.map((v, i) => (
@@ -359,27 +651,14 @@ export default function BenchmarkPage() {
               title="Unique input per render, 3 s window"
               desc="Each call receives a distinct URL, so no lib can benefit from caching. Higher r/s is better."
             />
-            <BarChart
-              unit="r/s"
-              rows={[
-                {
-                  label: "@ttsalpha/qrcode (toSVGString)",
-                  value: 5065,
-                  winner: true,
-                },
-                { label: "qrcode (headless)", value: 4504 },
-                { label: "@ttsalpha/qrcode (React)", value: 2908 },
-                { label: "qrcode.react (SVG)", value: 1770 },
-                { label: "react-qr-code", value: 1011 },
-                { label: "qr-code-styling (async)", value: 80, slow: true },
-              ]}
-            />
+            <BarChart unit="r/s" rows={THROUGHPUT_ROWS} />
             <p className={s.note}>
-              <code>toSVGString</code> reaches <strong>5,065 r/s</strong> — 2.9×
-              faster than qrcode.react and 63× faster than qr-code-styling. Even
-              the React component path (2,908 r/s) outruns every other React
-              library. Runs sync with no React or DOM overhead, ideal for
-              server-side and batch workloads.
+              <code>toSVGString</code> reaches <strong>5,795 r/s</strong>, which
+              is 3.4× faster than qrcode.react and 74× faster than
+              qr-code-styling. Even the React component path, at 3,561 r/s,
+              outruns every other React library. It runs synchronously with no
+              React or DOM overhead, so it fits server-side and batch workloads
+              well.
             </p>
           </div>
         </section>
@@ -392,27 +671,13 @@ export default function BenchmarkPage() {
               title="Same input every render"
               desc="Re-rendering one QR across requests or mounts, like receipts, kiosk screens, and shared links. @ttsalpha/qrcode ≥2.4 memoizes matrices in a 16-entry LRU, so this test is expected to favor it by design; it is kept separate from the cold-path tests above."
             />
-            <BarChart
-              unit="r/s"
-              rows={[
-                {
-                  label: "@ttsalpha/qrcode (toSVGString)",
-                  value: 11101,
-                  winner: true,
-                },
-                { label: "@ttsalpha/qrcode (React)", value: 5093 },
-                { label: "qrcode (headless)", value: 3376 },
-                { label: "qrcode.react (SVG)", value: 1325 },
-                { label: "react-qr-code", value: 742 },
-                { label: "qr-code-styling (async)", value: 58, slow: true },
-              ]}
-            />
+            <BarChart unit="r/s" rows={REPEATED_ROWS} />
             <p className={s.note}>
               With the matrix cache hitting, <code>toSVGString</code> reaches{" "}
-              <strong>11,101 r/s</strong> — 3.3× the headless qrcode baseline
-              and 8.4× qrcode.react. No other library caches by value — this
-              payload is slightly longer than test 01&apos;s, so their numbers
-              sit a notch below their cold-path throughput.
+              <strong>13,053 r/s</strong>, about 3.2× the headless qrcode
+              baseline and 8.6× qrcode.react. No other library caches by value.
+              This payload is also slightly longer than test 01&apos;s, so their
+              numbers sit a notch below their cold-path throughput.
             </p>
           </div>
         </section>
@@ -438,83 +703,34 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {
-                      lib: "@ttsalpha/qrcode (toSVGString)",
-                      imp: "30.01 ms",
-                      impP95: "36.44 ms",
-                      r1: "3.913 ms",
-                      r1P95: "4.178 ms",
-                      r2: "0.95 ms",
-                      win: true,
-                    },
-                    {
-                      lib: "qrcode (headless)",
-                      imp: "21.1 ms",
-                      impP95: "23.3 ms",
-                      r1: "8.127 ms",
-                      r1P95: "8.901 ms",
-                      r2: "1.418 ms",
-                    },
-                    {
-                      lib: "@ttsalpha/qrcode (React)",
-                      imp: "29.12 ms",
-                      impP95: "29.31 ms",
-                      r1: "11.139 ms",
-                      r1P95: "14.104 ms",
-                      r2: "1.961 ms",
-                    },
-                    {
-                      lib: "qrcode.react",
-                      imp: "26.5 ms",
-                      impP95: "28.95 ms",
-                      r1: "13.832 ms",
-                      r1P95: "16.683 ms",
-                      r2: "4.207 ms",
-                    },
-                    {
-                      lib: "react-qr-code",
-                      imp: "30.84 ms",
-                      impP95: "34.88 ms",
-                      r1: "16.542 ms",
-                      r1P95: "20.376 ms",
-                      r2: "8.884 ms",
-                    },
-                    {
-                      lib: "qr-code-styling",
-                      imp: "4.36 ms",
-                      impP95: "4.42 ms",
-                      r1: "54.114 ms",
-                      r1P95: "55.326 ms",
-                      r2: "31.919 ms",
-                      slow: true,
-                    },
-                  ].map(({ lib, imp, impP95, r1, r1P95, r2, win, slow }) => (
-                    <tr key={lib}>
-                      <td>{lib}</td>
-                      <td>{imp}</td>
-                      <td>{impP95}</td>
-                      <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
-                        {r1}
-                      </td>
-                      <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
-                        {r1P95}
-                      </td>
-                      <td>{r2}</td>
-                    </tr>
-                  ))}
+                  {COLD_START_ROWS.map(
+                    ({ lib, imp, impP95, r1, r1P95, r2, win, slow }) => (
+                      <tr key={lib}>
+                        <td>{lib}</td>
+                        <td>{imp}</td>
+                        <td>{impP95}</td>
+                        <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
+                          {r1}
+                        </td>
+                        <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
+                          {r1P95}
+                        </td>
+                        <td>{r2}</td>
+                      </tr>
+                    ),
+                  )}
                 </tbody>
               </table>
             </div>
             <p className={s.note}>
-              <code>toSVGString</code> first-renders in <strong>3.91 ms</strong>{" "}
-              — 2× faster than the headless qrcode baseline (8.127 ms) and 3.5×
-              faster than qrcode.react (13.832 ms). qrcode has the lightest
-              import among full pipelines (21.1 ms vs our 30.01 ms — we also
-              load React), but loses it back on the first render.
-              qr-code-styling imports fastest (4.36 ms) yet first-renders in 54
-              ms and stays slow at 32 ms because its DOM-based async pipeline
-              does not JIT-warm effectively.
+              <code>toSVGString</code> first-renders in <strong>3.55 ms</strong>
+              , which is 2.4× faster than the headless qrcode baseline (8.605
+              ms) and 4× faster than qrcode.react (14.271 ms). qrcode has the
+              lightest import among full pipelines at 23.63 ms, versus our 31.48
+              ms since we also load React, but it gives that lead back on the
+              first render. qr-code-styling imports fastest at 4.73 ms yet
+              first-renders in 60 ms and stays slow at 37 ms, because its
+              DOM-based async pipeline does not JIT-warm effectively.
             </p>
           </div>
         </section>
@@ -538,45 +754,7 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {
-                      lib: "@ttsalpha/qrcode (toSVGString)",
-                      med: "0.589",
-                      p95: "0.635",
-                      p99: "0.635",
-                      win: true,
-                    },
-                    {
-                      lib: "@ttsalpha/qrcode (React)",
-                      med: "1.339",
-                      p95: "1.514",
-                      p99: "1.514",
-                    },
-                    {
-                      lib: "qrcode (headless)",
-                      med: "1.589",
-                      p95: "1.827",
-                      p99: "1.827",
-                    },
-                    {
-                      lib: "qrcode.react",
-                      med: "2.665",
-                      p95: "3.014",
-                      p99: "3.014",
-                    },
-                    {
-                      lib: "react-qr-code",
-                      med: "3.278",
-                      p95: "4.029",
-                      p99: "4.029",
-                    },
-                    {
-                      lib: "qr-code-styling",
-                      med: "✕ Not SSR-safe",
-                      p95: "—",
-                      p99: "—",
-                    },
-                  ].map(({ lib, med, p95, p99, win }) => (
+                  {SSR_ROWS.map(({ lib, med, p95, p99, win }) => (
                     <tr key={lib}>
                       <td className={win ? s.cellWin : ""}>{lib}</td>
                       <td
@@ -595,9 +773,9 @@ export default function BenchmarkPage() {
             </div>
             <p className={s.note}>
               <code>toSVGString</code> is{" "}
-              <strong>2.7× faster than the headless qrcode baseline</strong> and
-              4.5× faster than qrcode.react across 12 mixed payloads. Tight p99
-              (0.635 ms) means latency stays predictable even with complex
+              <strong>3.2× faster than the headless qrcode baseline</strong> and
+              5.2× faster than qrcode.react across 12 mixed payloads. Tight p99
+              (0.556 ms) means latency stays predictable even with complex
               inputs like vCard or WiFi configs.
             </p>
           </div>
@@ -623,75 +801,32 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {
-                      lib: "@ttsalpha/qrcode (toSVGString)",
-                      batch: "100",
-                      med: "49.3",
-                      p95: "51.16",
-                      avg: "0.493",
-                      win: true,
-                    },
-                    {
-                      lib: "qrcode (headless)",
-                      batch: "100",
-                      med: "69.25",
-                      p95: "74.46",
-                      avg: "0.693",
-                    },
-                    {
-                      lib: "@ttsalpha/qrcode (React)",
-                      batch: "100",
-                      med: "103.98",
-                      p95: "118.52",
-                      avg: "1.04",
-                    },
-                    {
-                      lib: "qrcode.react",
-                      batch: "100",
-                      med: "147.32",
-                      p95: "149.78",
-                      avg: "1.473",
-                    },
-                    {
-                      lib: "react-qr-code",
-                      batch: "100",
-                      med: "249.48",
-                      p95: "256.21",
-                      avg: "2.495",
-                    },
-                    {
-                      lib: "qr-code-styling",
-                      batch: "20",
-                      med: "560.92",
-                      p95: "580.53",
-                      avg: "28.046",
-                      slow: true,
-                    },
-                  ].map(({ lib, batch, med, p95, avg, win, slow }) => (
-                    <tr key={lib}>
-                      <td className={slow ? s.cellNo : ""}>{lib}</td>
-                      <td>{batch}</td>
-                      <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
-                        {med}
-                      </td>
-                      <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
-                        {p95}
-                      </td>
-                      <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
-                        {avg}
-                      </td>
-                    </tr>
-                  ))}
+                  {BATCH_ROWS.map(
+                    ({ lib, batch, med, p95, avg, win, slow }) => (
+                      <tr key={lib}>
+                        <td className={slow ? s.cellNo : ""}>{lib}</td>
+                        <td>{batch}</td>
+                        <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
+                          {med}
+                        </td>
+                        <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
+                          {p95}
+                        </td>
+                        <td className={win ? s.cellWin : slow ? s.cellNo : ""}>
+                          {avg}
+                        </td>
+                      </tr>
+                    ),
+                  )}
                 </tbody>
               </table>
             </div>
             <p className={s.note}>
               <code>toSVGString</code> completes 100 renders in{" "}
-              <strong>49.3 ms median</strong> (0.493 ms/render) — 1.4× faster
-              than the headless qrcode baseline and 3× faster than qrcode.react.
-              qr-code-styling takes 561 ms for just 20 renders; at that rate,
-              100 renders would take ~2,805 ms.
+              <strong>42 ms median</strong>, or 0.42 ms per render. That is 1.7×
+              faster than the headless qrcode baseline and 3.7× faster than
+              qrcode.react. qr-code-styling takes 568 ms for just 20 renders; at
+              that rate, 100 renders would take about 2,838 ms.
             </p>
           </div>
         </section>
@@ -704,27 +839,13 @@ export default function BenchmarkPage() {
               title="Custom dot shapes + corner styles"
               desc="ECL=H (logo-safe), size=512 px. Only @ttsalpha/qrcode and qr-code-styling support custom styling."
             />
-            <BarChart
-              rows={[
-                {
-                  label: "@ttsalpha/qrcode (toSVGString)",
-                  value: 0.345,
-                  winner: true,
-                },
-                { label: "@ttsalpha/qrcode (React)", value: 0.924 },
-                {
-                  label: "qr-code-styling (async DOM)",
-                  value: 11.831,
-                  slow: true,
-                },
-              ]}
-            />
+            <BarChart rows={STYLED_ROWS} />
             <p className={s.note}>
               @ttsalpha/qrcode renders styled QR codes{" "}
-              <strong>34× faster than qr-code-styling</strong> — while remaining
-              SSR-safe, sync, and DOM-free. qr-code-styling requires a browser
-              environment (JSDOM polyfill for Node.js/Edge) with an async API
-              that does not scale.
+              <strong>38× faster than qr-code-styling</strong>, and it stays
+              SSR-safe, sync, and DOM-free while doing it. qr-code-styling needs
+              a browser environment (a JSDOM polyfill on Node.js/Edge) with an
+              async API that does not scale.
               <br />
               <br />
               qrcode.react, react-qr-code, and qrcode have no styling API.
@@ -753,74 +874,7 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {
-                      type: "Short URL",
-                      vals: [
-                        "0.172 ms",
-                        "0.582 ms",
-                        "0.576 ms",
-                        "1.04 ms",
-                        "0.237 ms",
-                      ],
-                      win: 0,
-                    },
-                    {
-                      type: "Numeric (20 digits)",
-                      vals: [
-                        "0.107 ms",
-                        "0.185 ms",
-                        "0.449 ms",
-                        "1.031 ms",
-                        "0.125 ms",
-                      ],
-                      win: 0,
-                    },
-                    {
-                      type: "AlphaNumeric",
-                      vals: [
-                        "0.173 ms",
-                        "0.575 ms",
-                        "0.624 ms",
-                        "0.973 ms",
-                        "0.231 ms",
-                      ],
-                      win: 0,
-                    },
-                    {
-                      type: "Unicode (Japanese)",
-                      vals: [
-                        "0.254 ms",
-                        "0.414 ms",
-                        "0.817 ms",
-                        "1.399 ms",
-                        "0.269 ms",
-                      ],
-                      win: 0,
-                    },
-                    {
-                      type: "Long URL (120 chars)",
-                      vals: [
-                        "0.644 ms",
-                        "0.745 ms",
-                        "1.758 ms",
-                        "3.167 ms",
-                        "0.65 ms",
-                      ],
-                      win: 0,
-                    },
-                    {
-                      type: "vCard",
-                      vals: [
-                        "0.541 ms",
-                        "0.638 ms",
-                        "1.481 ms",
-                        "2.681 ms",
-                        "0.622 ms",
-                      ],
-                      win: 0,
-                    },
-                  ].map(({ type, vals, win }) => (
+                  {DATA_COMPLEXITY_ROWS.map(({ type, vals, win }) => (
                     <tr key={type}>
                       <td>{type}</td>
                       {vals.map((v, i) => (
@@ -837,10 +891,11 @@ export default function BenchmarkPage() {
               </table>
             </div>
             <p className={s.note}>
-              <code>toSVGString</code> wins on all 6 data types. The headless
-              qrcode baseline stays a close second (within 1% on long URL) — the
-              gap widens on short and alphanumeric payloads where encoding
-              overhead dominates.
+              <code>toSVGString</code> wins on all 6 data types. Among competing
+              libraries, headless qrcode is the clear runner-up, beating
+              qrcode.react and react-qr-code on every type. The @ttsalpha React
+              path itself even edges ahead of qrcode on alphanumeric, long URL,
+              and vCard.
             </p>
           </div>
         </section>
@@ -865,44 +920,7 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {
-                      lib: "@ttsalpha/qrcode (toSVGString)",
-                      base: "45.64 MB",
-                      peak: "45.68 MB",
-                      fin: "45.65 MB",
-                      drift: "+0.01 MB",
-                      win: true,
-                    },
-                    {
-                      lib: "@ttsalpha/qrcode (React)",
-                      base: "45.67 MB",
-                      peak: "45.75 MB",
-                      fin: "45.66 MB",
-                      drift: "−0.01 MB",
-                    },
-                    {
-                      lib: "react-qr-code",
-                      base: "45.68 MB",
-                      peak: "45.75 MB",
-                      fin: "45.68 MB",
-                      drift: "0 MB",
-                    },
-                    {
-                      lib: "qrcode.react",
-                      base: "45.72 MB",
-                      peak: "45.82 MB",
-                      fin: "45.66 MB",
-                      drift: "−0.07 MB",
-                    },
-                    {
-                      lib: "qrcode (headless)",
-                      base: "45.74 MB",
-                      peak: "45.86 MB",
-                      fin: "45.79 MB",
-                      drift: "+0.05 MB",
-                    },
-                  ].map(({ lib, base, peak, fin, drift, win }) => (
+                  {MEMORY_ROWS.map(({ lib, base, peak, fin, drift, win }) => (
                     <tr key={lib}>
                       <td>{lib}</td>
                       <td>{base}</td>
@@ -915,10 +933,10 @@ export default function BenchmarkPage() {
               </table>
             </div>
             <p className={s.note}>
-              All libraries show excellent memory behavior — peak stays within
-              0.15 MB of baseline across 5,000 renders with unique inputs. No
-              signs of leaks in any library; @ttsalpha/qrcode&apos;s 16-entry
-              matrix cache holds steady within ±0.01 MB.
+              All libraries show excellent memory behavior. Peak stays within
+              0.13 MB of baseline across 5,000 renders with unique inputs. There
+              are no signs of leaks in any library, and @ttsalpha/qrcode&apos;s
+              16-entry matrix cache holds steady within ±0.02 MB.
             </p>
           </div>
         </section>
@@ -929,7 +947,7 @@ export default function BenchmarkPage() {
             <SectionHead
               num="09 — Bundle Size"
               title="Minified + gzip, dependencies bundled"
-              desc="Source: bundlephobia.com — minified + gzip, react/react-dom external, each lib's own dependencies bundled."
+              desc="Source: bundlephobia.com. Minified + gzip, react/react-dom external, each lib's own dependencies bundled."
             />
             <div className={s.tableWrap}>
               <table className={s.table}>
@@ -942,39 +960,7 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {
-                      lib: "qrcode.react",
-                      min: "15.9",
-                      gz: "5.9",
-                      deps: "0",
-                      winGz: true,
-                    },
-                    {
-                      lib: "@ttsalpha/qrcode",
-                      min: "17.8",
-                      gz: "7.9",
-                      deps: "0",
-                    },
-                    {
-                      lib: "react-qr-code",
-                      min: "22.8",
-                      gz: "8.3",
-                      deps: "2 (bundled)",
-                    },
-                    {
-                      lib: "qrcode",
-                      min: "22.9",
-                      gz: "8.5",
-                      deps: "3 (bundled)",
-                    },
-                    {
-                      lib: "qr-code-styling",
-                      min: "45.8",
-                      gz: "13.5",
-                      deps: "1 (bundled)",
-                    },
-                  ].map(({ lib, min, gz, deps, winGz }) => (
+                  {BUNDLE_ROWS.map(({ lib, min, gz, deps, winGz }) => (
                     <tr key={lib}>
                       <td>{lib}</td>
                       <td>{min}</td>
@@ -988,7 +974,7 @@ export default function BenchmarkPage() {
             <p className={s.note}>
               qrcode.react stays the smallest at 5.9 KB gzip. @ttsalpha/qrcode
               lands at 7.9 KB with zero dependencies and is fully tree-shakeable
-              (<code>sideEffects: false</code>) — apps that only use the
+              (<code>sideEffects: false</code>), so apps that only use the
               component don&apos;t pay for the export helpers.
             </p>
           </div>
@@ -1011,56 +997,7 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(
-                    [
-                      ["SVG output", true, true, true, true, true],
-                      ["Canvas output", false, true, true, false, true],
-                      ["PNG export", true, false, true, false, true],
-                      [
-                        "toSVGString() — sync, no DOM",
-                        true,
-                        false,
-                        false,
-                        false,
-                        false,
-                      ],
-                      ["React component", true, true, false, true, false],
-                      ["SSR / Edge runtime safe", true, true, null, true, true],
-                      ["Zero dependencies", true, true, false, false, false],
-                      ["Dot shape styles", true, false, true, false, false],
-                      ["Corner styles", true, false, true, false, false],
-                      ["Logo — image URL", true, true, true, false, false],
-                      [
-                        "Logo — any React node",
-                        true,
-                        false,
-                        false,
-                        false,
-                        false,
-                      ],
-                      ["Error correction level", true, true, true, true, true],
-                      ["QR version control", true, true, true, false, true],
-                      ["TypeScript built-in", true, true, true, true, false],
-                      ["ESM + CJS dual export", true, true, false, true, false],
-                      [
-                        "Accessibility (aria / title)",
-                        true,
-                        true,
-                        false,
-                        true,
-                        false,
-                      ],
-                      ["React 18+ support", true, true, false, true, true],
-                      ["React 16 / 17 support", false, true, false, true, true],
-                    ] as [
-                      string,
-                      boolean,
-                      boolean,
-                      boolean | null,
-                      boolean,
-                      boolean,
-                    ][]
-                  ).map(([feature, a, b, c, d, e]) => (
+                  {FEATURES.map(([feature, a, b, c, d, e]) => (
                     <tr key={feature}>
                       <td>{feature}</td>
                       {[a, b, c, d, e].map((v, i) => (
@@ -1080,7 +1017,7 @@ export default function BenchmarkPage() {
                     <td>Score</td>
                     <td className={`${s.center} ${s.cellWin}`}>16 / 18</td>
                     <td className={s.center}>13 / 18</td>
-                    <td className={s.center}>9 / 18</td>
+                    <td className={s.center}>11 / 18</td>
                     <td className={s.center}>9 / 18</td>
                     <td className={s.center}>8 / 18</td>
                   </tr>
@@ -1107,48 +1044,7 @@ export default function BenchmarkPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {
-                      cat: "Throughput",
-                      vals: ["#1", "#3", "✕", "#4", "#2"],
-                      win: 0,
-                    },
-                    {
-                      cat: "Repeated value",
-                      vals: ["#1", "#3", "✕", "#4", "#2"],
-                      win: 0,
-                    },
-                    {
-                      cat: "True cold start",
-                      vals: ["#1", "#3", "✕", "#4", "#2"],
-                      win: 0,
-                    },
-                    {
-                      cat: "SSR latency",
-                      vals: ["#1", "#3", "✕", "#4", "#2"],
-                      win: 0,
-                    },
-                    {
-                      cat: "Sequential batch",
-                      vals: ["#1", "#3", "✕", "#4", "#2"],
-                      win: 0,
-                    },
-                    {
-                      cat: "Styled QR",
-                      vals: ["#1", "—", "#2", "—", "—"],
-                      win: 0,
-                    },
-                    {
-                      cat: "Bundle size",
-                      vals: ["#2", "#1", "#5", "#3", "#4"],
-                      win: 1,
-                    },
-                    {
-                      cat: "Feature score",
-                      vals: ["#1", "#2", "#3", "#3", "#5"],
-                      win: 0,
-                    },
-                  ].map(({ cat, vals, win }) => (
+                  {SUMMARY_ROWS.map(({ cat, vals, win }) => (
                     <tr key={cat}>
                       <td>{cat}</td>
                       {vals.map((v, i) => (
@@ -1227,7 +1123,7 @@ export default function BenchmarkPage() {
                 <ul className={s.chooseList}>
                   <li>Best overall for React 18+</li>
                   <li>
-                    Need the fastest true cold start — 3.5× faster than
+                    Need the fastest true cold start, 4× faster than
                     qrcode.react in a fresh process
                   </li>
                   <li>
@@ -1235,8 +1131,8 @@ export default function BenchmarkPage() {
                     batch generation
                   </li>
                   <li>
-                    Re-render the same QR often — the matrix cache makes repeats
-                    near-free
+                    Re-render the same QR often, since the matrix cache makes
+                    repeats near-free
                   </li>
                   <li>Need styled QR that works server-side</li>
                   <li>Need logo as any React component</li>
@@ -1274,7 +1170,7 @@ export default function BenchmarkPage() {
                 </div>
                 <ul className={s.chooseList}>
                   <li>Browser-only, no SSR requirement</li>
-                  <li>Willing to accept ~34× slower styled render times</li>
+                  <li>Willing to accept ~38× slower styled render times</li>
                 </ul>
               </div>
               <div className={s.chooseCard}>
@@ -1311,7 +1207,7 @@ export default function BenchmarkPage() {
                 <ul className={s.chooseList}>
                   <li>Headless Node.js pipelines with no React at all</li>
                   <li>Need terminal / PNG-file output on the server</li>
-                  <li>Async-only API and no styling — plain QR codes only</li>
+                  <li>Async-only API and no styling, so plain QR codes only</li>
                 </ul>
               </div>
             </div>
