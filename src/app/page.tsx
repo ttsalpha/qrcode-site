@@ -81,7 +81,7 @@ const jsonLd = {
         "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.",
       applicationCategory: "DeveloperApplication",
       operatingSystem: "Web",
-      softwareVersion: "2.4.1",
+      softwareVersion: "2.4.3",
       programmingLanguage: ["TypeScript", "JavaScript"],
       license: "https://github.com/ttsalpha/qrcode/blob/main/LICENSE",
       codeRepository: "https://github.com/ttsalpha/qrcode",
@@ -104,7 +104,7 @@ const jsonLd = {
           name: "How is this different from other QR code libraries?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Most libs handle either SSR or styling — not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 3.5× faster cold start than qrcode.react, 34× faster styled renders than qr-code-styling.",
+            text: "Most libs handle either SSR or styling — not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 4× faster cold start than qrcode.react, 38× faster styled renders than qr-code-styling.",
           },
         },
         {
@@ -781,8 +781,8 @@ link.click();`}
                   <code>qr-code-styling</code> covers custom dots, colors, and
                   logos but relies on Canvas and breaks server-side. This lib
                   covers all of it: custom dot shapes, per-corner colors, logo
-                  support, pure SVG, SSR-safe. 3.5× faster cold start than{" "}
-                  <code>qrcode.react</code>, 34× faster styled renders than{" "}
+                  support, pure SVG, SSR-safe. 4× faster cold start than{" "}
+                  <code>qrcode.react</code>, 38× faster styled renders than{" "}
                   <code>qr-code-styling</code>.{" "}
                   <a href="/benchmark" className={s.faqLink}>
                     See the benchmark →
