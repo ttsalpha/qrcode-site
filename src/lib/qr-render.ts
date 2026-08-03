@@ -5,11 +5,11 @@ import { parseQRParams, type QRFormat } from "@/lib/qr-params";
 import { toSVGString } from "@/lib/qrcode-server.generated.cjs";
 import { fetchRemoteImage } from "@/lib/safe-fetch";
 
-// Public QR image endpoint: SVG via toSVGString, PNG/JPG via sharp. Node only.
-// sharp is imported lazily in the raster branch — a top-level native import
-// crashes the whole route (incl. svg) when the platform binary is missing.
-
-export async function GET(req: NextRequest) {
+// Renderer for the /qr image route: SVG via toSVGString, PNG/JPG via sharp.
+// Format comes from the `format` query param. Node only. sharp is imported
+// lazily in the raster branch — a top-level native import crashes the whole
+// route (incl. svg) when the platform binary is missing.
+export async function renderQR(req: NextRequest) {
   const parsed = parseQRParams(req.nextUrl.searchParams);
   if (!parsed.ok) {
     return new NextResponse(parsed.message, { status: parsed.status });

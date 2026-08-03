@@ -337,7 +337,7 @@ export default function Playground() {
     }
   }
 
-  // Copy an /api/qr link that renders the current QR. Uploaded data:/blob: logos
+  // Copy a /qr link that renders the current QR. Uploaded data:/blob: logos
   // don't fit in a URL — buildQRUrl drops them, so warn.
   async function handleCopyUrl(key: string) {
     trackEvent("export_copy_url", { format: key });

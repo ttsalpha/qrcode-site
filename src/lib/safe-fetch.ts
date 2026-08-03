@@ -2,7 +2,7 @@ import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 
 // Shared guards for routes that fetch user-supplied remote images
-// (/api/proxy-image, /api/qr logo): SSRF, hangs, oversized bodies.
+// (/api/proxy-image, /qr logo): SSRF, hangs, oversized bodies.
 
 const DEFAULT_TIMEOUT_MS = 5000;
 const DEFAULT_MAX_BYTES = 2 * 1024 * 1024;

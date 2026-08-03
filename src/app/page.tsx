@@ -653,24 +653,25 @@ link.click();`}
             </div>
 
             <div className={s.apiGroup}>
-              <div className={s.apiGroupTitle}>HTTP API — /api/qr</div>
+              <div className={s.apiGroupTitle}>HTTP API — /qr</div>
               <p className={s.note} style={{ marginBottom: 14 }}>
-                Render a QR straight from a URL — no install needed. Paste the
-                link into any <code>{"<img>"}</code> tag, email, or doc. The
-                quickest way to build one: configure it in the playground above
-                and hit “Copy link”. Output is deterministic per URL and cached
-                on the CDN.
+                Render a QR straight from a URL, no install needed. Paste the
+                link into any <code>{"<img>"}</code> tag, email, or doc. Pick
+                the format with <code>format=svg|png|jpg</code> and pass colors
+                as plain hex (<code>color=14b8a6</code>). The quickest way to
+                build one: configure it in the playground above and hit “Copy
+                link”. Output is deterministic per URL and cached on the CDN.
               </p>
               <CodeBlock
                 lang="html"
                 code={`<!-- SVG (default) -->
-<img src="https://qrcode.ttsalpha.com/api/qr?data=https://example.com" alt="QR code" />
+<img src="https://qrcode.ttsalpha.com/qr?data=https://example.com" alt="QR code" />
 
 <!-- PNG output -->
-<img src="https://qrcode.ttsalpha.com/api/qr?data=Hello&dotStyle=rounded&dotColor=%2314b8a6&format=png" />
+<img src="https://qrcode.ttsalpha.com/qr?data=Hello&dot=rounded&color=14b8a6&format=png" />
 
 <!-- With a center logo -->
-<img src="https://qrcode.ttsalpha.com/api/qr?data=https://example.com&logo=https://example.com/logo.png" />`}
+<img src="https://qrcode.ttsalpha.com/qr?data=https://example.com&logo=https://example.com/logo.png" />`}
               />
               <div className={s.tableWrap} style={{ marginTop: 14 }}>
                 <table className={s.table}>
@@ -694,49 +695,39 @@ link.click();`}
                       ["size", "number (64–2048)", "256", "Image size in px"],
                       ["margin", "number (0–20)", "4", "Quiet zone in modules"],
                       [
-                        "dotStyle",
+                        "dot",
                         "'square' | 'circle' | 'rounded'",
                         "'square'",
                         "Data module style",
                       ],
-                      ["dotColor", "#rrggbb", "'#000000'", "Data module color"],
+                      ["color", "rrggbb", "000000", "Data module color"],
                       [
                         "bg",
-                        "#rrggbb | 'transparent'",
-                        "'#ffffff'",
+                        "rrggbb | 'transparent'",
+                        "ffffff",
                         "Background color",
                       ],
                       [
-                        "cornerSquareStyle",
+                        "frame",
                         "'square' | 'rounded' | 'extra-rounded' | 'circle'",
                         "'square'",
                         "Finder frame style",
                       ],
+                      ["frameColor", "rrggbb", "color", "Finder frame color"],
                       [
-                        "cornerSquareColor",
-                        "#rrggbb",
-                        "dotColor",
-                        "Finder frame color",
-                      ],
-                      [
-                        "cornerDotStyle",
+                        "eye",
                         "'square' | 'rounded' | 'circle'",
                         "derived",
                         "Finder center style",
                       ],
-                      [
-                        "cornerDotColor",
-                        "#rrggbb",
-                        "dotColor",
-                        "Finder center color",
-                      ],
+                      ["eyeColor", "rrggbb", "color", "Finder center color"],
                       [
                         "ecl",
                         "'L' | 'M' | 'Q' | 'H'",
                         "M *",
                         "Error correction level (* raised automatically when a logo is set)",
                       ],
-                      ["qrVersion", "number (1–40)", "auto", "QR version"],
+                      ["version", "number (1–40)", "auto", "QR version"],
                       ["logo", "url", "—", "Center logo image URL"],
                       [
                         "logoSize",
@@ -746,7 +737,7 @@ link.click();`}
                       ],
                       ["logoMargin", "number", "0", "Space around the logo"],
                       [
-                        "logoHideDots",
+                        "logoClear",
                         "boolean",
                         "true",
                         "Clear QR dots behind the logo",

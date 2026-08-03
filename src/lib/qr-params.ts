@@ -5,8 +5,9 @@ import type {
   QRCodeProps,
 } from "@ttsalpha/qrcode";
 
-// Shared param mapping for /api/qr: parseQRParams (query → props) for the route,
-// buildQRUrl (props → link) for the Playground's "Copy link" button.
+// Shared param mapping for the /qr image route: parseQRParams (query → props +
+// format) for the route, buildQRUrl (props → link) for the Playground's "Copy
+// link" button. Output format is the `format` query param (svg|png|jpg).
 
 export type QRFormat = "svg" | "png" | "jpg";
 
@@ -18,7 +19,6 @@ export const QR_DEFAULTS = {
   dotStyle: "square" as DotStyle,
   dotColor: "#000000",
   backgroundColor: "#ffffff",
-  format: "svg" as QRFormat,
 };
 
 const DOT_STYLES = ["square", "circle", "rounded"] as const;
@@ -33,9 +33,12 @@ const ECLS = ["L", "M", "Q", "H"] as const;
 export const QR_FORMATS: readonly QRFormat[] = ["svg", "png", "jpg"];
 
 export const HEX6 = /^#[0-9a-fA-F]{6}$/;
+// Same, but the leading '#' is optional — the /qr route accepts bare hex so
+// embedded image URLs stay clean (color=14b8a6, not color=%2314b8a6).
+const HEX6_LOOSE = /^#?[0-9a-fA-F]{6}$/;
 
 // Corner-dot style the library derives from the square style when the dot style
-// is left unset — lets buildQRUrl drop a redundant cornerDotStyle param.
+// is left unset, which lets buildQRUrl drop a redundant `eye` param.
 export function deriveCornerDotStyle(
   square: CornerSquareStyle | undefined,
 ): CornerDotStyle {
@@ -96,10 +99,10 @@ function colorParam(
   const v = sp.get(key);
   if (v == null) return undefined;
   if (allowTransparent && v === "transparent") return v;
-  if (!HEX6.test(v)) {
-    throw new ParamError(400, `invalid \`${key}\` (expected #rrggbb): ${v}`);
+  if (!HEX6_LOOSE.test(v)) {
+    throw new ParamError(400, `invalid \`${key}\` (expected rrggbb): ${v}`);
   }
-  return v;
+  return v.startsWith("#") ? v : `#${v}`;
 }
 
 function boolParam(sp: URLSearchParams, key: string): boolean | undefined {
@@ -122,17 +125,17 @@ export function parseQRParams(sp: URLSearchParams): ParseResult {
     const margin = numberParam(sp, "margin", 0, 20, true);
     if (margin !== undefined) props.margin = margin;
 
-    const dotStyle = enumParam(sp, "dotStyle", DOT_STYLES);
+    const dotStyle = enumParam(sp, "dot", DOT_STYLES);
     if (dotStyle) props.dotStyle = dotStyle;
-    const dotColor = colorParam(sp, "dotColor");
+    const dotColor = colorParam(sp, "color");
     if (dotColor) props.dotColor = dotColor;
     const bg = colorParam(sp, "bg", true);
     if (bg) props.backgroundColor = bg;
 
-    const sqStyle = enumParam(sp, "cornerSquareStyle", CORNER_SQUARE_STYLES);
-    const sqColor = colorParam(sp, "cornerSquareColor");
-    const cdStyle = enumParam(sp, "cornerDotStyle", CORNER_DOT_STYLES);
-    const cdColor = colorParam(sp, "cornerDotColor");
+    const sqStyle = enumParam(sp, "frame", CORNER_SQUARE_STYLES);
+    const sqColor = colorParam(sp, "frameColor");
+    const cdStyle = enumParam(sp, "eye", CORNER_DOT_STYLES);
+    const cdColor = colorParam(sp, "eyeColor");
     if (sqStyle || sqColor || cdStyle || cdColor) {
       props.corner = {
         square:
@@ -143,7 +146,7 @@ export function parseQRParams(sp: URLSearchParams): ParseResult {
     }
 
     const ecl = enumParam(sp, "ecl", ECLS);
-    const version = numberParam(sp, "qrVersion", 1, 40, true);
+    const version = numberParam(sp, "version", 1, 40, true);
     if (ecl || version !== undefined) {
       props.qr = { errorCorrectionLevel: ecl, version };
     }
@@ -154,11 +157,11 @@ export function parseQRParams(sp: URLSearchParams): ParseResult {
         src: logoSrc,
         size: numberParam(sp, "logoSize", 0, 1, false),
         margin: numberParam(sp, "logoMargin", 0, 1000, false),
-        hideDots: boolParam(sp, "logoHideDots"),
+        hideDots: boolParam(sp, "logoClear"),
       };
     }
 
-    const format = enumParam(sp, "format", QR_FORMATS) ?? QR_DEFAULTS.format;
+    const format = enumParam(sp, "format", QR_FORMATS) ?? "svg";
 
     return { ok: true, props, format };
   } catch (e) {
@@ -188,33 +191,33 @@ export function buildQRUrl(
     p.set("margin", String(props.margin));
   }
   if (props.dotStyle && props.dotStyle !== QR_DEFAULTS.dotStyle) {
-    p.set("dotStyle", props.dotStyle);
+    p.set("dot", props.dotStyle);
   }
   if (props.dotColor && props.dotColor !== QR_DEFAULTS.dotColor) {
-    p.set("dotColor", props.dotColor);
+    p.set("color", bareHex(props.dotColor));
   }
   if (
     props.backgroundColor &&
     props.backgroundColor !== QR_DEFAULTS.backgroundColor
   ) {
-    p.set("bg", props.backgroundColor);
+    p.set("bg", bareHex(props.backgroundColor));
   }
 
   const sqStyle = props.corner?.square?.style;
   const sqColor = props.corner?.square?.color;
   const cdStyle = props.corner?.dot?.style;
   const cdColor = props.corner?.dot?.color;
-  if (sqStyle && sqStyle !== "square") p.set("cornerSquareStyle", sqStyle);
-  if (sqColor && sqColor !== dotColor) p.set("cornerSquareColor", sqColor);
+  if (sqStyle && sqStyle !== "square") p.set("frame", sqStyle);
+  if (sqColor && sqColor !== dotColor) p.set("frameColor", bareHex(sqColor));
   if (cdStyle && cdStyle !== deriveCornerDotStyle(sqStyle)) {
-    p.set("cornerDotStyle", cdStyle);
+    p.set("eye", cdStyle);
   }
-  if (cdColor && cdColor !== dotColor) p.set("cornerDotColor", cdColor);
+  if (cdColor && cdColor !== dotColor) p.set("eyeColor", bareHex(cdColor));
 
   if (props.qr?.errorCorrectionLevel)
     p.set("ecl", props.qr.errorCorrectionLevel);
   if (props.qr?.version !== undefined) {
-    p.set("qrVersion", String(props.qr.version));
+    p.set("version", String(props.qr.version));
   }
 
   // Only remote logos fit in a URL; data:/blob: uploads are dropped (caller warns).
@@ -226,10 +229,16 @@ export function buildQRUrl(
     if (props.logo?.margin !== undefined) {
       p.set("logoMargin", String(props.logo.margin));
     }
-    if (props.logo?.hideDots === false) p.set("logoHideDots", "false");
+    if (props.logo?.hideDots === false) p.set("logoClear", "false");
   }
 
-  if (format !== QR_DEFAULTS.format) p.set("format", format);
+  if (format !== "svg") p.set("format", format);
 
-  return `${origin}/api/qr?${p.toString()}`;
+  return `${origin}/qr?${p.toString()}`;
+}
+
+// Colors travel without the '#' (avoids %23 in embedded URLs). 'transparent'
+// passes through untouched.
+function bareHex(v: string): string {
+  return v === "transparent" ? v : v.replace(/^#/, "");
 }
