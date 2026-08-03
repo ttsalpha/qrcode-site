@@ -12,8 +12,8 @@ importers:
         specifier: 16.2.6
         version: 16.2.6(next@16.2.6(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       '@ttsalpha/qrcode':
-        specifier: 2.4.2
-        version: 2.4.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: 2.4.3
+        version: 2.4.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@vercel/analytics':
         specifier: 2.0.1
         version: 2.0.1(next@16.2.6(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
@@ -697,8 +697,8 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
-  '@ttsalpha/qrcode@2.4.2':
-    resolution: {integrity: sha512-0v/NbYex7ftTfHEJxOe6jN9WCjC773so6iiA8l7oVCcZj8dxtKDyuv4AJ2HTICAuu2PcH+iD+KEG8Yq8R1oYIg==}
+  '@ttsalpha/qrcode@2.4.3':
+    resolution: {integrity: sha512-Ft5u/o6houlr9/0PELg9pE+knDSuR7SH2YcBUdc+1VB7G4zARLYiJOIlcXnOWPxyc7I5bT4dNrkpMCg9Y4WOHg==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -1396,7 +1396,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@ttsalpha/qrcode@2.4.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@ttsalpha/qrcode@2.4.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
