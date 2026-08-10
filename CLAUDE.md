@@ -19,11 +19,11 @@ No test suite. Linter/formatter is **Biome** (not ESLint/Prettier) — do not ad
 
 ## Architecture
 
-Single-page documentation site for the `@ttsalpha/qrcode` npm package. Everything lives in one route (`src/app/page.tsx`) with four components under `src/components/`.
+Documentation site for the `@ttsalpha/qrcode` npm package. Routes: `/` (landing + playground), `/reference` (API reference), `/examples`, `/benchmark`, `/qr` (renders a QR image from query params), `/api/proxy-image`, `/llms.txt`. Each page route has its own `page.module.css`.
 
 **Rendering model:**
 - `layout.tsx` — async Server Component; reads the `theme` cookie to set `data-theme` on `<html>` before first paint
-- `page.tsx` — Server Component; composes the full page (hero, features, playground, install, API reference, examples)
+- `page.tsx` — Server Component; composes the landing page (hero, playground, features, install, API teaser, FAQ)
 - `CodeBlock.tsx` — async Server Component; uses `shiki` server-side to produce pre-highlighted HTML via `dangerouslySetInnerHTML`
 - `Playground.tsx` — Client Component (`"use client"`); interactive QR code editor with live syntax highlighting via a shared singleton `Highlighter` from shiki
 - `CopyButton.tsx`, `ThemeToggle.tsx` — Client Components

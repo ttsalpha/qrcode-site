@@ -83,7 +83,8 @@ vs. alternatives: 4× faster cold start than qrcode.react · 38× faster styled 
 
 ## Docs
 
-- [Homepage](https://qrcode.ttsalpha.com): Interactive playground, install guide, full API reference
+- [Homepage](https://qrcode.ttsalpha.com): Interactive playground, install guide, feature overview
+- [API Reference](https://qrcode.ttsalpha.com/reference): Every prop, type, export helper, and HTTP API param with defaults
 - [Examples](https://qrcode.ttsalpha.com/examples): Dot styles, corner styles, colors, logos, transparent background, export helpers
 - [Benchmark](https://qrcode.ttsalpha.com/benchmark): Performance comparison vs qrcode.react, qr-code-styling, react-qr-code, and qrcode
 

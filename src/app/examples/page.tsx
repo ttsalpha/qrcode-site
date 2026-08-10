@@ -64,8 +64,8 @@ export default function ExamplesPage() {
       <main>
         <section className={s.hero}>
           <div className={s.wrap}>
-            <span className={s.heroTag}>Examples</span>
-            <h1 className={s.heroTitle}>Common patterns</h1>
+            <span className={s.heroTag}>Documentation</span>
+            <h1 className={s.heroTitle}>Examples</h1>
             <p className={s.heroSub}>
               Copy-paste examples covering dot styles, corner styles, colors,
               logos, and export.

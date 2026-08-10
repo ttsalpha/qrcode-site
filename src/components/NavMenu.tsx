@@ -39,7 +39,7 @@ export default function NavMenu() {
         <a href="/#playground" className={s.link}>
           Playground
         </a>
-        <a href="/#api" className={s.link}>
+        <a href="/reference" className={s.link}>
           API
         </a>
         <a href="/examples" className={s.link}>
