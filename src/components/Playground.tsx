@@ -377,7 +377,7 @@ export default function Playground() {
         ]);
       }
     } catch {
-      flashError("Couldn't copy — check the logo URL or clipboard access.");
+      flashError("Couldn't copy. Check the logo URL or clipboard access.");
       throw new Error("copy failed");
     }
     trackEvent("export_copy", { format: fmt });
@@ -404,7 +404,7 @@ export default function Playground() {
         a.click();
       }
     } catch {
-      flashError("Couldn't export — check the logo URL.");
+      flashError("Couldn't export. Check the logo URL.");
       throw new Error("download failed");
     }
     trackEvent("export_download", { format: fmt });
@@ -426,12 +426,12 @@ export default function Playground() {
     try {
       await navigator.clipboard.writeText(text);
     } catch {
-      flashError("Couldn't copy the link — check clipboard access.");
+      flashError("Couldn't copy the link. Check clipboard access.");
       throw new Error("copy failed");
     }
     trackEvent("export_copy_url", { format: key });
     if (logoUrl && !HTTP_URL.test(logoUrl)) {
-      flashError("Uploaded logo can't go in a link — use a logo URL instead.");
+      flashError("Uploaded logo can't go in a link. Use a logo URL instead.");
     }
   }
 
@@ -496,7 +496,7 @@ export default function Playground() {
 
   if (logoUrl) {
     const logoSrcSnippet = logoFileName
-      ? `/* ${logoFileName} — replace with a URL */`
+      ? `/* ${logoFileName}, replace with a URL */`
       : `"${logoUrl}"`;
     const logoParts = [`src: ${logoSrcSnippet}`];
     if (logoSize !== "") logoParts.push(`size: ${logoSize}`);
