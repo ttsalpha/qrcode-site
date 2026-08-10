@@ -196,7 +196,7 @@ export default function Playground() {
   const [bgColor, setBgColor] = useState("#ffffff");
 
   // Dimensions
-  const [size, setSize] = useState(256);
+  const [size, setSize] = useState(512);
   const [margin, setMargin] = useState(4);
 
   // Corners
