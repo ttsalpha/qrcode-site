@@ -324,11 +324,11 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 18px 0 8px;
+  padding: 18px 0 20px;
 }
 
 .presetsLabel {
-  font-size: 12px;
+  font-size: 14.5px;
   font-weight: 500;
   color: var(--fg-2);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -412,7 +412,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--fg-2);
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 500;
   font-family: var(--font-sans), system-ui, sans-serif;
   cursor: pointer;
@@ -455,7 +455,7 @@
 }
 
 .label {
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-weight: 500;
   color: var(--fg-2);
   font-family: var(--font-sans), system-ui, sans-serif;
