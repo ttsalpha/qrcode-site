@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
-import { pageMetadata, SITE_URL } from "@/lib/metadata";
+import { AUTHOR, breadcrumb, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const benchmarkDescription =
@@ -91,23 +91,24 @@ const LIBS = [
 
 const benchmarkJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Dataset",
-  name: "React QR Code Library Benchmark",
-  description: benchmarkDescription,
-  url: `${SITE_URL}/benchmark`,
-  creator: {
-    "@type": "Person",
-    name: "Son Tran",
-    url: "https://github.com/ttsalpha",
-  },
-  license: "https://github.com/ttsalpha/qrcode-benchmark",
-  variableMeasured: [
-    "Throughput (renders/second)",
-    "Repeated-value caching",
-    "True cold start latency",
-    "SSR latency",
-    "Sequential batch time",
-    "Bundle size",
+  "@graph": [
+    {
+      "@type": "Dataset",
+      name: "React QR Code Library Benchmark",
+      description: benchmarkDescription,
+      url: `${SITE_URL}/benchmark`,
+      creator: AUTHOR,
+      license: "https://github.com/ttsalpha/qrcode-benchmark",
+      variableMeasured: [
+        "Throughput (renders/second)",
+        "Repeated-value caching",
+        "True cold start latency",
+        "SSR latency",
+        "Sequential batch time",
+        "Bundle size",
+      ],
+    },
+    breadcrumb("/benchmark", "Benchmark"),
   ],
 };
 

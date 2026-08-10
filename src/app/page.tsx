@@ -16,7 +16,7 @@ import CopyButton from "@/components/CopyButton";
 import PlaygroundLoader from "@/components/PlaygroundLoader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
-import { pageMetadata, SITE_URL } from "@/lib/metadata";
+import { AUTHOR, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const homeDescription =
@@ -78,6 +78,7 @@ const jsonLd = {
       license: "https://github.com/ttsalpha/qrcode/blob/main/LICENSE",
       codeRepository: "https://github.com/ttsalpha/qrcode",
       downloadUrl: "https://www.npmjs.com/package/@ttsalpha/qrcode",
+      author: AUTHOR,
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     },
     {
@@ -86,6 +87,7 @@ const jsonLd = {
       url: SITE_URL,
       applicationCategory: "UtilitiesApplication",
       operatingSystem: "Web",
+      author: AUTHOR,
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     },
     {

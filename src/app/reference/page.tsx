@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import CodeBlock from "@/components/CodeBlock";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
-import { pageMetadata, SITE_URL } from "@/lib/metadata";
+import { AUTHOR, breadcrumb, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const referenceDescription =
@@ -26,12 +26,19 @@ export const metadata: Metadata = pageMetadata({
 
 const referenceJsonLd = {
   "@context": "https://schema.org",
-  "@type": "TechArticle",
-  headline: "API Reference — @ttsalpha/qrcode",
-  description: referenceDescription,
-  url: `${SITE_URL}/reference`,
-  proficiencyLevel: "Beginner",
-  about: { "@type": "SoftwareSourceCode", name: "@ttsalpha/qrcode" },
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      headline: "API Reference — @ttsalpha/qrcode",
+      description: referenceDescription,
+      url: `${SITE_URL}/reference`,
+      proficiencyLevel: "Beginner",
+      about: { "@type": "SoftwareSourceCode", name: "@ttsalpha/qrcode" },
+      author: AUTHOR,
+      publisher: AUTHOR,
+    },
+    breadcrumb("/reference", "API Reference"),
+  ],
 };
 
 // ─── Content ──────────────────────────────────────────────────────────────────

@@ -3,6 +3,30 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://qrcode.ttsalpha.com";
 export const SITE_NAME = "@ttsalpha/qrcode";
 
+// `url` is the entity's own home, `sameAs` the profiles that resolve to it
+export const AUTHOR = {
+  "@type": "Person",
+  name: "Son Tran",
+  url: "https://ttsalpha.com",
+  sameAs: ["https://github.com/ttsalpha", "https://www.npmjs.com/~ttsalpha"],
+} as const;
+
+/** Home > Page trail, so the SERP shows a breadcrumb instead of a bare URL */
+export function breadcrumb(path: string, name: string) {
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name,
+        item: `${SITE_URL}${path}`,
+      },
+    ],
+  };
+}
+
 /**
  * Next replaces a whole metadata field instead of deep-merging it, so a page
  * setting `openGraph` or `twitter` drops the layout's `type`, `siteName`, `card`

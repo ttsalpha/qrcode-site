@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import CodeBlock from "@/components/CodeBlock";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
-import { pageMetadata, SITE_URL } from "@/lib/metadata";
+import { AUTHOR, breadcrumb, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const examplesDescription =
@@ -17,31 +17,47 @@ export const metadata: Metadata = pageMetadata({
 
 const examplesJsonLd = {
   "@context": "https://schema.org",
-  "@type": "ItemList",
-  name: "QR Code Examples — @ttsalpha/qrcode",
-  description: examplesDescription,
-  url: `${SITE_URL}/examples`,
-  numberOfItems: 7,
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Default square QR code" },
+  "@graph": [
     {
-      "@type": "ListItem",
-      position: 2,
-      name: "Rounded dots with extra-rounded corners",
+      "@type": "CollectionPage",
+      name: "QR Code Examples — @ttsalpha/qrcode",
+      description: examplesDescription,
+      url: `${SITE_URL}/examples`,
+      author: AUTHOR,
+      publisher: AUTHOR,
     },
+    breadcrumb("/examples", "Examples"),
     {
-      "@type": "ListItem",
-      position: 3,
-      name: "Circle dots with circle corners",
+      "@type": "ItemList",
+      name: "QR Code Examples — @ttsalpha/qrcode",
+      url: `${SITE_URL}/examples`,
+      numberOfItems: 7,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Default square QR code" },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Rounded dots with extra-rounded corners",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Circle dots with circle corners",
+        },
+        {
+          "@type": "ListItem",
+          position: 4,
+          name: "Accent corners with single color",
+        },
+        { "@type": "ListItem", position: 5, name: "Transparent background" },
+        {
+          "@type": "ListItem",
+          position: 6,
+          name: "With logo — ECL auto-picked",
+        },
+        { "@type": "ListItem", position: 7, name: "Version 1 — numeric data" },
+      ],
     },
-    {
-      "@type": "ListItem",
-      position: 4,
-      name: "Accent corners with single color",
-    },
-    { "@type": "ListItem", position: 5, name: "Transparent background" },
-    { "@type": "ListItem", position: 6, name: "With logo — ECL auto-picked" },
-    { "@type": "ListItem", position: 7, name: "Version 1 — numeric data" },
   ],
 };
 
