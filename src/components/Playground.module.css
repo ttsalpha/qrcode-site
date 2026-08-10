@@ -280,50 +280,54 @@
 
 .presetsRow {
   display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 2px;
-  scrollbar-width: none;
-}
-
-.presetsRow::-webkit-scrollbar {
-  display: none;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .presetChip {
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px;
-  border: 1px solid transparent;
-  border-radius: 10px;
+  padding: 5px 10px 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
   background: transparent;
+  color: var(--fg-2);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.4;
   cursor: pointer;
-  flex-shrink: 0;
   transition:
     background 0.12s,
-    border-color 0.12s;
+    border-color 0.12s,
+    color 0.12s;
 }
 
 .presetChip:hover {
   background: var(--surface-2);
+  color: var(--fg);
 }
 
-.presetThumb {
+.presetChipActive {
+  border-color: var(--fg);
+  background: var(--surface-2);
+  color: var(--fg);
+}
+
+.presetSwatch {
   display: flex;
-  width: 56px;
-  height: 56px;
-  border-radius: 6px;
-  overflow: hidden;
-  background: #fff;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid;
+  flex-shrink: 0;
 }
 
-.presetName {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--fg-2);
-  font-family: var(--font-sans), system-ui, sans-serif;
+.presetSwatchDot {
+  width: 7px;
+  height: 7px;
 }
 
 /* ─── Value block + tabs ──────────────────────────────────────────────────── */

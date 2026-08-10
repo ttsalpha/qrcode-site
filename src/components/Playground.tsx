@@ -9,7 +9,7 @@ import type {
 import { QRCode, toDataURL, toSVGString } from "@ttsalpha/qrcode";
 import { track } from "@vercel/analytics";
 import type { CSSProperties } from "react";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   IoAdd,
   IoChevronDown,
@@ -90,10 +90,10 @@ const PRESETS: Preset[] = [
   {
     name: "Rounded",
     dotStyle: "rounded",
-    dotColor: "#0f172a",
+    dotColor: "#000000",
     bgColor: "#ffffff",
     sqStyle: "extra-rounded",
-    sqColor: "#14b8a6",
+    sqColor: "",
     dotSt: "rounded",
     dotDotColor: "",
   },
@@ -105,6 +105,16 @@ const PRESETS: Preset[] = [
     sqStyle: "circle",
     sqColor: "",
     dotSt: "circle",
+    dotDotColor: "",
+  },
+  {
+    name: "Teal",
+    dotStyle: "rounded",
+    dotColor: "#000000",
+    bgColor: "#ffffff",
+    sqStyle: "extra-rounded",
+    sqColor: "#14b8a6",
+    dotSt: "rounded",
     dotDotColor: "",
   },
   {
@@ -127,27 +137,53 @@ const PRESETS: Preset[] = [
     dotSt: "circle",
     dotDotColor: "#be123c",
   },
+  {
+    name: "Forest",
+    dotStyle: "rounded",
+    dotColor: "#15803d",
+    bgColor: "#ffffff",
+    sqStyle: "extra-rounded",
+    sqColor: "#22c55e",
+    dotSt: "rounded",
+    dotDotColor: "#15803d",
+  },
+  {
+    name: "Indigo",
+    dotStyle: "square",
+    dotColor: "#3730a3",
+    bgColor: "#ffffff",
+    sqStyle: "rounded",
+    sqColor: "#6366f1",
+    dotSt: "square",
+    dotDotColor: "#3730a3",
+  },
+  {
+    name: "Grape",
+    dotStyle: "circle",
+    dotColor: "#86198f",
+    bgColor: "#ffffff",
+    sqStyle: "extra-rounded",
+    sqColor: "#d946ef",
+    dotSt: "circle",
+    dotDotColor: "#86198f",
+  },
 ];
 
-// Static thumbnail — memoized so the 5 preset QRs don't re-encode on every render
-const PresetThumb = memo(function PresetThumb({ p }: { p: Preset }) {
-  return (
-    <QRCode
-      value="ttsalpha"
-      ariaLabel=""
-      size={56}
-      margin={2}
-      qr={{ errorCorrectionLevel: "L" }}
-      dotStyle={p.dotStyle}
-      dotColor={p.dotColor}
-      backgroundColor={p.bgColor}
-      corner={{
-        square: { style: p.sqStyle, color: p.sqColor || undefined },
-        dot: { style: p.dotSt, color: p.dotDotColor || undefined },
-      }}
-    />
-  );
-});
+// The chip swatch is a 16px mini-QR: frame = corner square color + style,
+// fill = dot color + style. Cheap to render, and it survives dark mode
+// because the swatch keeps the preset's own white background.
+const SQ_RADIUS: Record<CornerSquareStyle, string> = {
+  square: "2px",
+  rounded: "4px",
+  "extra-rounded": "6px",
+  circle: "50%",
+};
+
+const DOT_RADIUS: Record<DotStyle, string> = {
+  square: "1px",
+  rounded: "2px",
+  circle: "50%",
+};
 
 export default function Playground() {
   // Content
@@ -213,6 +249,20 @@ export default function Playground() {
     setSqColor(p.sqColor);
     setDotSt(p.dotSt);
     setDotDotColor(p.dotDotColor);
+  }
+
+  // Highlights the chip whose appearance matches the current settings, so the
+  // user can see which style is live after tweaking colors by hand.
+  function isPresetActive(p: Preset) {
+    return (
+      dotStyle === p.dotStyle &&
+      dotColor === p.dotColor &&
+      bgColor === p.bgColor &&
+      sqStyle === p.sqStyle &&
+      sqColor === p.sqColor &&
+      dotSt === p.dotSt &&
+      dotDotColor === p.dotDotColor
+    );
   }
 
   const [containerSize, setContainerSize] = useState(256);
@@ -560,20 +610,37 @@ export default function Playground() {
         <div className={s.presets}>
           <span className={s.presetsLabel}>Pick a quick style</span>
           <div className={s.presetsRow}>
-            {PRESETS.map((p) => (
-              <button
-                key={p.name}
-                type="button"
-                className={s.presetChip}
-                onClick={() => applyPreset(p)}
-                aria-label={`Apply ${p.name} style`}
-              >
-                <span className={s.presetThumb}>
-                  <PresetThumb p={p} />
-                </span>
-                <span className={s.presetName}>{p.name}</span>
-              </button>
-            ))}
+            {PRESETS.map((p) => {
+              const active = isPresetActive(p);
+              return (
+                <button
+                  key={p.name}
+                  type="button"
+                  className={`${s.presetChip} ${active ? s.presetChipActive : ""}`}
+                  onClick={() => applyPreset(p)}
+                  aria-pressed={active}
+                  aria-label={`Apply ${p.name} style`}
+                >
+                  <span
+                    className={s.presetSwatch}
+                    style={{
+                      background: p.bgColor,
+                      borderColor: p.sqColor || p.dotColor,
+                      borderRadius: SQ_RADIUS[p.sqStyle],
+                    }}
+                  >
+                    <span
+                      className={s.presetSwatchDot}
+                      style={{
+                        background: p.dotColor,
+                        borderRadius: DOT_RADIUS[p.dotStyle],
+                      }}
+                    />
+                  </span>
+                  {p.name}
+                </button>
+              );
+            })}
           </div>
         </div>
 
