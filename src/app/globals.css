@@ -24,8 +24,8 @@
   --color-success: #22c55e;
   --color-danger: #ef4444;
   --color-danger-muted: #fca5a5;
-  --r: 8px;
-  --r-lg: 12px;
+  --r: 12px;
+  --page-w: 1000px;
 }
 
 @media (prefers-color-scheme: dark) {

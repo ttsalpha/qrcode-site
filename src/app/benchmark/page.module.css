@@ -1,7 +1,7 @@
 .wrap {
   margin: 0 auto;
   padding: 0 24px;
-  max-width: 920px;
+  max-width: var(--page-w);
 }
 
 /* ── Hero ── */
@@ -110,7 +110,7 @@
 .tableWrap {
   overflow-x: auto;
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r);
 }
 .table {
   width: 100%;
@@ -266,7 +266,7 @@
 }
 .chooseCard {
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r);
   padding: 20px 22px;
   background: var(--bg);
 }
@@ -320,7 +320,7 @@
   gap: 16px;
   padding: 14px 16px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--r);
   background: var(--bg);
 }
 .reproduceLabel {

@@ -288,7 +288,7 @@ export default function ReferencePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(referenceJsonLd) }}
       />
-      <SiteNav maxWidth={920} />
+      <SiteNav />
       <main>
         <section className={s.hero}>
           <div className={s.wrap}>
@@ -424,7 +424,7 @@ export default function ReferencePage() {
           </div>
         </section>
       </main>
-      <SiteFooter maxWidth={920} showDocsLink />
+      <SiteFooter showDocsLink />
     </>
   );
 }

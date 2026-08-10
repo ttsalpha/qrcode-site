@@ -1,15 +1,13 @@
 import s from "./SiteFooter.module.css";
 
 export function SiteFooter({
-  maxWidth = 920,
   showDocsLink = false,
 }: {
-  maxWidth?: number;
   showDocsLink?: boolean;
 }) {
   return (
     <footer className={s.footer}>
-      <div className={s.wrap} style={{ maxWidth }}>
+      <div className={s.wrap}>
         <div className={s.footerTop}>
           <div className={s.footerBrand}>
             <span className={s.footerBrandAt}>@ttsalpha/</span>qrcode

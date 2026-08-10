@@ -68,7 +68,7 @@ export default function ExamplesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(examplesJsonLd) }}
       />
-      <SiteNav maxWidth={920} />
+      <SiteNav />
       <main>
         <section className={s.hero}>
           <div className={s.wrap}>
@@ -215,7 +215,7 @@ export default function ExamplesPage() {
           </div>
         </section>
       </main>
-      <SiteFooter maxWidth={920} showDocsLink />
+      <SiteFooter showDocsLink />
     </>
   );
 }

@@ -1,6 +1,6 @@
 .wrap {
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r);
   overflow: hidden;
   background: var(--surface-2);
   display: flex;

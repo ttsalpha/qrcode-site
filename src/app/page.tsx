@@ -153,7 +153,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <SiteNav maxWidth={920} />
+      <SiteNav />
 
       <main>
         {/* Hero */}
@@ -488,7 +488,7 @@ export default function App() {
         </section>
       </main>
 
-      <SiteFooter maxWidth={920} />
+      <SiteFooter />
     </>
   );
 }

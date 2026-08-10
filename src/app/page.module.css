@@ -1,12 +1,12 @@
 .wrap {
   margin: 0 auto;
   padding: 0 24px;
-  max-width: 920px;
+  max-width: var(--page-w);
 }
 
 .playgroundSkeleton {
   min-height: 520px;
-  border-radius: var(--r-lg);
+  border-radius: var(--r);
   background: var(--surface-2);
 }
 
@@ -45,7 +45,7 @@
   background: var(--surface-2);
   color: var(--fg);
   padding: 8px 8px 8px 18px;
-  border-radius: var(--r-lg);
+  border-radius: var(--r);
   font-size: 14px;
   font-family: var(--font-mono), monospace;
   border: 1px solid var(--border);
@@ -113,7 +113,7 @@
 .featureCard {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r);
   padding: 18px 20px;
 }
 .featureIcon {
@@ -163,7 +163,7 @@
   display: block;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r);
   padding: 16px 18px;
   text-decoration: none;
   transition:

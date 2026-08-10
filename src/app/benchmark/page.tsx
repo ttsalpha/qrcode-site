@@ -512,7 +512,7 @@ export default function BenchmarkPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(benchmarkJsonLd) }}
       />
-      <SiteNav maxWidth={920} />
+      <SiteNav />
 
       <main>
         {/* Hero */}
@@ -1208,7 +1208,7 @@ export default function BenchmarkPage() {
         </section>
       </main>
 
-      <SiteFooter maxWidth={920} showDocsLink />
+      <SiteFooter showDocsLink />
     </>
   );
 }
