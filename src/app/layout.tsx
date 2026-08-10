@@ -32,15 +32,15 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  // og:image comes from the opengraph-image.tsx file convention (per route),
+  // and X falls back to og:image when twitter:image is absent
   openGraph: {
     type: "website",
     siteName: "@ttsalpha/qrcode",
-    images: [{ url: "/og.jpeg", width: 800, height: 446 }],
   },
   twitter: {
     card: "summary_large_image",
     creator: "@ttsalpha",
-    images: ["/og.jpeg"],
   },
 };
 
