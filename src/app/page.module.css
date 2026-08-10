@@ -294,6 +294,19 @@
   .hero {
     padding: 56px 0 48px;
   }
+  .heroPreviews {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .heroPreviewItem {
+    min-width: 0;
+  }
+  .heroPreviewItem svg {
+    width: 100%;
+    height: auto;
+    max-width: 168px;
+  }
 }
 
 /* ── Responsive: Mobile (≤ 480px) ── */
@@ -321,19 +334,8 @@
     max-width: 100%;
     overflow-x: auto;
   }
-  .heroPreviewHideMobile {
-    display: none;
-  }
   .heroPreviews {
-    gap: 20px;
-    justify-content: center;
-  }
-  .heroPreviewItem {
-    flex: 0 0 auto;
-  }
-  .heroPreviewItem svg {
-    width: 144px;
-    height: 144px;
+    gap: 10px;
   }
   .featureCard {
     display: grid;

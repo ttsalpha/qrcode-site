@@ -236,9 +236,7 @@ export default function Page() {
                 />
                 <span className={s.heroPreviewLabel}>square</span>
               </div>
-              <div
-                className={`${s.heroPreviewItem} ${s.heroPreviewHideMobile}`}
-              >
+              <div className={s.heroPreviewItem}>
                 <QRCode
                   value="https://github.com/ttsalpha/qrcode"
                   size={168}
