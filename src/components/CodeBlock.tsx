@@ -23,7 +23,7 @@ export default async function CodeBlock({
     <div className={s.wrap}>
       <div className={s.toolbar}>
         {showLang ? <span className={s.lang}>{lang}</span> : <span />}
-        <CopyButton text={code.trim()} />
+        <CopyButton text={code.trim()} eventName="docs_copy" />
       </div>
       <div className={s.pre} dangerouslySetInnerHTML={{ __html: html }} />
     </div>

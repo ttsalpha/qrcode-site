@@ -46,6 +46,9 @@ const LINK_OPTIONS: SplitOption[] = [
 // but the QR still encodes this so the preview is never empty
 const DEFAULT_VALUE = "https://github.com/ttsalpha/qrcode";
 
+// A logo URL the /qr route can fetch, as opposed to an uploaded data: URL
+const HTTP_URL = /^https?:\/\/.+/i;
+
 let highlighterPromise: Promise<Highlighter> | null = null;
 function getHighlighter() {
   if (!highlighterPromise) {
@@ -169,9 +172,7 @@ const PRESETS: Preset[] = [
   },
 ];
 
-// The chip swatch is a 16px mini-QR: frame = corner square color + style,
-// fill = dot color + style. Cheap to render, and it survives dark mode
-// because the swatch keeps the preset's own white background.
+// Chip swatch: frame = corner square color + style, fill = dot color + style
 const SQ_RADIUS: Record<CornerSquareStyle, string> = {
   square: "2px",
   rounded: "4px",
@@ -232,16 +233,37 @@ export default function Playground() {
   }
 
   const hasInteracted = useRef(false);
+  // Reports that the user engaged, never anything about what they typed
+  function markInteracted() {
+    if (hasInteracted.current) return;
+    hasInteracted.current = true;
+    track("playground_first_interact");
+  }
+
   function trackEvent(name: string, props?: Record<string, string>) {
-    if (!hasInteracted.current) {
-      hasInteracted.current = true;
-      track("playground_first_interact");
-    }
+    markInteracted();
     track(name, props);
   }
 
+  // Shared by all three shape pickers; re-picking the active shape is no change
+  function trackStyleChange(field: string, value: string, prev: string) {
+    if (value === prev) return;
+    trackEvent("style_change", { field, value });
+  }
+
+  // input[type=color] fires all through a drag, so wait for 500ms of quiet
+  const colorTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  function trackColorChange(field: string) {
+    const timers = colorTimers.current;
+    if (timers[field]) clearTimeout(timers[field]);
+    timers[field] = setTimeout(() => {
+      delete timers[field];
+      trackEvent("color_change", { field });
+    }, 500);
+  }
+
   function applyPreset(p: Preset) {
-    trackEvent("preset_apply", { name: p.name });
+    if (!isPresetActive(p)) trackEvent("preset_apply", { name: p.name });
     setDotStyle(p.dotStyle);
     setDotColor(p.dotColor);
     setBgColor(p.bgColor);
@@ -251,8 +273,6 @@ export default function Playground() {
     setDotDotColor(p.dotDotColor);
   }
 
-  // Highlights the chip whose appearance matches the current settings, so the
-  // user can see which style is live after tweaking colors by hand.
   function isPresetActive(p: Preset) {
     return (
       dotStyle === p.dotStyle &&
@@ -339,8 +359,8 @@ export default function Playground() {
     return { ...props, logo: { ...props.logo, src: resolvedSrc } };
   }
 
+  // The export_* events fire after the work lands, so each one is a real export
   async function handleCopy(fmt: ExportFormat) {
-    trackEvent("export_copy", { format: fmt });
     try {
       const props = await buildExportProps();
       if (fmt === "svg") {
@@ -358,10 +378,10 @@ export default function Playground() {
       flashError("Couldn't copy — check the logo URL or clipboard access.");
       throw new Error("copy failed");
     }
+    trackEvent("export_copy", { format: fmt });
   }
 
   async function handleDownload(fmt: ExportFormat) {
-    trackEvent("export_download", { format: fmt });
     try {
       const props = await buildExportProps();
       if (fmt === "svg") {
@@ -385,12 +405,12 @@ export default function Playground() {
       flashError("Couldn't export — check the logo URL.");
       throw new Error("download failed");
     }
+    trackEvent("export_download", { format: fmt });
   }
 
   // Copy a /qr link that renders the current QR. Uploaded data:/blob: logos
   // don't fit in a URL — buildQRUrl drops them, so warn.
   async function handleCopyUrl(key: string) {
-    trackEvent("export_copy_url", { format: key });
     const origin = window.location.origin;
     const props = buildProps();
     let text: string;
@@ -407,7 +427,8 @@ export default function Playground() {
       flashError("Couldn't copy the link — check clipboard access.");
       throw new Error("copy failed");
     }
-    if (logoUrl && !/^https?:\/\//i.test(logoUrl)) {
+    trackEvent("export_copy_url", { format: key });
+    if (logoUrl && !HTTP_URL.test(logoUrl)) {
       flashError("Uploaded logo can't go in a link — use a logo URL instead.");
     }
   }
@@ -560,7 +581,7 @@ export default function Playground() {
               <span className={s.snippetLabel}>React code</span>
               <span className={s.snippetLang}>tsx</span>
             </button>
-            <CopyButton text={snippet} />
+            <CopyButton text={snippet} eventName="snippet_copy" />
           </div>
           {codeOpen && (
             <pre className={s.snippet} style={preStyle}>
@@ -589,7 +610,10 @@ export default function Playground() {
               <input
                 className={`${s.input} ${s.inputText}`}
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => {
+                  markInteracted();
+                  setValue(e.target.value);
+                }}
                 placeholder="Enter text, link, email…"
               />
               {value && (
@@ -667,7 +691,7 @@ export default function Playground() {
                   options={["square", "rounded", "circle"] as DotStyle[]}
                   value={dotStyle}
                   onChange={(v) => {
-                    trackEvent("dot_style_change", { value: v });
+                    trackStyleChange("dot", v, dotStyle);
                     setDotStyle(v);
                   }}
                   renderIcon={dotShapeIcon}
@@ -685,7 +709,7 @@ export default function Playground() {
                   }
                   value={sqStyle}
                   onChange={(v) => {
-                    trackEvent("corner_square_style_change", { value: v });
+                    trackStyleChange("corner_square", v, sqStyle);
                     setSqStyle(v);
                   }}
                   renderIcon={cornerSquareIcon}
@@ -696,7 +720,7 @@ export default function Playground() {
                   options={["square", "rounded", "circle"] as CornerDotStyle[]}
                   value={dotSt}
                   onChange={(v) => {
-                    trackEvent("corner_dot_style_change", { value: v });
+                    trackStyleChange("corner_dot", v, dotSt);
                     setDotSt(v);
                   }}
                   renderIcon={cornerDotIcon}
@@ -711,7 +735,10 @@ export default function Playground() {
                 <ColorControl
                   label="Dot color"
                   value={dotColor}
-                  onChange={setDotColor}
+                  onChange={(v) => {
+                    trackColorChange("dot");
+                    setDotColor(v);
+                  }}
                   defaultValue="#000000"
                 />
               </Field>
@@ -719,7 +746,10 @@ export default function Playground() {
                 <ColorControl
                   label="Background"
                   value={bgColor}
-                  onChange={setBgColor}
+                  onChange={(v) => {
+                    trackColorChange("background");
+                    setBgColor(v);
+                  }}
                   defaultValue="#ffffff"
                   transparent
                 />
@@ -728,7 +758,10 @@ export default function Playground() {
                 <ColorControl
                   label="Corners color"
                   value={sqColor}
-                  onChange={setSqColor}
+                  onChange={(v) => {
+                    trackColorChange("corner_square");
+                    setSqColor(v);
+                  }}
                   nullable
                   fallback={dotColor}
                 />
@@ -737,7 +770,10 @@ export default function Playground() {
                 <ColorControl
                   label="Corner dot color"
                   value={dotDotColor}
-                  onChange={setDotDotColor}
+                  onChange={(v) => {
+                    trackColorChange("corner_dot");
+                    setDotDotColor(v);
+                  }}
                   nullable
                   fallback={dotColor}
                 />
@@ -761,9 +797,11 @@ export default function Playground() {
                       className={s.input}
                       value={logoUrl}
                       onChange={(e) => {
-                        if (!logoUrl && e.target.value)
+                        const next = e.target.value;
+                        // Count once the URL is usable, not on keystroke one
+                        if (!HTTP_URL.test(logoUrl) && HTTP_URL.test(next))
                           trackEvent("logo_added", { method: "url" });
-                        setLogoUrl(e.target.value);
+                        setLogoUrl(next);
                         setLogoFileName(null);
                       }}
                       placeholder="https://example.com/logo.png"
@@ -909,7 +947,7 @@ export default function Playground() {
                   value={ecl || "auto"}
                   onChange={(v) => {
                     const next = v === "auto" ? "" : (v as ECL);
-                    trackEvent("ecl_change", { value: v });
+                    if (next !== ecl) trackEvent("ecl_change", { value: v });
                     setEcl(next);
                   }}
                 />
