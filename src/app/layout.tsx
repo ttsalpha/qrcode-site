@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next";
 import { Cascadia_Mono, Google_Sans } from "next/font/google";
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
+import { SITE_URL } from "@/lib/metadata";
 import "./globals.css";
 
 const sans = Google_Sans({
@@ -15,15 +16,13 @@ const mono = Cascadia_Mono({
   variable: "--font-mono",
 });
 
-const siteUrl = "https://qrcode.ttsalpha.com";
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   applicationName: "@ttsalpha/qrcode",
   title: {
     template: "%s | @ttsalpha/qrcode",

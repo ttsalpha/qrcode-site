@@ -3,32 +3,24 @@ import type { Metadata } from "next";
 import CodeBlock from "@/components/CodeBlock";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
+import { pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const examplesDescription =
   "Code examples for @ttsalpha/qrcode — dot styles, corner styles, colors, logos, transparent background, and export helpers.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Examples",
   description: examplesDescription,
-  alternates: { canonical: "/examples" },
-  openGraph: {
-    title: "Examples | @ttsalpha/qrcode",
-    description: examplesDescription,
-    url: "https://qrcode.ttsalpha.com/examples",
-  },
-  twitter: {
-    title: "Examples | @ttsalpha/qrcode",
-    description: examplesDescription,
-  },
-};
+  path: "/examples",
+});
 
 const examplesJsonLd = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "QR Code Examples — @ttsalpha/qrcode",
   description: examplesDescription,
-  url: "https://qrcode.ttsalpha.com/examples",
+  url: `${SITE_URL}/examples`,
   numberOfItems: 7,
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Default square QR code" },

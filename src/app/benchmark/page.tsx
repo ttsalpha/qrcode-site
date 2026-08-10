@@ -1,25 +1,17 @@
 import type { Metadata } from "next";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
+import { pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const benchmarkDescription =
   "Performance comparison of @ttsalpha/qrcode vs qrcode.react, react-qr-code, qr-code-styling, and qrcode. Covers true cold start, SSR, throughput, repeated-value caching, sequential batch, bundle size, and features.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Benchmark",
   description: benchmarkDescription,
-  alternates: { canonical: "/benchmark" },
-  openGraph: {
-    title: "Benchmark | @ttsalpha/qrcode",
-    description: benchmarkDescription,
-    url: "https://qrcode.ttsalpha.com/benchmark",
-  },
-  twitter: {
-    title: "Benchmark | @ttsalpha/qrcode",
-    description: benchmarkDescription,
-  },
-};
+  path: "/benchmark",
+});
 
 // ── Bar chart ────────────────────────────────────────────────────────────────
 
@@ -102,7 +94,7 @@ const benchmarkJsonLd = {
   "@type": "Dataset",
   name: "React QR Code Library Benchmark",
   description: benchmarkDescription,
-  url: "https://qrcode.ttsalpha.com/benchmark",
+  url: `${SITE_URL}/benchmark`,
   creator: {
     "@type": "Person",
     name: "Son Tran",

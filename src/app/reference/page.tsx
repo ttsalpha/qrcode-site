@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import CodeBlock from "@/components/CodeBlock";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
+import { pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const referenceDescription =
   "API reference for @ttsalpha/qrcode — every prop, type, export helper, and HTTP API param, with defaults and examples.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "API Reference",
   description: referenceDescription,
+  path: "/reference",
   keywords: [
     "qrcode props",
     "QRCode component API",
@@ -20,24 +22,14 @@ export const metadata: Metadata = {
     "toDataURL",
     "QR code HTTP API",
   ],
-  alternates: { canonical: "/reference" },
-  openGraph: {
-    title: "API Reference | @ttsalpha/qrcode",
-    description: referenceDescription,
-    url: "https://qrcode.ttsalpha.com/reference",
-  },
-  twitter: {
-    title: "API Reference | @ttsalpha/qrcode",
-    description: referenceDescription,
-  },
-};
+});
 
 const referenceJsonLd = {
   "@context": "https://schema.org",
   "@type": "TechArticle",
   headline: "API Reference — @ttsalpha/qrcode",
   description: referenceDescription,
-  url: "https://qrcode.ttsalpha.com/reference",
+  url: `${SITE_URL}/reference`,
   proficiencyLevel: "Beginner",
   about: { "@type": "SoftwareSourceCode", name: "@ttsalpha/qrcode" },
 };

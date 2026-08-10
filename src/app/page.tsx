@@ -16,14 +16,16 @@ import CopyButton from "@/components/CopyButton";
 import PlaygroundLoader from "@/components/PlaygroundLoader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
+import { pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const homeDescription =
   "Create and download custom QR codes instantly — or use as a React library: pure SVG, zero dependencies, fully typed.";
 
-export const metadata: Metadata = {
-  title: { absolute: "@ttsalpha/qrcode | QR Code Generator" },
+export const metadata: Metadata = pageMetadata({
+  titleAbsolute: "@ttsalpha/qrcode | QR Code Generator",
   description: homeDescription,
+  path: "/",
   keywords: [
     "qrcode",
     "react",
@@ -38,17 +40,7 @@ export const metadata: Metadata = {
     "SVG QR code",
     "QR code generator",
   ],
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: "@ttsalpha/qrcode | QR Code Generator",
-    description: homeDescription,
-    url: "https://qrcode.ttsalpha.com",
-  },
-  twitter: {
-    title: "@ttsalpha/qrcode | QR Code Generator",
-    description: homeDescription,
-  },
-};
+});
 
 function SectionHead({
   tag,
@@ -76,7 +68,7 @@ const jsonLd = {
     {
       "@type": "SoftwareApplication",
       name: "@ttsalpha/qrcode",
-      url: "https://qrcode.ttsalpha.com",
+      url: SITE_URL,
       description:
         "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.",
       applicationCategory: "DeveloperApplication",
@@ -91,7 +83,7 @@ const jsonLd = {
     {
       "@type": "WebApplication",
       name: "@ttsalpha/qrcode — QR Code Generator",
-      url: "https://qrcode.ttsalpha.com",
+      url: SITE_URL,
       applicationCategory: "UtilitiesApplication",
       operatingSystem: "Web",
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
