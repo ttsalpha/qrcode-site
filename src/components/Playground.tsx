@@ -31,15 +31,15 @@ type ExportFormat = "svg" | "png" | "jpg";
 type SplitOption = { key: string; label: string };
 
 const FORMAT_OPTIONS: SplitOption[] = [
-  { key: "svg", label: "SVG" },
   { key: "png", label: "PNG" },
   { key: "jpg", label: "JPG" },
+  { key: "svg", label: "SVG" },
 ];
 
 const LINK_OPTIONS: SplitOption[] = [
-  { key: "svg", label: "SVG link" },
   { key: "png", label: "PNG link" },
   { key: "jpg", label: "JPG link" },
+  { key: "svg", label: "SVG link" },
   { key: "html", label: "HTML <img>" },
   { key: "markdown", label: "Markdown" },
 ];
@@ -547,20 +547,20 @@ export default function Playground() {
           <SplitButton
             label="Download"
             icon={<IoDownloadOutline size={14} />}
-            onMain={() => handleDownload("svg")}
+            onMain={() => handleDownload("png")}
             onOption={(k) => handleDownload(k as ExportFormat)}
             primary
           />
           <SplitButton
             label="Copy image"
             icon={<IoCopyOutline size={14} />}
-            onMain={() => handleCopy("svg")}
+            onMain={() => handleCopy("png")}
             onOption={(k) => handleCopy(k as ExportFormat)}
           />
           <SplitButton
             label="Copy link"
             icon={<IoLinkOutline size={14} />}
-            onMain={() => handleCopyUrl("svg")}
+            onMain={() => handleCopyUrl("png")}
             onOption={handleCopyUrl}
             options={LINK_OPTIONS}
           />
