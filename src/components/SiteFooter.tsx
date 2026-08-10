@@ -21,7 +21,7 @@ export function SiteFooter({
               </a>
             )}
             <a
-              href="https://github.com/ttsalpha"
+              href="https://ttsalpha.com"
               target="_blank"
               rel="noopener noreferrer"
               className={s.footerNavLink}
@@ -50,7 +50,7 @@ export function SiteFooter({
           <span className={s.footerCopy}>
             © {new Date().getFullYear()}{" "}
             <a
-              href="https://github.com/ttsalpha"
+              href="https://ttsalpha.com"
               target="_blank"
               rel="noopener noreferrer"
               className={s.footerLink}
