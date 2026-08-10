@@ -269,8 +269,8 @@ export default function Page() {
           <div className={s.wrap}>
             <SectionHead
               tag="Playground"
-              title="Try it live"
-              desc="Adjust every prop and see the result instantly."
+              title="Make your QR code"
+              desc="Type a link or text, pick a style, download the image. Free, no sign-up."
             />
             <PlaygroundLoader />
           </div>

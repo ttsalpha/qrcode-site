@@ -9,14 +9,16 @@ import type {
 import { QRCode, toDataURL, toSVGString } from "@ttsalpha/qrcode";
 import { track } from "@vercel/analytics";
 import type { CSSProperties } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   IoAdd,
+  IoCheckmark,
   IoChevronDown,
   IoClose,
   IoCloudUploadOutline,
   IoCopyOutline,
   IoDownloadOutline,
+  IoHelpCircleOutline,
   IoLinkOutline,
 } from "react-icons/io5";
 import { createHighlighter, type Highlighter, type ThemedToken } from "shiki";
@@ -543,6 +545,13 @@ export default function Playground() {
         </div>
         <div className={s.previewActions}>
           <SplitButton
+            label="Download"
+            icon={<IoDownloadOutline size={14} />}
+            onMain={() => handleDownload("svg")}
+            onOption={(k) => handleDownload(k as ExportFormat)}
+            primary
+          />
+          <SplitButton
             label="Copy image"
             icon={<IoCopyOutline size={14} />}
             onMain={() => handleCopy("svg")}
@@ -554,12 +563,6 @@ export default function Playground() {
             onMain={() => handleCopyUrl("svg")}
             onOption={handleCopyUrl}
             options={LINK_OPTIONS}
-          />
-          <SplitButton
-            label="Download"
-            icon={<IoDownloadOutline size={14} />}
-            onMain={() => handleDownload("svg")}
-            onOption={(k) => handleDownload(k as ExportFormat)}
           />
         </div>
         {exportError && (
@@ -579,7 +582,6 @@ export default function Playground() {
                 className={`${s.chevron} ${codeOpen ? s.chevronOpen : ""}`}
               />
               <span className={s.snippetLabel}>React code</span>
-              <span className={s.snippetLang}>tsx</span>
             </button>
             <CopyButton text={snippet} eventName="snippet_copy" />
           </div>
@@ -941,7 +943,10 @@ export default function Playground() {
                   />
                 </Field>
               </div>
-              <Field label="Error correction">
+              <Field
+                label="Error correction"
+                hint="Spare data that lets a scanner read the code even when part of it is dirty, scratched, or covered by a logo. Higher levels survive more damage but make each dot smaller. Auto uses M, and raises it on its own when you add a logo."
+              >
                 <Tabs
                   options={["auto", "L", "M", "Q", "H"]}
                   value={ecl || "auto"}
@@ -952,7 +957,10 @@ export default function Playground() {
                   }}
                 />
               </Field>
-              <Field label="QR version (1–40, blank = auto)">
+              <Field
+                label="QR version"
+                hint="How big the dot grid is: version 1 is 21×21 dots, version 40 is 177×177. Higher versions hold more characters. Leave it blank and the smallest version that fits your content gets picked."
+              >
                 <div className={s.colorRow}>
                   <input
                     type="number"
@@ -994,14 +1002,34 @@ export default function Playground() {
 
 function Field({
   label,
+  hint,
   children,
 }: {
   label: string;
+  hint?: string;
   children: React.ReactNode;
 }) {
+  const hintId = `${label.replace(/\W+/g, "-").toLowerCase()}-hint`;
   return (
     <div className={s.field}>
-      <span className={s.label}>{label}</span>
+      <span className={s.labelRow}>
+        <span className={s.label}>{label}</span>
+        {hint && (
+          <span className={s.hintWrap}>
+            <button
+              type="button"
+              className={s.hintBtn}
+              aria-describedby={hintId}
+              aria-label={`What is ${label}?`}
+            >
+              <IoHelpCircleOutline size={15} />
+            </button>
+            <span role="tooltip" id={hintId} className={s.hintTip}>
+              {hint}
+            </span>
+          </span>
+        )}
+      </span>
       {children}
     </div>
   );
@@ -1346,16 +1374,20 @@ function SplitButton({
   onMain,
   onOption,
   options,
+  primary,
 }: {
   label: string;
   icon: React.ReactNode;
   onMain: () => Promise<void>;
   onOption: (key: string) => Promise<void>;
   options?: SplitOption[];
+  primary?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
+  const [dropUp, setDropUp] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -1368,6 +1400,17 @@ function SplitButton({
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  // Flip above the button when the menu would run past the viewport. Layout
+  // effect so the direction settles before paint.
+  useLayoutEffect(() => {
+    if (!open) return;
+    const anchor = ref.current?.getBoundingClientRect();
+    const height = menuRef.current?.offsetHeight ?? 0;
+    if (!anchor) return;
+    const below = window.innerHeight - anchor.bottom;
+    setDropUp(below < height + 12 && anchor.top > below);
+  }, [open]);
+
   async function run(action: () => Promise<void>) {
     try {
       await action();
@@ -1378,17 +1421,20 @@ function SplitButton({
     setTimeout(() => setDone(false), 1500);
   }
 
-  const doneLabel = label.startsWith("Copy") ? "Copied!" : "Downloaded!";
+  const doneLabel = label.startsWith("Copy") ? "Copied!" : "Saved!";
   const mainLabel = done ? doneLabel : label;
 
   return (
-    <div className={s.splitBtnWrap} ref={ref}>
+    <div
+      className={`${s.splitBtnWrap} ${primary ? s.splitBtnWrapPrimary : ""}`}
+      ref={ref}
+    >
       <button
         type="button"
-        className={s.splitBtnMain}
+        className={`${s.splitBtnMain} ${done ? s.splitBtnMainDone : ""}`}
         onClick={() => run(onMain)}
       >
-        {icon}
+        {done ? <IoCheckmark size={15} /> : icon}
         <span>{mainLabel}</span>
       </button>
       <button
@@ -1400,7 +1446,10 @@ function SplitButton({
         <IoChevronDown />
       </button>
       {open && (
-        <div className={s.splitBtnDropdown}>
+        <div
+          ref={menuRef}
+          className={`${s.splitBtnDropdown} ${dropUp ? s.splitBtnDropdownUp : ""}`}
+        >
           {(options ?? FORMAT_OPTIONS).map((opt) => (
             <button
               key={opt.key}
