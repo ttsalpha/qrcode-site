@@ -4,7 +4,7 @@
   justify-content: center;
   width: 30px;
   height: 30px;
-  border-radius: var(--r);
+  border-radius: 8px;
   border: none;
   background: transparent;
   color: #6b6b6b;

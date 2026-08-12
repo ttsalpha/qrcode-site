@@ -549,9 +549,87 @@
 }
 
 .inputText {
-  border-color: var(--border-strong);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 13px;
+}
+
+/* ─── Input shell ─────────────────────────────────────────────────────────── */
+
+.inputShell {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 36px;
+  padding-right: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  transition: border-color 0.15s;
+}
+
+.inputShell:focus-within {
+  border-color: var(--accent);
+}
+
+.inputShellStrong {
+  border-color: var(--border-strong);
+}
+
+.inputShell .input,
+.inputShell .input:focus {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border-color: transparent;
+}
+
+.affixBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: calc(var(--r) - 5px);
+  background: transparent;
+  color: var(--fg-3);
+  font-size: 15px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.12s,
+    color 0.12s;
+}
+
+.affixBtn:hover {
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.affixText {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 9px;
+  border: none;
+  border-radius: calc(var(--r) - 5px);
+  background: var(--surface);
+  color: var(--fg-2);
+  font-size: 11.5px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.12s,
+    color 0.12s;
+}
+
+.affixText:hover {
+  background: var(--bg);
+  color: var(--fg);
 }
 
 .inputError,
@@ -691,17 +769,12 @@
 
 /* ─── Color input ─────────────────────────────────────────────────────────── */
 
-.colorRow {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
 .swatch {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r);
-  border: 1px solid var(--border);
+  width: 26px;
+  height: 26px;
+  margin-left: 5px;
+  border-radius: calc(var(--r) - 5px);
+  border: 1px solid var(--border-strong);
   background: var(--surface-2);
   padding: 2px;
   cursor: pointer;
@@ -714,7 +787,8 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 5px 10px;
+  min-height: 36px;
+  padding: 0 12px;
   border: 1px dashed var(--border);
   border-radius: var(--r);
   background: transparent;
@@ -723,6 +797,7 @@
   font-family: var(--font-sans), system-ui, sans-serif;
   cursor: pointer;
   transition: all 0.12s;
+  box-sizing: border-box;
 }
 
 .addColorBtn:hover {
@@ -730,51 +805,12 @@
   color: var(--accent);
 }
 
-.clearBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.transparentSwatch {
   width: 26px;
   height: 26px;
-  border-radius: var(--r);
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--fg-2);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.12s;
-  padding: 0;
-}
-
-.clearBtn:hover {
-  border-color: var(--fg-3);
-  color: var(--fg);
-}
-
-.transparentBtn {
-  padding: 5px 9px;
-  border-radius: var(--r);
-  border: 1px dashed var(--border);
-  background: transparent;
-  color: var(--fg-2);
-  font-size: 11.5px;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  cursor: pointer;
-  transition: all 0.12s;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.transparentBtn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.transparentSwatch {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r);
-  border: 1px solid var(--border);
+  margin-left: 5px;
+  border-radius: calc(var(--r) - 5px);
+  border: 1px solid var(--border-strong);
   flex-shrink: 0;
   background-color: #fff;
   background-image:
@@ -791,10 +827,11 @@
 }
 
 .transparentLabel {
+  flex: 1;
+  padding-left: 9px;
   font-size: 12.5px;
   font-family: var(--font-sans), system-ui, sans-serif;
   color: var(--fg-3);
-  flex: 1;
 }
 
 /* ─── Toggle ─────────────────────────────────────────────────────────────── */

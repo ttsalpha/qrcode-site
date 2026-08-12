@@ -608,7 +608,7 @@ export default function Playground() {
       <div className={s.controls}>
         <div className={s.valueBlock}>
           <Field label="Text or link">
-            <div className={s.colorRow}>
+            <div className={`${s.inputShell} ${s.inputShellStrong}`}>
               <input
                 className={`${s.input} ${s.inputText}`}
                 value={value}
@@ -619,15 +619,9 @@ export default function Playground() {
                 placeholder="Enter text, link, email…"
               />
               {value && (
-                <button
-                  type="button"
-                  className={s.clearBtn}
-                  onClick={() => setValue("")}
-                  title="Clear"
-                  aria-label="Clear"
-                >
+                <AffixButton label="Clear" onClick={() => setValue("")}>
                   <IoClose />
-                </button>
+                </AffixButton>
               )}
             </div>
           </Field>
@@ -786,7 +780,7 @@ export default function Playground() {
           {tab === "Logo" && (
             <>
               <Field label="Center logo">
-                <div className={s.colorRow}>
+                <div className={s.inputShell}>
                   {logoFileName ? (
                     <span
                       className={`${s.input} ${s.logoFileName}`}
@@ -816,31 +810,22 @@ export default function Playground() {
                     className={s.fileInput}
                     onChange={handleLogoFileUpload}
                   />
-                  <button
-                    type="button"
-                    className={s.clearBtn}
+                  <AffixButton
+                    label="Upload local image"
                     onClick={() => fileInputRef.current?.click()}
-                    title="Upload local image"
-                    aria-label="Upload local image"
                   >
-                    <IoCloudUploadOutline size={12} />
-                  </button>
+                    <IoCloudUploadOutline />
+                  </AffixButton>
                   {logoUrl && (
-                    <button
-                      type="button"
-                      className={s.clearBtn}
-                      onClick={clearLogoUrl}
-                      title="Clear"
-                      aria-label="Clear"
-                    >
+                    <AffixButton label="Clear" onClick={clearLogoUrl}>
                       <IoClose />
-                    </button>
+                    </AffixButton>
                   )}
                 </div>
               </Field>
               <div className={s.row2}>
                 <Field label="Logo size (0–1)">
-                  <div className={s.colorRow}>
+                  <div className={s.inputShell}>
                     <input
                       type="number"
                       className={s.input}
@@ -865,20 +850,17 @@ export default function Playground() {
                       placeholder="auto"
                     />
                     {logoSize !== "" && (
-                      <button
-                        type="button"
-                        className={s.clearBtn}
+                      <AffixButton
+                        label="Reset to auto"
                         onClick={() => setLogoSize("")}
-                        title="Reset to auto"
-                        aria-label="Reset to auto"
                       >
                         <IoClose />
-                      </button>
+                      </AffixButton>
                     )}
                   </div>
                 </Field>
                 <Field label="Logo margin">
-                  <div className={s.colorRow}>
+                  <div className={s.inputShell}>
                     <input
                       type="number"
                       className={s.input}
@@ -892,15 +874,12 @@ export default function Playground() {
                       placeholder="0"
                     />
                     {logoMargin !== "" && (
-                      <button
-                        type="button"
-                        className={s.clearBtn}
+                      <AffixButton
+                        label="Reset to auto"
                         onClick={() => setLogoMargin("")}
-                        title="Reset to auto"
-                        aria-label="Reset to auto"
                       >
                         <IoClose />
-                      </button>
+                      </AffixButton>
                     )}
                   </div>
                 </Field>
@@ -957,39 +936,38 @@ export default function Playground() {
                   }}
                 />
               </Field>
-              <Field
-                label="QR version"
-                hint="How big the dot grid is: version 1 is 21×21 dots, version 40 is 177×177. Higher versions hold more characters. Leave it blank and the smallest version that fits your content gets picked."
-              >
-                <div className={s.colorRow}>
-                  <input
-                    type="number"
-                    className={s.input}
-                    value={qrVersion}
-                    onChange={(e) =>
-                      setQrVersion(
-                        e.target.value === ""
-                          ? ""
-                          : Math.min(40, Math.max(1, Number(e.target.value))),
-                      )
-                    }
-                    min={1}
-                    max={40}
-                    placeholder="auto"
-                  />
-                  {qrVersion !== "" && (
-                    <button
-                      type="button"
-                      className={s.clearBtn}
-                      onClick={() => setQrVersion("")}
-                      title="Reset to auto"
-                      aria-label="Reset to auto"
-                    >
-                      <IoClose />
-                    </button>
-                  )}
-                </div>
-              </Field>
+              <div className={s.row2}>
+                <Field
+                  label="QR version"
+                  hint="How big the dot grid is: version 1 is 21×21 dots, version 40 is 177×177. Higher versions hold more characters. Leave it blank and the smallest version that fits your content gets picked."
+                >
+                  <div className={s.inputShell}>
+                    <input
+                      type="number"
+                      className={s.input}
+                      value={qrVersion}
+                      onChange={(e) =>
+                        setQrVersion(
+                          e.target.value === ""
+                            ? ""
+                            : Math.min(40, Math.max(1, Number(e.target.value))),
+                        )
+                      }
+                      min={1}
+                      max={40}
+                      placeholder="auto"
+                    />
+                    {qrVersion !== "" && (
+                      <AffixButton
+                        label="Reset to auto"
+                        onClick={() => setQrVersion("")}
+                      >
+                        <IoClose />
+                      </AffixButton>
+                    )}
+                  </div>
+                </Field>
+              </div>
             </>
           )}
         </div>
@@ -1301,24 +1279,21 @@ function ColorControl({
 
   if (value === "transparent") {
     return (
-      <div className={s.colorRow}>
+      <div className={s.inputShell}>
         <span className={s.transparentSwatch} aria-hidden="true" />
         <span className={s.transparentLabel}>transparent</span>
-        <button
-          type="button"
-          className={s.clearBtn}
+        <AffixButton
+          label="Reset to default"
           onClick={() => defaultValue !== undefined && onChange(defaultValue)}
-          title="Reset to default"
-          aria-label="Reset to default"
         >
           <IoClose />
-        </button>
+        </AffixButton>
       </div>
     );
   }
 
   return (
-    <div className={s.colorRow}>
+    <div className={s.inputShell}>
       <input
         type="color"
         className={s.swatch}
@@ -1334,30 +1309,21 @@ function ColorControl({
         aria-label={label ? `${label} hex value` : "hex value"}
       />
       {nullable ? (
-        <button
-          type="button"
-          className={s.clearBtn}
-          onClick={() => onChange("")}
-          title="Remove color"
-          aria-label="Remove color"
-        >
+        <AffixButton label="Remove color" onClick={() => onChange("")}>
           <IoClose />
-        </button>
+        </AffixButton>
       ) : isDirty && defaultValue !== undefined ? (
-        <button
-          type="button"
-          className={s.clearBtn}
+        <AffixButton
+          label="Reset to default"
           onClick={() => onChange(defaultValue)}
-          title="Reset to default"
-          aria-label="Reset to default"
         >
           <IoClose />
-        </button>
+        </AffixButton>
       ) : (
         transparent && (
           <button
             type="button"
-            className={s.transparentBtn}
+            className={s.affixText}
             onClick={() => onChange("transparent")}
           >
             transparent
@@ -1365,6 +1331,28 @@ function ColorControl({
         )
       )}
     </div>
+  );
+}
+
+function AffixButton({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      className={s.affixBtn}
+      onClick={onClick}
+      title={label}
+      aria-label={label}
+    >
+      {children}
+    </button>
   );
 }
 
