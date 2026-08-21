@@ -1,7 +1,7 @@
 .root {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 28px;
+  gap: 48px;
   align-items: start;
 }
 
@@ -11,8 +11,6 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  position: sticky;
-  top: 68px;
   min-width: 0;
 }
 
@@ -152,7 +150,7 @@
   min-width: 0;
   /* Same height as .input, so the shared radius reads the same on both */
   min-height: 36px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid transparent;
   border-radius: var(--r);
   transition: border-color 0.12s;
 }
@@ -316,6 +314,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  min-width: 0;
 }
 
 /* ─── Presets ─────────────────────────────────────────────────────────────── */
@@ -397,12 +396,6 @@
   display: flex;
   gap: 2px;
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.tabBar::-webkit-scrollbar {
-  display: none;
 }
 
 .tabBtn {
@@ -448,9 +441,17 @@
   gap: 8px;
 }
 
+.fieldInline {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .labelRow {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 6px;
 }
 
@@ -560,20 +561,17 @@
   align-items: center;
   gap: 2px;
   min-width: 0;
-  min-height: 36px;
+  height: 36px;
+  box-sizing: border-box;
   padding-right: 4px;
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   border-radius: var(--r);
   transition: border-color 0.15s;
 }
 
 .inputShell:focus-within {
   border-color: var(--accent);
-}
-
-.inputShellStrong {
-  border-color: var(--border-strong);
 }
 
 .inputShell .input,
@@ -709,31 +707,28 @@
   color: #0a0a0a;
 }
 
-/* ─── Shape picker ────────────────────────────────────────────────────────── */
+/* ─── Shape picker (segmented control) ───────────────────────────────────── */
 
 .shapePicker {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 80px);
-  gap: 4px;
-}
-
-.shapeItem {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-sizing: border-box;
 }
 
 .shapeOption {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  aspect-ratio: 1;
+  flex: 1 1 0;
+  height: 36px;
   border: 1px solid transparent;
-  border-radius: var(--r);
+  border-radius: calc(var(--r) - 4px);
   background: transparent;
-  color: var(--fg);
+  color: var(--fg-3);
   cursor: pointer;
   transition:
     background 0.12s,
@@ -742,52 +737,84 @@
 }
 
 .shapeOption:hover {
-  background: var(--surface);
-  border-color: var(--border);
   color: var(--fg);
 }
 
 .shapeOptionActive,
 .shapeOptionActive:hover {
-  background: var(--surface-2);
+  background: var(--bg);
+  border-color: var(--border-strong);
   color: var(--fg);
 }
 
-.shapeName {
-  font-size: 10.5px;
-  line-height: 1.2;
-  text-align: center;
-  white-space: nowrap;
-  text-transform: capitalize;
-  font-family: var(--font-sans), system-ui, sans-serif;
-  color: var(--fg-3);
+/* --bg is the darkest token in dark mode, not the lightest — pick an
+   explicit gray instead of the (wrong-direction) token here */
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .shapeOptionActive,
+  :global(:root:not([data-theme="light"])) .shapeOptionActive:hover {
+    background: var(--gray-8);
+  }
 }
 
-.shapeItem:has(.shapeOptionActive) .shapeName {
-  color: var(--fg);
+:global([data-theme="dark"]) .shapeOptionActive,
+:global([data-theme="dark"]) .shapeOptionActive:hover {
+  background: var(--gray-8);
+}
+
+/* Shared width for both controls an inline Field can hold */
+.fieldInline .shapePicker,
+.fieldInline .inputShell {
+  width: 200px;
+  flex-shrink: 1;
+}
+
+.fieldInline .shapePicker {
+  min-width: 155px;
 }
 
 /* ─── Color input ─────────────────────────────────────────────────────────── */
 
+.fieldInline .inputShell {
+  min-width: 130px;
+}
+
+/* Inner swatch is a flat square, clipped by this element's own overflow —
+   two independently-rounded corners don't always land on the same arc */
 .swatch {
   width: 26px;
   height: 26px;
   margin-left: 5px;
   border-radius: calc(var(--r) - 5px);
   border: 1px solid var(--border-strong);
-  background: var(--surface-2);
-  padding: 2px;
+  padding: 0;
+  overflow: hidden;
   cursor: pointer;
   flex-shrink: 0;
+}
+
+.swatch::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 0;
+}
+
+.swatch::-webkit-color-swatch {
+  border: none;
+  border-radius: 0;
+}
+
+.swatch::-moz-color-swatch {
+  border: none;
+  border-radius: 0;
 }
 
 /* ─── Nullable color ──────────────────────────────────────────────────────── */
 
 .addColorBtn {
   display: inline-flex;
+  align-self: flex-start;
   align-items: center;
   gap: 5px;
-  min-height: 36px;
+  height: 36px;
   padding: 0 12px;
   border: 1px dashed var(--border);
   border-radius: var(--r);
@@ -906,14 +933,10 @@
 
 /* ─── Responsive ──────────────────────────────────────────────────────────── */
 
-/* Tablet (≤ 768px): single column, remove sticky preview */
+/* Tablet (≤ 768px): single column */
 @media (max-width: 768px) {
   .root {
     grid-template-columns: 1fr;
-  }
-
-  .left {
-    position: static;
   }
 
   .tabPanel {
@@ -934,9 +957,33 @@
 
   .splitBtnMain {
     justify-content: center;
+    padding-left: 44px;
+    padding-right: 0;
+  }
+
+  .splitBtnArrow {
+    width: 44px;
+    padding: 0;
   }
 
   .snippet {
     max-height: 220px;
+  }
+
+  /* Center + cap width so the tooltip can't run off-screen on narrow phones */
+  .hintTip {
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(240px, calc(100vw - 32px));
+  }
+
+  /* Genuinely overflows by a couple px on the narrowest phones (~320px) */
+  .tabBar {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabBar::-webkit-scrollbar {
+    display: none;
   }
 }

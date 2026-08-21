@@ -608,7 +608,7 @@ export default function Playground() {
       <div className={s.controls}>
         <div className={s.valueBlock}>
           <Field label="Text or link">
-            <div className={`${s.inputShell} ${s.inputShellStrong}`}>
+            <div className={s.inputShell}>
               <input
                 className={`${s.input} ${s.inputText}`}
                 value={value}
@@ -682,7 +682,7 @@ export default function Playground() {
         <div className={s.tabPanel}>
           {tab === "Style" && (
             <>
-              <Field label="Dot style">
+              <Field label="Dot style" variant="inline">
                 <ShapePicker
                   options={["square", "rounded", "circle"] as DotStyle[]}
                   value={dotStyle}
@@ -693,7 +693,11 @@ export default function Playground() {
                   renderIcon={dotShapeIcon}
                 />
               </Field>
-              <Field label="Corners style">
+              <Field
+                label="Corners style"
+                hint="The three big squares in the corners of the QR code that scanners use to find and align it."
+                variant="inline"
+              >
                 <ShapePicker
                   options={
                     [
@@ -711,7 +715,11 @@ export default function Playground() {
                   renderIcon={cornerSquareIcon}
                 />
               </Field>
-              <Field label="Corner dot style">
+              <Field
+                label="Corner dot style"
+                hint="The small dot inside each corner square."
+                variant="inline"
+              >
                 <ShapePicker
                   options={["square", "rounded", "circle"] as CornerDotStyle[]}
                   value={dotSt}
@@ -727,7 +735,7 @@ export default function Playground() {
 
           {tab === "Color" && (
             <>
-              <Field label="Dot color">
+              <Field label="Dot color" variant="inline">
                 <ColorControl
                   label="Dot color"
                   value={dotColor}
@@ -738,19 +746,11 @@ export default function Playground() {
                   defaultValue="#000000"
                 />
               </Field>
-              <Field label="Background">
-                <ColorControl
-                  label="Background"
-                  value={bgColor}
-                  onChange={(v) => {
-                    trackColorChange("background");
-                    setBgColor(v);
-                  }}
-                  defaultValue="#ffffff"
-                  transparent
-                />
-              </Field>
-              <Field label="Corners color">
+              <Field
+                label="Corners color"
+                hint="Color of the three big corner squares. Leave unset to match the dot color."
+                variant="inline"
+              >
                 <ColorControl
                   label="Corners color"
                   value={sqColor}
@@ -762,7 +762,11 @@ export default function Playground() {
                   fallback={dotColor}
                 />
               </Field>
-              <Field label="Corner dot color">
+              <Field
+                label="Corner dot color"
+                hint="Color of the dot inside each corner square. Leave unset to match the dot color."
+                variant="inline"
+              >
                 <ColorControl
                   label="Corner dot color"
                   value={dotDotColor}
@@ -774,12 +778,27 @@ export default function Playground() {
                   fallback={dotColor}
                 />
               </Field>
+              <Field label="Background" variant="inline">
+                <ColorControl
+                  label="Background"
+                  value={bgColor}
+                  onChange={(v) => {
+                    trackColorChange("background");
+                    setBgColor(v);
+                  }}
+                  defaultValue="#ffffff"
+                  transparent
+                />
+              </Field>
             </>
           )}
 
           {tab === "Logo" && (
             <>
-              <Field label="Center logo">
+              <Field
+                label="Center logo"
+                hint="Adds an image to the middle of the QR code. Error correction is raised automatically so the code still scans."
+              >
                 <div className={s.inputShell}>
                   {logoFileName ? (
                     <span
@@ -982,14 +1001,16 @@ function Field({
   label,
   hint,
   children,
+  variant = "stack",
 }: {
   label: string;
   hint?: string;
   children: React.ReactNode;
+  variant?: "stack" | "inline";
 }) {
   const hintId = `${label.replace(/\W+/g, "-").toLowerCase()}-hint`;
   return (
-    <div className={s.field}>
+    <div className={`${s.field} ${variant === "inline" ? s.fieldInline : ""}`}>
       <span className={s.labelRow}>
         <span className={s.label}>{label}</span>
         {hint && (
@@ -1040,7 +1061,7 @@ function Tabs<T extends string>({
 
 // ─── Visual shape picker ──────────────────────────────────────────────────────
 
-const ICON_SIZE = 36;
+const ICON_SIZE = 22;
 
 function ShapeSvg({ children }: { children: React.ReactNode }) {
   return (
@@ -1055,27 +1076,24 @@ function ShapeSvg({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Dot style: a mini QR module pattern drawn in the chosen shape
+// Dot style: a mini QR module pattern drawn in the chosen shape.
+// 3x3 grid (not 4x4) — at the segmented control's small icon size, a 4x4
+// grid of tiny dots reads as noise rather than a shape.
 const DOT_CELLS: [number, number][] = [
   [0, 0],
-  [1, 0],
-  [3, 0],
-  [0, 1],
-  [3, 1],
-  [1, 2],
+  [2, 0],
+  [1, 1],
+  [0, 2],
   [2, 2],
-  [0, 3],
-  [2, 3],
-  [3, 3],
 ];
 
 function dotShapeIcon(style: string) {
-  const m = 3.8;
+  const m = 7;
   return (
     <>
       {DOT_CELLS.map(([c, r]) => {
-        const x = 3 + c * 5;
-        const y = 3 + r * 5;
+        const x = 1.5 + c * m;
+        const y = 1.5 + r * m;
         if (style === "circle")
           return (
             <circle
@@ -1093,7 +1111,7 @@ function dotShapeIcon(style: string) {
             y={y}
             width={m}
             height={m}
-            rx={style === "rounded" ? 1.4 : 0}
+            rx={style === "rounded" ? 2.3 : 0}
             fill="currentColor"
           />
         );
@@ -1134,14 +1152,9 @@ function finderCenter(style: string, extra?: Record<string, unknown>) {
   );
 }
 
-// Corner frame: emphasize the ring, fade the center
+// Corner frame: the ring only — the center dot has its own "Corner dot style" control
 function cornerSquareIcon(style: string) {
-  return (
-    <>
-      {finderRing(style)}
-      {finderCenter("rounded", { opacity: 0.2 })}
-    </>
-  );
+  return finderRing(style);
 }
 
 // Corner dot: emphasize the center, fade the ring
@@ -1152,6 +1165,12 @@ function cornerDotIcon(style: string) {
       {finderCenter(style)}
     </>
   );
+}
+
+// "extra-rounded" -> "Extra rounded" — readable in a hover tooltip
+function shapeLabel(o: string): string {
+  const withSpaces = o.replace(/-/g, " ");
+  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
 }
 
 function ShapePicker<T extends string>({
@@ -1168,18 +1187,17 @@ function ShapePicker<T extends string>({
   return (
     <div className={s.shapePicker}>
       {options.map((o) => (
-        <div key={o} className={s.shapeItem}>
-          <button
-            type="button"
-            className={`${s.shapeOption} ${value === o ? s.shapeOptionActive : ""}`}
-            onClick={() => onChange(o)}
-            aria-pressed={value === o}
-            title={o}
-          >
-            <ShapeSvg>{renderIcon(o)}</ShapeSvg>
-          </button>
-          <span className={s.shapeName}>{o}</span>
-        </div>
+        <button
+          key={o}
+          type="button"
+          className={`${s.shapeOption} ${value === o ? s.shapeOptionActive : ""}`}
+          onClick={() => onChange(o)}
+          aria-pressed={value === o}
+          aria-label={shapeLabel(o)}
+          title={shapeLabel(o)}
+        >
+          <ShapeSvg>{renderIcon(o)}</ShapeSvg>
+        </button>
       ))}
     </div>
   );
