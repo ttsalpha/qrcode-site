@@ -55,7 +55,7 @@ export function SiteFooter({
             >
               Son Tran
             </a>{" "}
-            · MIT License
+            · MIT Licensed
           </span>
         </div>
       </div>

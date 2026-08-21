@@ -49,26 +49,6 @@
   font-size: 14px;
   font-family: var(--font-mono), monospace;
   border: 1px solid var(--border);
-  margin-bottom: 52px;
-}
-.heroPreviews {
-  display: flex;
-  gap: 28px;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-.heroPreviewItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-.heroPreviewLabel {
-  font-size: 11px;
-  color: var(--fg-3);
-  letter-spacing: 0.06em;
-  font-family: var(--font-mono), monospace;
-  text-transform: uppercase;
 }
 
 /* ── Section ── */
@@ -77,6 +57,10 @@
 }
 .sectionAlt {
   background: var(--surface);
+}
+/* Compound selector beats .section's responsive padding regardless of source order */
+.section.sectionFirst {
+  padding-top: 32px;
 }
 .sectionHead {
   margin-bottom: 40px;
@@ -270,19 +254,6 @@
   .hero {
     padding: 56px 0 48px;
   }
-  .heroPreviews {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-  .heroPreviewItem {
-    min-width: 0;
-  }
-  .heroPreviewItem svg {
-    width: 100%;
-    height: auto;
-    max-width: 168px;
-  }
 }
 
 /* ── Responsive: Mobile (≤ 480px) ── */
@@ -309,9 +280,6 @@
   .heroInstall {
     max-width: 100%;
     overflow-x: auto;
-  }
-  .heroPreviews {
-    gap: 10px;
   }
   .featureCard {
     display: grid;

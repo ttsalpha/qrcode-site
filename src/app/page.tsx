@@ -1,4 +1,3 @@
-import { QRCode } from "@ttsalpha/qrcode";
 import type { Metadata } from "next";
 import {
   IoAppsOutline,
@@ -46,15 +45,17 @@ function SectionHead({
   tag,
   title,
   desc,
+  as: Heading = "h2",
 }: {
-  tag: string;
+  tag?: string;
   title: string;
   desc?: string;
+  as?: "h1" | "h2";
 }) {
   return (
     <div className={s.sectionHead}>
-      <span className={s.sectionTag}>{tag}</span>
-      <h2 className={s.sectionTitle}>{title}</h2>
+      {tag && <span className={s.sectionTag}>{tag}</span>}
+      <Heading className={s.sectionTitle}>{title}</Heading>
       {desc && <p className={s.sectionDesc}>{desc}</p>}
     </div>
   );
@@ -156,9 +157,31 @@ export default function Page() {
       <SiteNav />
 
       <main>
-        {/* Hero */}
-        <section className={s.hero}>
+        {/* Playground */}
+        <section className={`${s.section} ${s.sectionFirst}`} id="playground">
           <div className={s.wrap}>
+            <SectionHead
+              title="Make your QR code"
+              desc="Type a link or text, pick a style, download the image. Free, no sign-up."
+              as="h1"
+            />
+            <PlaygroundLoader />
+          </div>
+        </section>
+
+        {/* Hero */}
+        <section className={`${s.hero} ${s.sectionAlt}`}>
+          <div className={s.wrap}>
+            <span className={s.sectionTag}>Open Source</span>
+            <h2 className={s.heroTitle}>
+              <span className={s.heroTitleAt}>@ttsalpha/</span>qrcode
+            </h2>
+            <p className={s.heroSub}>
+              Lightweight, fully customizable React QR code library.
+              <br />
+              Pure SVG · Zero dependencies · Built from scratch.
+            </p>
+
             <div className={s.heroBadges}>
               <a
                 href="https://www.npmjs.com/package/@ttsalpha/qrcode"
@@ -204,15 +227,6 @@ export default function Page() {
               </a>
             </div>
 
-            <h1 className={s.heroTitle}>
-              <span className={s.heroTitleAt}>@ttsalpha/</span>qrcode
-            </h1>
-            <p className={s.heroSub}>
-              Lightweight, fully customizable React QR code library.
-              <br />
-              Pure SVG · Zero dependencies · Built from scratch.
-            </p>
-
             <div className={s.heroInstall}>
               <code>pnpm add @ttsalpha/qrcode</code>
               <CopyButton
@@ -220,59 +234,6 @@ export default function Page() {
                 eventName="install_copy"
               />
             </div>
-
-            <div className={s.heroPreviews}>
-              <div className={s.heroPreviewItem}>
-                <QRCode
-                  value="@ttsalpha/qrcode"
-                  size={168}
-                  style={{ borderRadius: 12, overflow: "hidden" }}
-                />
-                <span className={s.heroPreviewLabel}>square</span>
-              </div>
-              <div className={s.heroPreviewItem}>
-                <QRCode
-                  value="https://github.com/ttsalpha/qrcode"
-                  size={168}
-                  dotStyle="rounded"
-                  corner={{
-                    square: { style: "extra-rounded", color: "#14b8a6" },
-                    dot: { style: "rounded" },
-                  }}
-                  style={{ borderRadius: 12, overflow: "hidden" }}
-                />
-                <span className={s.heroPreviewLabel}>rounded</span>
-              </div>
-              <div className={s.heroPreviewItem}>
-                <QRCode
-                  value="@ttsalpha/qrcode"
-                  size={168}
-                  dotStyle="circle"
-                  qr={{ errorCorrectionLevel: "H" }}
-                  corner={{
-                    square: { style: "circle", color: "#fe4f45" },
-                    dot: { style: "circle", color: "#aa322c" },
-                  }}
-                  logo={{
-                    src: "https://cdn.ttsalpha.com/qrcode/snow.svg",
-                  }}
-                  style={{ borderRadius: 12, overflow: "hidden" }}
-                />
-                <span className={s.heroPreviewLabel}>circle</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Playground */}
-        <section className={`${s.section} ${s.sectionAlt}`} id="playground">
-          <div className={s.wrap}>
-            <SectionHead
-              tag="Playground"
-              title="Make your QR code"
-              desc="Type a link or text, pick a style, download the image. Free, no sign-up."
-            />
-            <PlaygroundLoader />
           </div>
         </section>
 

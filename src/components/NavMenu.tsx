@@ -36,8 +36,8 @@ export default function NavMenu() {
     <div ref={rootRef} className={s.root}>
       {/* Text nav links — desktop: inline, mobile: dropdown */}
       <nav className={`${s.links} ${open ? s.open : ""}`}>
-        <a href="/#playground" className={s.link}>
-          Playground
+        <a href="/" className={s.link}>
+          Generator
         </a>
         <a href="/reference" className={s.link}>
           API
