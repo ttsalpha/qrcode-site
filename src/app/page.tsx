@@ -19,7 +19,7 @@ import { AUTHOR, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const homeDescription =
-  "Create and download custom QR codes instantly — or use as a React library: pure SVG, zero dependencies, fully typed.";
+  "Create and download custom QR codes instantly, or use as a React library: pure SVG, zero dependencies, fully typed.";
 
 export const metadata: Metadata = pageMetadata({
   titleAbsolute: "@ttsalpha/qrcode | QR Code Generator",
@@ -71,10 +71,10 @@ const jsonLd = {
       name: "@ttsalpha/qrcode",
       url: SITE_URL,
       description:
-        "Lightweight, fully customizable React QR code library — pure SVG, zero dependencies, built from scratch.",
+        "Lightweight, fully customizable React QR code library: pure SVG, zero dependencies, built from scratch.",
       applicationCategory: "DeveloperApplication",
       operatingSystem: "Web",
-      softwareVersion: "2.4.3",
+      softwareVersion: "3.0.0",
       programmingLanguage: ["TypeScript", "JavaScript"],
       license: "https://github.com/ttsalpha/qrcode/blob/main/LICENSE",
       codeRepository: "https://github.com/ttsalpha/qrcode",
@@ -99,7 +99,7 @@ const jsonLd = {
           name: "How is this different from other QR code libraries?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Most libs handle either SSR or styling — not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 4× faster cold start than qrcode.react, 38× faster styled renders than qr-code-styling.",
+            text: "Most libs handle either SSR or styling, not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 3.4× faster cold start than qrcode.react, 52× faster styled renders than qr-code-styling.",
           },
         },
         {
@@ -107,7 +107,7 @@ const jsonLd = {
           name: "Does it work with Next.js and server-side rendering?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. The library is pure SVG — no DOM, no Canvas. The QRCode component renders server-side in Next.js App Router and works on Edge runtimes. For SSR without React, use toSVGString().",
+            text: "Yes. The library is pure SVG: no DOM, no Canvas. The QRCode component renders server-side in Next.js App Router and works on Edge runtimes. In a Server Component, import @ttsalpha/qrcode/server and call toSVGString() directly: that entry carries no client boundary and pulls in no React.",
           },
         },
         {
@@ -115,7 +115,7 @@ const jsonLd = {
           name: "Can I generate QR codes without React (Node.js, CLI, email templates)?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. toSVGString() produces a static SVG string — no DOM or React required. toDataURL() is browser-only as it requires the Canvas API.",
+            text: "Yes. toSVGString() produces a static SVG string, no DOM or React required. toDataURL() is browser-only as it requires the Canvas API.",
           },
         },
         {
@@ -131,7 +131,7 @@ const jsonLd = {
           name: "How do I export a QR code as PNG or JPEG?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Call toDataURL() in the browser — it returns a data URL you can attach to a download link. Use the format option for JPEG.",
+            text: "Call toDataURL() in the browser. It returns a data URL you can attach to a download link. Use the format option for JPEG.",
           },
         },
         {
@@ -246,7 +246,7 @@ export default function Page() {
                 {
                   icon: <IoShapesOutline size={22} />,
                   name: "Pure SVG",
-                  desc: "No canvas, no raster. Scales perfectly at any resolution — print or screen.",
+                  desc: "No canvas, no raster. Scales perfectly at any resolution, print or screen.",
                 },
                 {
                   icon: <IoCubeOutline size={22} />,
@@ -256,7 +256,7 @@ export default function Page() {
                 {
                   icon: <IoAppsOutline size={22} />,
                   name: "3 dot styles",
-                  desc: "Square, circle, and snake-connected rounded — mix freely with corner styles.",
+                  desc: "Square, circle, and snake-connected rounded. Mix freely with corner styles.",
                 },
                 {
                   icon: <IoScanOutline size={22} />,
@@ -328,7 +328,7 @@ export default function App() {
             <SectionHead
               tag="API Reference"
               title="Props, types and helpers"
-              desc="Full reference lives on its own page — props, corner and logo options, export helpers, and the HTTP API params."
+              desc="Full reference lives on its own page: props, corner and logo options, export helpers, and the HTTP API params."
             />
             <div className={s.apiLinks}>
               <a href="/reference#qrcodeprops" className={s.apiLinkCard}>
@@ -366,13 +366,13 @@ export default function App() {
                   <IoChevronDown className={s.faqChevron} />
                 </summary>
                 <p className={s.faqA}>
-                  Most libs handle either SSR or styling — not both.{" "}
+                  Most libs handle either SSR or styling, not both.{" "}
                   <code>qrcode.react</code> is SSR-safe but has no styling API.{" "}
                   <code>qr-code-styling</code> covers custom dots, colors, and
                   logos but relies on Canvas and breaks server-side. This lib
                   covers all of it: custom dot shapes, per-corner colors, logo
-                  support, pure SVG, SSR-safe. 4× faster cold start than{" "}
-                  <code>qrcode.react</code>, 38× faster styled renders than{" "}
+                  support, pure SVG, SSR-safe. 3.4× faster cold start than{" "}
+                  <code>qrcode.react</code>, 52× faster styled renders than{" "}
                   <code>qr-code-styling</code>.{" "}
                   <a href="/benchmark" className={s.faqLink}>
                     See the benchmark →
@@ -384,10 +384,12 @@ export default function App() {
                   q: "Does it work with Next.js and server-side rendering?",
                   a: (
                     <>
-                      Yes. The library is pure SVG — no DOM, no Canvas. The{" "}
+                      Yes. The library is pure SVG: no DOM, no Canvas. The{" "}
                       <code>QRCode</code> component renders server-side in
-                      Next.js App Router and works on Edge runtimes. For SSR
-                      without React, use <code>toSVGString()</code>.
+                      Next.js App Router and works on Edge runtimes. In a Server
+                      Component, import <code>@ttsalpha/qrcode/server</code> and
+                      call <code>toSVGString()</code> directly: that entry
+                      carries no client boundary and pulls in no React.
                     </>
                   ),
                 },
@@ -396,9 +398,8 @@ export default function App() {
                   a: (
                     <>
                       Yes. <code>toSVGString()</code> produces a static SVG
-                      string — no DOM or React required.{" "}
-                      <code>toDataURL()</code> is browser-only as it requires
-                      the Canvas API.
+                      string, no DOM or React required. <code>toDataURL()</code>{" "}
+                      is browser-only as it requires the Canvas API.
                     </>
                   ),
                 },
@@ -417,8 +418,8 @@ export default function App() {
                   q: "How do I export a QR code as PNG or JPEG?",
                   a: (
                     <>
-                      Call <code>toDataURL()</code> in the browser — it returns
-                      a data URL you can attach to a download link. Use the{" "}
+                      Call <code>toDataURL()</code> in the browser. It returns a
+                      data URL you can attach to a download link. Use the{" "}
                       <code>format</code> option for JPEG.
                     </>
                   ),

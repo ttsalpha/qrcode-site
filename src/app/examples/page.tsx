@@ -7,7 +7,7 @@ import { AUTHOR, breadcrumb, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const examplesDescription =
-  "Code examples for @ttsalpha/qrcode — dot styles, corner styles, colors, logos, transparent background, and export helpers.";
+  "Code examples for @ttsalpha/qrcode: dot styles, corner styles, colors, logos, transparent background, and export helpers.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Examples",
@@ -181,7 +181,7 @@ export default function ExamplesPage() {
   logo={{
     src: 'https://avatars.githubusercontent.com/u/48100204?size=64',
     size: 0.5,
-    margin: 2,
+    margin: 0.5,
   }}
 />`}
               >
@@ -193,7 +193,7 @@ export default function ExamplesPage() {
                   logo={{
                     src: "https://avatars.githubusercontent.com/u/48100204?size=64",
                     size: 0.5,
-                    margin: 2,
+                    margin: 0.5,
                   }}
                 />
               </Example>

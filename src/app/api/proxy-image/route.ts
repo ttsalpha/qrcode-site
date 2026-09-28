@@ -29,8 +29,8 @@ export async function GET(req: NextRequest) {
     headers: {
       "Content-Type": image.contentType,
       "Cache-Control": "public, max-age=86400",
-      // The body is attacker-controlled bytes served from our origin — stop the
-      // browser sniffing it into HTML/script.
+      // The body is attacker-controlled bytes served from our origin, so stop
+      // the browser sniffing it into HTML/script.
       "X-Content-Type-Options": "nosniff",
       "Content-Disposition": "inline",
     },

@@ -6,7 +6,7 @@ import { AUTHOR, breadcrumb, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const referenceDescription =
-  "API reference for @ttsalpha/qrcode — every prop, type, export helper, and HTTP API param, with defaults and examples.";
+  "API reference for @ttsalpha/qrcode: every prop, type, export helper, and HTTP API param, with defaults and examples.";
 
 export const metadata: Metadata = pageMetadata({
   title: "API Reference",
@@ -80,7 +80,7 @@ const QRCODE_PROPS: PropRow[] = [
     name: "backgroundColor",
     type: "string",
     def: "'#ffffff'",
-    desc: "Background — 'transparent' accepted",
+    desc: "Background color, 'transparent' accepted",
   },
   {
     name: "corner",
@@ -102,6 +102,12 @@ const QRCODE_PROPS: PropRow[] = [
     type: "string",
     def: "—",
     desc: "Accessible label for the SVG; defaults to 'QR code: {value}'",
+  },
+  {
+    name: "idPrefix",
+    type: "string",
+    def: "'qr'",
+    desc: "Prefix for generated ids; toSVGString only, for two identical codes on one page",
   },
 ];
 
@@ -133,6 +139,12 @@ const EXPORT_OPTIONS: PropRow[] = [
     type: "number (0–1)",
     def: "browser default",
     desc: "JPEG quality. Ignored for PNG",
+  },
+  {
+    name: "scale",
+    type: "number",
+    def: "1",
+    desc: "Raster size multiplier, for exporting above the on-screen size",
   },
 ];
 
@@ -216,7 +228,7 @@ const QR_PARAMS: PropRow[] = [
     name: "logoMargin",
     type: "number",
     def: "0",
-    desc: "Space around the logo",
+    desc: "Space around the logo, in modules",
   },
   {
     name: "logoClear",
@@ -241,7 +253,8 @@ const LOGO_OPTIONS_CODE = `interface LogoOptions {
   src?: string;        // https, relative path, blob:, or data:image/… URI
   element?: ReactNode; // takes priority over src when both provided
   size?: number;       // 0–1 relative to max safe area; ECL auto-picked; default 0.4
-  margin?: number;     // space between logo and edge of cleared area; default 0
+  aspectRatio?: number; // width / height; measured from src when omitted
+  margin?: number;     // space between logo and cleared area, in modules; default 0
   hideDots?: boolean;  // clear dots behind logo area; default true
 }`;
 
@@ -252,11 +265,21 @@ const QR_OPTIONS_CODE = `interface QROptions {
 
 const EXPORT_CODE = `import { toSVGString, toDataURL } from '@ttsalpha/qrcode';
 
-// Server-side SVG string — no DOM needed
+// From a React Server Component or any server-only module, import the
+// entry with no client boundary:
+// import { toSVGString } from '@ttsalpha/qrcode/server';
+
+// Server-side SVG string, no DOM, no React
 const svg = toSVGString({ value: 'https://example.com', size: 512 });
 
 // PNG data URL via Canvas (browser-only)
 const png = await toDataURL({ value: 'https://example.com', size: 512 });
+
+// Two-times pixel density for print or retina
+const png2x = await toDataURL(
+  { value: 'https://example.com', size: 512 },
+  { scale: 2 },
+);
 
 // JPEG with quality
 const jpg = await toDataURL(
@@ -304,6 +327,13 @@ export default function ReferencePage() {
           <div className={s.wrap}>
             <Group id="qrcodeprops" title="QRCodeProps">
               <PropTable head="Prop" rows={QRCODE_PROPS} />
+              <p className={s.note}>
+                <code>{"<QRCode>"}</code> also forwards a <code>ref</code> to
+                the <code>{"<svg>"}</code> element and passes through any other
+                SVG attribute, such as <code>id</code>, <code>onClick</code> or{" "}
+                <code>data-*</code>. <code>toSVGString</code> reads only the
+                props above.
+              </p>
             </Group>
 
             <Group id="dotstyle" title="DotStyle">
@@ -349,8 +379,8 @@ export default function ReferencePage() {
                 <code>≤&nbsp;0.69</code> → Q (≤&nbsp;25%),{" "}
                 <code>≤&nbsp;1.0</code> → H (≤&nbsp;30%). If{" "}
                 <code>errorCorrectionLevel</code> is set explicitly, the size is
-                clamped to that ECL's safe limit. Aspect ratio is auto-detected
-                — landscape logos get a proportionally reduced height so they
+                clamped to that ECL's safe limit. Aspect ratio is auto-detected:
+                landscape logos get a proportionally reduced height so they
                 never overflow the QR.
                 <br />
                 <code>hideDots</code> uses an SVG mask, so transparent
@@ -360,7 +390,7 @@ export default function ReferencePage() {
                 <strong>Security:</strong> <code>javascript:</code> and
                 non-image <code>data:</code> URIs in <code>src</code> are
                 silently rejected. Never pass unsanitised user input as{" "}
-                <code>element</code> — it renders verbatim inside{" "}
+                <code>element</code>, which renders verbatim inside{" "}
                 <code>{"<foreignObject>"}</code>.
               </p>
             </Group>
@@ -394,9 +424,15 @@ export default function ReferencePage() {
             <Group id="exports" title="Export Helpers">
               <CodeBlock lang="ts" code={EXPORT_CODE} />
               <p className={s.note}>
-                <code>toSVGString</code> accepts the same props as{" "}
-                <code>{"<QRCode>"}</code> and returns a static SVG markup string
-                — useful for SSR, saving to a database, or copying to clipboard.
+                <code>toSVGString</code> takes the props in the table above and
+                returns a static SVG markup string, useful for SSR, saving to a
+                database, or copying to clipboard. It renders without React, so{" "}
+                <code>logo.element</code> throws; pass <code>logo.src</code>{" "}
+                instead, or render <code>{"<QRCode>"}</code>.
+                <br />
+                Import from <code>@ttsalpha/qrcode/server</code> inside a React
+                Server Component. The root entry is a client boundary, so every
+                export of it becomes a client reference there.
                 <br />
                 <code>toDataURL</code> is browser-only (requires the Canvas
                 API). JPEG automatically fills a white background when{" "}

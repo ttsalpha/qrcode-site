@@ -22,7 +22,7 @@ import {
   IoLinkOutline,
 } from "react-icons/io5";
 import { createHighlighter, type Highlighter, type ThemedToken } from "shiki";
-import { buildQRUrl, HEX6 } from "@/lib/qr-params";
+import { buildQRUrl, deriveCornerDotStyle, HEX6 } from "@/lib/qr-params";
 import CopyButton from "./CopyButton";
 import s from "./Playground.module.css";
 
@@ -44,7 +44,7 @@ const LINK_OPTIONS: SplitOption[] = [
   { key: "markdown", label: "Markdown" },
 ];
 
-// Shown when the input is empty — the field starts blank (placeholder visible)
+// Shown when the input is empty: the field starts blank (placeholder visible)
 // but the QR still encodes this so the preview is never empty
 const DEFAULT_VALUE = "https://github.com/ttsalpha/qrcode";
 
@@ -79,7 +79,7 @@ type Preset = {
   dotDotColor: string;
 };
 
-// One-tap starting styles for non-technical users. Presets set appearance only —
+// One-tap starting styles for non-technical users. Presets set appearance only;
 // they never touch the user's content, logo, size or margin.
 const PRESETS: Preset[] = [
   {
@@ -218,7 +218,7 @@ export default function Playground() {
   const [logoMargin, setLogoMargin] = useState<number | "">("");
   const [logoHideDots, setLogoHideDots] = useState(true);
 
-  // Code snippet collapsed by default — end-user first; devs expand it
+  // Code snippet collapsed by default: end-user first, devs expand it
   const [codeOpen, setCodeOpen] = useState(false);
 
   // Controls grouped into tabs to avoid a long vertical stack
@@ -411,7 +411,7 @@ export default function Playground() {
   }
 
   // Copy a /qr link that renders the current QR. Uploaded data:/blob: logos
-  // don't fit in a URL — buildQRUrl drops them, so warn.
+  // don't fit in a URL; buildQRUrl drops them, so warn.
   async function handleCopyUrl(key: string) {
     const origin = window.location.origin;
     const props = buildProps();
@@ -447,7 +447,7 @@ export default function Playground() {
   const previewScale = Math.min(1, containerSize / size);
   const previewSize = Math.round(size * previewScale);
 
-  // Pre-validate when version is manually set — prevents throwing inside render
+  // Pre-validate when version is manually set, to avoid throwing inside render
   const qrError = useMemo<string | null>(() => {
     if (qrVersion === "") return null;
     try {
@@ -464,7 +464,7 @@ export default function Playground() {
     }
   }, [value, ecl, qrVersion]);
 
-  // Build snippet — only non-default values
+  // Build snippet from non-default values only
   const snippetParts: string[] = [`  value="${value.trim() || DEFAULT_VALUE}"`];
   if (size !== 256) snippetParts.push(`  size={${size}}`);
   if (margin !== 4) snippetParts.push(`  margin={${margin}}`);
@@ -477,7 +477,10 @@ export default function Playground() {
   if (sqStyle !== "square") sqParts.push(`style: "${sqStyle}"`);
   if (sqColor && sqColor !== dotColor) sqParts.push(`color: "${sqColor}"`);
   const dotCornerParts: string[] = [];
-  if (dotSt !== "square") dotCornerParts.push(`style: "${dotSt}"`);
+  // The lib derives the corner dot style from the square style, so only emit it
+  // when it differs; otherwise the snippet would render unlike the preview.
+  if (dotSt !== deriveCornerDotStyle(sqStyle))
+    dotCornerParts.push(`style: "${dotSt}"`);
   if (dotDotColor && dotDotColor !== dotColor)
     dotCornerParts.push(`color: "${dotDotColor}"`);
   if (sqParts.length || dotCornerParts.length) {
@@ -878,7 +881,10 @@ export default function Playground() {
                     )}
                   </div>
                 </Field>
-                <Field label="Logo margin">
+                <Field
+                  label="Logo margin"
+                  hint="Gap around the logo, in QR dots. Past 2 or 3 it runs out of room and is dropped."
+                >
                   <div className={s.inputShell}>
                     <input
                       type="number"
@@ -890,6 +896,8 @@ export default function Playground() {
                         )
                       }
                       min={0}
+                      max={10}
+                      step={0.01}
                       placeholder="0"
                     />
                     {logoMargin !== "" && (
@@ -1077,8 +1085,8 @@ function ShapeSvg({ children }: { children: React.ReactNode }) {
 }
 
 // Dot style: a mini QR module pattern drawn in the chosen shape.
-// 3x3 grid (not 4x4) — at the segmented control's small icon size, a 4x4
-// grid of tiny dots reads as noise rather than a shape.
+// 3x3 grid (not 4x4): at the segmented control's small icon size, a 4x4 grid
+// of tiny dots reads as noise rather than a shape.
 const DOT_CELLS: [number, number][] = [
   [0, 0],
   [2, 0],
@@ -1152,7 +1160,7 @@ function finderCenter(style: string, extra?: Record<string, unknown>) {
   );
 }
 
-// Corner frame: the ring only — the center dot has its own "Corner dot style" control
+// Corner frame: the ring only; the center dot has its own "Corner dot style" control
 function cornerSquareIcon(style: string) {
   return finderRing(style);
 }
@@ -1167,7 +1175,7 @@ function cornerDotIcon(style: string) {
   );
 }
 
-// "extra-rounded" -> "Extra rounded" — readable in a hover tooltip
+// "extra-rounded" -> "Extra rounded", readable in a hover tooltip
 function shapeLabel(o: string): string {
   const withSpaces = o.replace(/-/g, " ");
   return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);

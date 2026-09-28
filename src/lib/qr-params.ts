@@ -33,7 +33,7 @@ const ECLS = ["L", "M", "Q", "H"] as const;
 export const QR_FORMATS: readonly QRFormat[] = ["svg", "png", "jpg"];
 
 export const HEX6 = /^#[0-9a-fA-F]{6}$/;
-// Same, but the leading '#' is optional — the /qr route accepts bare hex so
+// Same, but the leading '#' is optional: the /qr route accepts bare hex so
 // embedded image URLs stay clean (color=14b8a6, not color=%2314b8a6).
 const HEX6_LOOSE = /^#?[0-9a-fA-F]{6}$/;
 
@@ -156,7 +156,7 @@ export function parseQRParams(sp: URLSearchParams): ParseResult {
       props.logo = {
         src: logoSrc,
         size: numberParam(sp, "logoSize", 0, 1, false),
-        margin: numberParam(sp, "logoMargin", 0, 1000, false),
+        margin: numberParam(sp, "logoMargin", 0, 10, false),
         hideDots: boolParam(sp, "logoClear"),
       };
     }

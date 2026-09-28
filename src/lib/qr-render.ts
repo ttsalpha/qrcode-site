@@ -7,8 +7,8 @@ import { fetchRemoteImage } from "@/lib/safe-fetch";
 
 // Renderer for the /qr image route: SVG via toSVGString, PNG/JPG via sharp.
 // Format comes from the `format` query param. Node only. sharp is imported
-// lazily in the raster branch — a top-level native import crashes the whole
-// route (incl. svg) when the platform binary is missing.
+// lazily in the raster branch, because a top-level native import crashes the
+// whole route (incl. svg) when the platform binary is missing.
 export async function renderQR(req: NextRequest) {
   const parsed = parseQRParams(req.nextUrl.searchParams);
   if (!parsed.ok) {

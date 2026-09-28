@@ -27,7 +27,7 @@ export function SiteFooter({
               Author
             </a>
             <a
-              href="https://github.com/ttsalpha/qrcode/releases"
+              href="https://github.com/ttsalpha/qrcode/blob/main/CHANGELOG.md"
               target="_blank"
               rel="noopener noreferrer"
               className={s.footerNavLink}
@@ -55,7 +55,7 @@ export function SiteFooter({
             >
               Son Tran
             </a>{" "}
-            · MIT Licensed
+            · MIT licensed
           </span>
         </div>
       </div>

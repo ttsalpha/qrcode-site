@@ -135,7 +135,7 @@ async function readCapped(
 
 // Fetch a remote image behind SSRF / timeout / size / content-type guards.
 // Follows redirects MANUALLY, re-validating each hop, so an initially-public URL
-// can't 3xx into a private target. Returns null on any failure — the caller
+// can't 3xx into a private target. Returns null on any failure; the caller
 // decides the HTTP status.
 export async function fetchRemoteImage(
   input: URL,

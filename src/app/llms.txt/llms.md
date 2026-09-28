@@ -53,7 +53,7 @@ interface LogoOptions {
   src?: string;        // https, relative path, blob:, or data:image/… URI
   element?: ReactNode; // takes priority over src
   size?: number;       // 0–1 relative to max safe area; ECL auto-picked; default 0.4
-  margin?: number;     // space between logo and cleared area edge; default 0
+  margin?: number;     // gap between logo and cleared area edge, in modules; default 0
   hideDots?: boolean;  // clear dots behind logo via SVG mask; default true
 }
 ```
