@@ -1,6 +1,6 @@
 # @ttsalpha/qrcode — docs site
 
-Documentation and interactive playground for [`@ttsalpha/qrcode`](https://www.npmjs.com/package/@ttsalpha/qrcode) — a lightweight, fully customizable React QR code library.
+Documentation and interactive playground for [`@ttsalpha/qrcode`](https://www.npmjs.com/package/@ttsalpha/qrcode) — a lightweight, fully customizable QR code library for React and React Native.
 
 ## Stack
 

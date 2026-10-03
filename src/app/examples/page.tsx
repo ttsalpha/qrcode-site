@@ -7,7 +7,7 @@ import { AUTHOR, breadcrumb, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const examplesDescription =
-  "Code examples for @ttsalpha/qrcode: dot styles, corner styles, colors, logos, transparent background, and export helpers.";
+  "Code examples for @ttsalpha/qrcode: dot styles, corner styles, colors, logos, rounded logos, transparent background, React Native, and export helpers.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Examples",
@@ -31,7 +31,7 @@ const examplesJsonLd = {
       "@type": "ItemList",
       name: "QR Code Examples — @ttsalpha/qrcode",
       url: `${SITE_URL}/examples`,
-      numberOfItems: 7,
+      numberOfItems: 9,
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Default square QR code" },
         {
@@ -55,7 +55,9 @@ const examplesJsonLd = {
           position: 6,
           name: "With logo — ECL auto-picked",
         },
-        { "@type": "ListItem", position: 7, name: "Version 1 — numeric data" },
+        { "@type": "ListItem", position: 7, name: "Rounded logo" },
+        { "@type": "ListItem", position: 8, name: "Version 1 — numeric data" },
+        { "@type": "ListItem", position: 9, name: "React Native and Expo" },
       ],
     },
   ],
@@ -76,7 +78,7 @@ export default function ExamplesPage() {
             <h1 className={s.heroTitle}>Examples</h1>
             <p className={s.heroSub}>
               Copy-paste examples covering dot styles, corner styles, colors,
-              logos, and export.
+              logos, React Native, and export.
             </p>
           </div>
         </section>
@@ -199,6 +201,34 @@ export default function ExamplesPage() {
               </Example>
 
               <Example
+                title="Rounded logo"
+                code={`<QRCode
+  value="https://example.com"
+  dotStyle="rounded"
+  corner={{ square: { style: 'extra-rounded' } }}
+  logo={{
+    src: 'https://avatars.githubusercontent.com/u/48100204?size=64',
+    size: 0.5,
+    margin: 0.5,
+    radius: 1,
+  }}
+/>`}
+              >
+                <QRCode
+                  value="https://example.com"
+                  size={160}
+                  dotStyle="rounded"
+                  corner={{ square: { style: "extra-rounded" } }}
+                  logo={{
+                    src: "https://avatars.githubusercontent.com/u/48100204?size=64",
+                    size: 0.5,
+                    margin: 0.5,
+                    radius: 1,
+                  }}
+                />
+              </Example>
+
+              <Example
                 title="Version 1 — numeric data"
                 code={`<QRCode
   value="12345"
@@ -209,6 +239,31 @@ export default function ExamplesPage() {
                   value="12345"
                   size={160}
                   qr={{ version: 1, errorCorrectionLevel: "L" }}
+                />
+              </Example>
+
+              <Example
+                title="React Native and Expo (preview drawn on the web)"
+                code={`import { QRCode } from '@ttsalpha/qrcode/native';
+
+<QRCode
+  value="https://example.com"
+  size={240}
+  dotStyle="rounded"
+  corner={{ square: { style: 'extra-rounded' } }}
+  logo={{ src: require('./logo.png'), radius: 0.3 }}
+  onError={(error) => console.warn(error.message)}
+/>`}
+              >
+                <QRCode
+                  value="https://example.com"
+                  size={160}
+                  dotStyle="rounded"
+                  corner={{ square: { style: "extra-rounded" } }}
+                  logo={{
+                    src: "https://avatars.githubusercontent.com/u/48100204?size=64",
+                    radius: 0.3,
+                  }}
                 />
               </Example>
             </div>

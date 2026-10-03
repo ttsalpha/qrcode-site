@@ -7,6 +7,7 @@ import {
   IoCubeOutline,
   IoFlashOutline,
   IoImageOutline,
+  IoPhonePortraitOutline,
   IoScanOutline,
   IoShapesOutline,
 } from "react-icons/io5";
@@ -19,7 +20,7 @@ import { AUTHOR, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const homeDescription =
-  "Create and download custom QR codes instantly, or use as a React library: pure SVG, zero dependencies, fully typed.";
+  "Create and download custom QR codes instantly, or use as a React and React Native library: pure SVG, zero dependencies, fully typed.";
 
 export const metadata: Metadata = pageMetadata({
   titleAbsolute: "@ttsalpha/qrcode | QR Code Generator",
@@ -33,6 +34,8 @@ export const metadata: Metadata = pageMetadata({
     "typescript",
     "npm",
     "React QR code",
+    "React Native QR code",
+    "Expo QR code",
     "QR code component",
     "customizable QR code",
     "zero dependency",
@@ -71,10 +74,10 @@ const jsonLd = {
       name: "@ttsalpha/qrcode",
       url: SITE_URL,
       description:
-        "Lightweight, fully customizable React QR code library: pure SVG, zero dependencies, built from scratch.",
+        "Lightweight, fully customizable QR code library for React and React Native: pure SVG, zero dependencies, built from scratch.",
       applicationCategory: "DeveloperApplication",
       operatingSystem: "Web",
-      softwareVersion: "3.0.0",
+      softwareVersion: "3.1.0",
       programmingLanguage: ["TypeScript", "JavaScript"],
       license: "https://github.com/ttsalpha/qrcode/blob/main/LICENSE",
       codeRepository: "https://github.com/ttsalpha/qrcode",
@@ -99,7 +102,7 @@ const jsonLd = {
           name: "How is this different from other QR code libraries?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Most libs handle either SSR or styling, not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 3.4× faster cold start than qrcode.react, 52× faster styled renders than qr-code-styling.",
+            text: "Most libs handle either SSR or styling, not both. qrcode.react is SSR-safe but has no styling API. qr-code-styling covers custom dots, colors, and logos but relies on Canvas and breaks server-side. This lib covers all of it: custom dot shapes, per-corner colors, logo support, pure SVG, SSR-safe. 2.9× faster cold start than qrcode.react, 45× faster styled renders than qr-code-styling.",
           },
         },
         {
@@ -115,7 +118,15 @@ const jsonLd = {
           name: "Can I generate QR codes without React (Node.js, CLI, email templates)?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. toSVGString() produces a static SVG string, no DOM or React required. toDataURL() is browser-only as it requires the Canvas API.",
+            text: "Yes. toSVGString() produces a static SVG string, no DOM or React required; import it from @ttsalpha/qrcode/core or @ttsalpha/qrcode/server. toDataURL() is browser-only as it requires the Canvas API.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Does it work with React Native and Expo?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. Import QRCode from @ttsalpha/qrcode/native and install react-native-svg (npx expo install react-native-svg on Expo). It draws the same symbols as the web component, with the same dot, corner, color and logo options. logo.src takes a URL or a require()d asset and logo.svg takes SVG markup; logo.element and the toDataURL helper are not available, but the ref goes to the Svg, so ref.toDataURL gives a PNG.",
           },
         },
         {
@@ -123,7 +134,7 @@ const jsonLd = {
           name: "How do I add a logo to the center of a QR code?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Use the logo prop with src for an image URL, or element for any React node. Error correction level is auto-picked based on logo size to keep the code scannable.",
+            text: "Use the logo prop with src for an image URL, or element for any React node. Set radius to round its corners. Error correction level is auto-picked based on logo size to keep the code scannable.",
           },
         },
         {
@@ -177,9 +188,8 @@ export default function Page() {
               <span className={s.heroTitleAt}>@ttsalpha/</span>qrcode
             </h2>
             <p className={s.heroSub}>
-              Lightweight, fully customizable React QR code library.
-              <br />
-              Pure SVG · Zero dependencies · Built from scratch.
+              Lightweight, fully customizable QR code library for React and
+              React Native. Pure SVG, zero dependencies, built from scratch.
             </p>
 
             <div className={s.heroBadges}>
@@ -251,7 +261,7 @@ export default function Page() {
                 {
                   icon: <IoCubeOutline size={22} />,
                   name: "Zero dependencies",
-                  desc: "QR encoding built from scratch per ISO/IEC 18004. React is the only peer dep.",
+                  desc: "QR encoding built from scratch per ISO/IEC 18004. React is the only required peer dep.",
                 },
                 {
                   icon: <IoAppsOutline size={22} />,
@@ -266,7 +276,12 @@ export default function Page() {
                 {
                   icon: <IoImageOutline size={22} />,
                   name: "Logo support",
-                  desc: "Embed any image URL or React node in the center. Size auto-clamped per ECL to stay scannable.",
+                  desc: "Embed any image URL or React node in the center, with optional rounded corners. Size auto-clamped per ECL to stay scannable.",
+                },
+                {
+                  icon: <IoPhonePortraitOutline size={22} />,
+                  name: "React Native",
+                  desc: "The same symbols on iOS and Android with react-native-svg, from @ttsalpha/qrcode/native.",
                 },
                 {
                   icon: <IoCodeSlashOutline size={22} />,
@@ -317,7 +332,13 @@ export default function App() {
               </div>
             </div>
             <p className={s.note} style={{ marginTop: 20 }}>
-              React 18+ is required as a peer dependency.
+              React 18+ is required as a peer dependency. For React Native, also
+              install <code>react-native-svg</code> and import from{" "}
+              <code>@ttsalpha/qrcode/native</code>; see the{" "}
+              <a href="/reference#react-native" className={s.faqLink}>
+                React Native reference
+              </a>
+              .
             </p>
           </div>
         </section>
@@ -328,7 +349,7 @@ export default function App() {
             <SectionHead
               tag="API Reference"
               title="Props, types and helpers"
-              desc="Full reference lives on its own page: props, corner and logo options, export helpers, and the HTTP API params."
+              desc="Full reference lives on its own page: props, corner and logo options, React Native, export helpers, and the HTTP API params."
             />
             <div className={s.apiLinks}>
               <a href="/reference#qrcodeprops" className={s.apiLinkCard}>
@@ -341,6 +362,18 @@ export default function App() {
                 <div className={s.apiLinkName}>Export Helpers</div>
                 <div className={s.apiLinkDesc}>
                   toSVGString and toDataURL for SVG, PNG, JPEG
+                </div>
+              </a>
+              <a href="/reference#react-native" className={s.apiLinkCard}>
+                <div className={s.apiLinkName}>React Native</div>
+                <div className={s.apiLinkDesc}>
+                  The native entry, its logo options and its limits
+                </div>
+              </a>
+              <a href="/reference#core" className={s.apiLinkCard}>
+                <div className={s.apiLinkName}>Core</div>
+                <div className={s.apiLinkDesc}>
+                  buildQR and QRGeometry, with no React and no DOM
                 </div>
               </a>
               <a href="/reference#http-api" className={s.apiLinkCard}>
@@ -371,8 +404,8 @@ export default function App() {
                   <code>qr-code-styling</code> covers custom dots, colors, and
                   logos but relies on Canvas and breaks server-side. This lib
                   covers all of it: custom dot shapes, per-corner colors, logo
-                  support, pure SVG, SSR-safe. 3.4× faster cold start than{" "}
-                  <code>qrcode.react</code>, 52× faster styled renders than{" "}
+                  support, pure SVG, SSR-safe. 3.1× faster cold start than{" "}
+                  <code>qrcode.react</code>, 46× faster styled renders than{" "}
                   <code>qr-code-styling</code>.{" "}
                   <a href="/benchmark" className={s.faqLink}>
                     See the benchmark →
@@ -398,8 +431,30 @@ export default function App() {
                   a: (
                     <>
                       Yes. <code>toSVGString()</code> produces a static SVG
-                      string, no DOM or React required. <code>toDataURL()</code>{" "}
-                      is browser-only as it requires the Canvas API.
+                      string, no DOM or React required; import it from{" "}
+                      <code>@ttsalpha/qrcode/core</code> or{" "}
+                      <code>@ttsalpha/qrcode/server</code>.{" "}
+                      <code>toDataURL()</code> is browser-only as it requires
+                      the Canvas API.
+                    </>
+                  ),
+                },
+                {
+                  q: "Does it work with React Native and Expo?",
+                  a: (
+                    <>
+                      Yes. Import <code>QRCode</code> from{" "}
+                      <code>@ttsalpha/qrcode/native</code> and install{" "}
+                      <code>react-native-svg</code> (
+                      <code>npx expo install react-native-svg</code> on Expo).
+                      It draws the same symbols as the web component, with the
+                      same dot, corner, color and logo options.{" "}
+                      <code>logo.src</code> takes a URL or a{" "}
+                      <code>require()</code>d asset and <code>logo.svg</code>{" "}
+                      takes SVG markup; <code>logo.element</code> and the{" "}
+                      <code>toDataURL</code> helper are not available, but the{" "}
+                      <code>ref</code> goes to the <code>Svg</code>, so{" "}
+                      <code>ref.toDataURL</code> gives a PNG.
                     </>
                   ),
                 },
@@ -409,8 +464,9 @@ export default function App() {
                     <>
                       Use the <code>logo</code> prop with <code>src</code> for
                       an image URL, or <code>element</code> for any React node.
-                      Error correction level is auto-picked based on logo size
-                      to keep the code scannable.
+                      Set <code>radius</code> to round its corners. Error
+                      correction level is auto-picked based on logo size to keep
+                      the code scannable.
                     </>
                   ),
                 },

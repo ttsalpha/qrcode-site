@@ -6,7 +6,7 @@ import { AUTHOR, breadcrumb, pageMetadata, SITE_URL } from "@/lib/metadata";
 import s from "./page.module.css";
 
 const referenceDescription =
-  "API reference for @ttsalpha/qrcode: every prop, type, export helper, and HTTP API param, with defaults and examples.";
+  "API reference for @ttsalpha/qrcode: every prop, type, entry point, React Native option, export helper, and HTTP API param, with defaults and examples.";
 
 export const metadata: Metadata = pageMetadata({
   title: "API Reference",
@@ -21,6 +21,9 @@ export const metadata: Metadata = pageMetadata({
     "toSVGString",
     "toDataURL",
     "QR code HTTP API",
+    "React Native QR code",
+    "Expo QR code",
+    "buildQR",
   ],
 });
 
@@ -111,6 +114,29 @@ const QRCODE_PROPS: PropRow[] = [
   },
 ];
 
+const ENTRY_POINTS: { entry: string; contents: string; needs: string }[] = [
+  {
+    entry: "@ttsalpha/qrcode",
+    contents: "<QRCode>, toSVGString, toDataURL",
+    needs: "React 18+",
+  },
+  {
+    entry: "@ttsalpha/qrcode/server",
+    contents: "toSVGString, toDataURL, no client boundary",
+    needs: "nothing (toDataURL needs a browser)",
+  },
+  {
+    entry: "@ttsalpha/qrcode/native",
+    contents: "<QRCode> for React Native and Expo",
+    needs: "React 18+, react-native-svg",
+  },
+  {
+    entry: "@ttsalpha/qrcode/core",
+    contents: "buildQR, toSVGString",
+    needs: "nothing",
+  },
+];
+
 const DOT_STYLES: { value: string; desc: string }[] = [
   { value: "'square'", desc: "Full square (default)" },
   { value: "'circle'", desc: "Full circle" },
@@ -125,6 +151,27 @@ const ECL_LEVELS: { level: string; recovery: string; useWhen: string }[] = [
   { level: "M", recovery: "~15%", useWhen: "General purpose (default)" },
   { level: "Q", recovery: "~25%", useWhen: "Industrial / harsh conditions" },
   { level: "H", recovery: "~30%", useWhen: "QR codes with a center logo" },
+];
+
+const NATIVE_PROPS: PropRow[] = [
+  {
+    name: "logo",
+    type: "NativeLogoOptions",
+    def: "—",
+    desc: "Logo in the center; see below",
+  },
+  {
+    name: "ariaLabel",
+    type: "string",
+    def: "—",
+    desc: "Becomes accessibilityLabel; defaults to 'QR code: {value}'",
+  },
+  {
+    name: "onError",
+    type: "(error: Error) => void",
+    def: "—",
+    desc: "Called when the symbol cannot be drawn; the component renders nothing instead of throwing",
+  },
 ];
 
 const EXPORT_OPTIONS: PropRow[] = [
@@ -256,11 +303,66 @@ const LOGO_OPTIONS_CODE = `interface LogoOptions {
   aspectRatio?: number; // width / height; measured from src when omitted
   margin?: number;     // space between logo and cleared area, in modules; default 0
   hideDots?: boolean;  // clear dots behind logo area; default true
+  radius?: number;     // corner radius, 0 (square) to 1 (fully rounded); default 0
 }`;
 
 const QR_OPTIONS_CODE = `interface QROptions {
   errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H'; // default: 'M'
   version?: number; // 1–40, auto by default
+}`;
+
+const NATIVE_CODE = `import { QRCode } from '@ttsalpha/qrcode/native';
+
+export default function Pay() {
+  return (
+    <QRCode
+      value="https://example.com"
+      size={240}
+      dotStyle="rounded"
+      corner={{ square: { style: 'extra-rounded' } }}
+      logo={{ src: require('./logo.png'), radius: 0.3 }}
+      onError={(error) => console.warn(error.message)}
+    />
+  );
+}`;
+
+const NATIVE_LOGO_CODE = `interface NativeLogoOptions {
+  src?: string | number; // a URL, or a local asset from require('./logo.png')
+  svg?: string;          // the logo as SVG markup; wins over src
+  size?: number;         // as in LogoOptions
+  aspectRatio?: number;  // native cannot measure an image: square unless set
+  margin?: number;       // as in LogoOptions
+  hideDots?: boolean;    // as in LogoOptions
+  radius?: number;       // as in LogoOptions
+}`;
+
+const NATIVE_IMAGE_CODE = `import Svg from 'react-native-svg';
+
+const ref = useRef<React.ElementRef<typeof Svg>>(null);
+
+<QRCode ref={ref} value="https://example.com" />;
+
+ref.current?.toDataURL((base64) => {
+  // PNG, base64 without the data: prefix
+});`;
+
+const CORE_CODE = `import { buildQR } from '@ttsalpha/qrcode/core';
+
+const geometry = buildQR({ value: 'https://example.com', size: 256 });
+
+interface QRGeometry {
+  size: number; // rendered width and height
+  viewBox: number; // side of the square viewBox
+  ecLevel: 'L' | 'M' | 'Q' | 'H'; // after logo sizing
+  background?: string; // absent when transparent
+  modules?: { d: string; fill: string }; // all data modules, one path
+  finders: Array<{
+    square: { d: string; fill: string; fillRule?: 'evenodd' }; // 7×7 ring
+    dot: { d: string; fill: string }; // 3×3 dot
+  }>;
+  clear?: { x: number; y: number; width: number; height: number }; // cut out of the dots
+  logo?: { x: number; y: number; width: number; height: number; radius: number; src?: string };
+  warnings: string[];
 }`;
 
 const EXPORT_CODE = `import { toSVGString, toDataURL } from '@ttsalpha/qrcode';
@@ -325,6 +427,31 @@ export default function ReferencePage() {
 
         <section className={s.section}>
           <div className={s.wrap}>
+            <Group id="entrypoints" title="Entry points">
+              <div className={s.tableWrap}>
+                <table className={s.table}>
+                  <thead>
+                    <tr>
+                      <th>Import from</th>
+                      <th>Contents</th>
+                      <th>Needs at runtime</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ENTRY_POINTS.map(({ entry, contents, needs }) => (
+                      <tr key={entry}>
+                        <td>
+                          <code>{entry}</code>
+                        </td>
+                        <td>{contents}</td>
+                        <td>{needs}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Group>
+
             <Group id="qrcodeprops" title="QRCodeProps">
               <PropTable head="Prop" rows={QRCODE_PROPS} />
               <p className={s.note}>
@@ -385,6 +512,10 @@ export default function ReferencePage() {
                 <br />
                 <code>hideDots</code> uses an SVG mask, so transparent
                 backgrounds are fully supported.
+                <br />
+                <code>radius</code> is a share of the logo's shorter side, so{" "}
+                <code>1</code> turns a square logo into a circle. It clips{" "}
+                <code>src</code> and <code>element</code> alike.
               </p>
               <p className={s.note}>
                 <strong>Security:</strong> <code>javascript:</code> and
@@ -434,11 +565,102 @@ export default function ReferencePage() {
                 Server Component. The root entry is a client boundary, so every
                 export of it becomes a client reference there.
                 <br />
+                <code>@ttsalpha/qrcode/core</code> exports the same{" "}
+                <code>toSVGString</code>, typed without React. It is plain
+                JavaScript, so React Native apps import it from there.
+                <br />
                 <code>toDataURL</code> is browser-only (requires the Canvas
                 API). JPEG automatically fills a white background when{" "}
                 <code>backgroundColor</code> is <code>'transparent'</code>.
               </p>
               <PropTable head="Option" rows={EXPORT_OPTIONS} marginTop />
+            </Group>
+
+            <Group id="react-native" title="React Native and Expo">
+              <p className={s.note} style={{ marginBottom: 14 }}>
+                <code>@ttsalpha/qrcode/native</code> draws the same symbols as{" "}
+                <code>{"<QRCode>"}</code> with{" "}
+                <a
+                  href="https://github.com/software-mansion/react-native-svg"
+                  className={s.noteLink}
+                >
+                  react-native-svg
+                </a>
+                , which is an optional peer dependency. Install it with{" "}
+                <code>npx expo install react-native-svg</code> on Expo, or{" "}
+                <code>pnpm add react-native-svg</code> otherwise.
+              </p>
+              <CodeBlock lang="tsx" code={NATIVE_CODE} />
+              <p className={s.note} style={{ marginTop: 14 }}>
+                <strong>Requirements:</strong> <code>react-native-svg</code> 14
+                or newer, React Native 0.75 or newer (the encoder uses the
+                global <code>TextEncoder</code>), and a Metro that resolves
+                package <code>exports</code>, which is the default from React
+                Native 0.79 and Expo SDK 53. On an older setup, set{" "}
+                <code>
+                  config.resolver.unstable_enablePackageExports = true
+                </code>{" "}
+                in <code>metro.config.js</code>.
+              </p>
+              <p className={s.note}>
+                <code>value</code>, <code>size</code>, <code>margin</code>,{" "}
+                <code>dotStyle</code>, <code>dotColor</code>,{" "}
+                <code>backgroundColor</code>, <code>corner</code> and{" "}
+                <code>qr</code> work exactly as in QRCodeProps. Everything else
+                an <code>{"<Svg>"}</code> accepts (<code>style</code>,{" "}
+                <code>testID</code>, <code>onLayout</code>, …) is passed
+                through. There is no <code>className</code>, and{" "}
+                <code>idPrefix</code> is not needed.
+              </p>
+              <PropTable head="Prop" rows={NATIVE_PROPS} marginTop />
+              <h3 className={s.apiSubTitle}>NativeLogoOptions</h3>
+              <CodeBlock lang="ts" code={NATIVE_LOGO_CODE} />
+              <p className={s.note}>
+                For a vector logo, pass its markup as <code>svg</code> rather
+                than as <code>src</code>. Native cannot measure an image, so a
+                logo is square unless you set <code>aspectRatio</code>.
+              </p>
+              <h3 className={s.apiSubTitle}>Getting an image</h3>
+              <CodeBlock lang="tsx" code={NATIVE_IMAGE_CODE} />
+              <p className={s.note}>
+                <code>{"<QRCode>"}</code> forwards its <code>ref</code> to the{" "}
+                <code>Svg</code>, which can rasterise itself. For an SVG string,
+                to save an <code>.svg</code> file or render with{" "}
+                <code>SvgXml</code>, import <code>toSVGString</code> from{" "}
+                <code>@ttsalpha/qrcode/core</code>.
+              </p>
+              <h3 className={s.apiSubTitle}>Not supported on native</h3>
+              <p className={s.note}>
+                <code>logo.element</code>: there is no{" "}
+                <code>{"<foreignObject>"}</code>, so a warning is logged in
+                development and the logo is skipped; use <code>logo.src</code>{" "}
+                or <code>logo.svg</code>. The <code>toDataURL(props)</code>{" "}
+                helper needs a canvas, so use the <code>ref</code> above.{" "}
+                <code>className</code> and web-only <code>{"<svg>"}</code> props
+                such as <code>onClick</code> and <code>data-*</code>.
+              </p>
+            </Group>
+
+            <Group id="core" title="Core">
+              <p className={s.note} style={{ marginBottom: 14 }}>
+                <code>@ttsalpha/qrcode/core</code> is the part every renderer is
+                built on: plain JavaScript with no React and no DOM, so it runs
+                on a server, in a worker and in React Native.{" "}
+                <code>buildQR(props)</code> returns a <code>QRGeometry</code> in
+                a square coordinate space of <code>viewBox</code> units, ready
+                to draw with any renderer.
+              </p>
+              <CodeBlock lang="ts" code={CORE_CODE} />
+              <p className={s.note}>
+                Draw the background, then <code>modules</code> and{" "}
+                <code>finders</code> with <code>clear</code> knocked out of
+                them, then <code>logo</code>. The props are those of QRCodeProps
+                minus the React-only ones. <code>logo.custom: true</code>{" "}
+                reserves the logo area without a <code>src</code>, for a logo
+                the renderer draws itself. Invalid input throws a{" "}
+                <code>RangeError</code> or <code>TypeError</code>, as in{" "}
+                <code>{"<QRCode>"}</code>.
+              </p>
             </Group>
 
             <Group id="http-api" title="HTTP API — /qr">
